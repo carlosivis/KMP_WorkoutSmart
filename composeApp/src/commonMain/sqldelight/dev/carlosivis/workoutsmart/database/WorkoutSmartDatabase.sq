@@ -1,0 +1,49 @@
+CREATE TABLE Workout (
+    id TEXT NOT NULL PRIMARY KEY,
+    name TEXT NOT NULL,
+    description TEXT NOT NULL
+);
+
+CREATE TABLE Exercise (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    workoutId TEXT NOT NULL,
+    name TEXT NOT NULL,
+    notes TEXT NOT NULL,
+    series INTEGER NOT NULL,
+    repetitions INTEGER NOT NULL,
+    videoUrl TEXT,
+    imageUrl TEXT,
+    FOREIGN KEY (workoutId) REFERENCES Workout(id)
+);
+
+CREATE TABLE History (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    workoutName TEXT NOT NULL,
+    date TEXT NOT NULL
+);
+
+-- Workout queries
+selectAllWorkouts:
+SELECT * FROM Workout;
+
+insertWorkout:
+INSERT INTO Workout(id, name, description) VALUES (?, ?, ?);
+
+deleteWorkout:
+DELETE FROM Workout WHERE id = ?;
+
+-- Exercise queries
+selectExercisesByWorkoutId:
+SELECT * FROM Exercise WHERE workoutId = ?;
+
+insertExercise:
+INSERT INTO Exercise(workoutId, name, notes, series, repetitions, videoUrl, imageUrl)
+VALUES (?, ?, ?, ?, ?, ?, ?);
+
+-- History queries
+selectAllHistory:
+SELECT * FROM History ORDER BY date DESC;
+
+insertHistory:
+INSERT INTO History(workoutName, date) VALUES (?, ?);
+
