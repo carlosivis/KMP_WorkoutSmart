@@ -27,6 +27,7 @@ class CreateWorkoutViewModel(
             is CreateWorkoutViewAction.GetExercises -> TODO()
             is CreateWorkoutViewAction.NavigateBack -> onNavigateBack()
             is CreateWorkoutViewAction.AddName -> addName(action.name)
+            is CreateWorkoutViewAction.AddDescription -> addDescription(action.description)
             is CreateWorkoutViewAction.UpdateExercise -> updateExercise(action.index, action.exercise)
             is CreateWorkoutViewAction.StartAddingExercise -> startAddingExercise()
             is CreateWorkoutViewAction.CancelAddingExercise -> cancelAddingExercise()
@@ -77,6 +78,12 @@ class CreateWorkoutViewModel(
         }
     }
 
+    private fun addDescription(description: String) {
+        _state.update {
+            it.copy(workout = it.workout.copy(description = description))
+        }
+    }
+
     private fun updateExercise(index: Int, exercise: ExerciseModel) {
         _state.update {
             val mutableExercises = it.workout.exercises.toMutableList()
@@ -99,3 +106,4 @@ class CreateWorkoutViewModel(
         _state.update { it.copy(newExercise = exercise) }
     }
 }
+

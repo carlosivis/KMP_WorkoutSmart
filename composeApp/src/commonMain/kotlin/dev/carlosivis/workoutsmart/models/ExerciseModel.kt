@@ -9,8 +9,8 @@ data class ExerciseModel(
     val notes: String,
     val series: Int,
     val repetitions: Int,
-    val videoUrl: String? = null,
-    val imageUrl: String? = null
+    val videoUrl: String?,
+    val imageUrl: String?
 ){
     companion object {
         fun empty() = ExerciseModel(

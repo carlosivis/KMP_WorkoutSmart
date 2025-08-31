@@ -1,19 +1,19 @@
 CREATE TABLE Workout (
-    id TEXT NOT NULL PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     description TEXT NOT NULL
 );
 
 CREATE TABLE Exercise (
     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    workoutId TEXT NOT NULL,
+    workoutId INTEGER NOT NULL,
     name TEXT NOT NULL,
     notes TEXT NOT NULL,
     series INTEGER NOT NULL,
     repetitions INTEGER NOT NULL,
     videoUrl TEXT,
     imageUrl TEXT,
-    FOREIGN KEY (workoutId) REFERENCES Workout(id)
+    FOREIGN KEY (workoutId) REFERENCES Workout(id) ON DELETE CASCADE
 );
 
 CREATE TABLE History (
@@ -27,10 +27,16 @@ selectAllWorkouts:
 SELECT * FROM Workout;
 
 insertWorkout:
-INSERT INTO Workout(id, name, description) VALUES (?, ?, ?);
+INSERT INTO Workout(name, description)
+VALUES (?, ?);
 
 deleteWorkout:
 DELETE FROM Workout WHERE id = ?;
+
+updateWorkout:
+UPDATE Workout
+SET name = ?, description = ?
+WHERE id = ?;
 
 -- Exercise queries
 selectExercisesByWorkoutId:
@@ -40,6 +46,17 @@ insertExercise:
 INSERT INTO Exercise(workoutId, name, notes, series, repetitions, videoUrl, imageUrl)
 VALUES (?, ?, ?, ?, ?, ?, ?);
 
+deleteExercise:
+DELETE FROM Exercise WHERE id = ?;
+
+updateExercise:
+UPDATE Exercise
+SET name = ?, notes = ?, series = ?, repetitions = ?, videoUrl = ?, imageUrl = ?
+WHERE id = ?;
+
+deleteExercisesFromWorkout:
+DELETE FROM Exercise WHERE workoutId = ?;
+
 -- History queries
 selectAllHistory:
 SELECT * FROM History ORDER BY date DESC;
@@ -47,3 +64,5 @@ SELECT * FROM History ORDER BY date DESC;
 insertHistory:
 INSERT INTO History(workoutName, date) VALUES (?, ?);
 
+selectLastInsertedWorkoutId:
+SELECT last_insert_rowid();

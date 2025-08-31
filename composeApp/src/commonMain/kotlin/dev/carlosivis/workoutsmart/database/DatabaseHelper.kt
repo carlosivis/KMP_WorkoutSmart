@@ -20,6 +20,56 @@ class DatabaseHelper(
     private val dbRef: WorkoutSmartDatabase = WorkoutSmartDatabase(sqlDriver)
 
     // Workout Operations
+    suspend fun insertWorkout(workout: WorkoutModel) {
+        dbRef.transactionWithContext(backgroundDispatcher) {
+            dbRef.workoutSmartDatabaseQueries.insertWorkout(
+                name = workout.name,
+                description = workout.description.ifEmpty { "Sem descrição" }
+            )
+            val workoutId: Long =
+                dbRef.workoutSmartDatabaseQueries.selectLastInsertedWorkoutId().executeAsOne()
+
+            // Inserir os exercícios
+            workout.exercises.forEach { exercise ->
+                dbRef.workoutSmartDatabaseQueries.insertExercise(
+                    workoutId = workoutId,
+                    name = exercise.name,
+                    notes = exercise.notes,
+                    series = exercise.series.toLong(),
+                    repetitions = exercise.repetitions.toLong(),
+                    videoUrl = exercise.videoUrl,
+                    imageUrl = exercise.imageUrl
+                )
+            }
+        }
+    }
+
+    suspend fun deleteWorkout(workoutId: Long) {
+        dbRef.transactionWithContext(backgroundDispatcher) {
+            dbRef.workoutSmartDatabaseQueries.deleteWorkout(workoutId)
+        }
+    }
+
+    suspend fun updateExercise(exercise: ExerciseModel, workoutId: Long) {
+        dbRef.transactionWithContext(backgroundDispatcher) {
+            dbRef.workoutSmartDatabaseQueries.updateExercise(
+                name = exercise.name,
+                notes = exercise.notes,
+                series = exercise.series.toLong(),
+                repetitions = exercise.repetitions.toLong(),
+                videoUrl = exercise.videoUrl,
+                imageUrl = exercise.imageUrl,
+                id = exercise.id.toLong()
+            )
+        }
+    }
+
+    suspend fun deleteExercise(exerciseId: Long) {
+        dbRef.transactionWithContext(backgroundDispatcher) {
+            dbRef.workoutSmartDatabaseQueries.deleteExercise(exerciseId)
+        }
+    }
+
     fun getAllWorkouts(): Flow<List<WorkoutModel>> = dbRef.workoutSmartDatabaseQueries
         .selectAllWorkouts()
         .asFlow()
@@ -36,41 +86,7 @@ class DatabaseHelper(
         }
         .flowOn(backgroundDispatcher)
 
-    suspend fun insertWorkout(workout: WorkoutModel) {
-        dbRef.transactionWithContext(backgroundDispatcher) {
-            dbRef.workoutSmartDatabaseQueries.insertWorkout(
-                id = workout.id,
-                name = workout.name,
-                description = workout.description
-            )
-            workout.exercises.forEach { exercise ->
-               suspend { insertExercise(workout.id, exercise)}
-            }
-        }
-    }
-
-    suspend fun deleteWorkout(workoutId: String) {
-        dbRef.transactionWithContext(backgroundDispatcher) {
-            dbRef.workoutSmartDatabaseQueries.deleteWorkout(workoutId)
-        }
-    }
-
-    // Exercise Operations
-    private suspend fun insertExercise(workoutId: String, exercise: ExerciseModel) {
-        dbRef.transactionWithContext(backgroundDispatcher) {
-            dbRef.workoutSmartDatabaseQueries.insertExercise(
-                workoutId = workoutId,
-                name = exercise.name,
-                notes = exercise.notes,
-                series = exercise.series.toLong(),
-                repetitions = exercise.repetitions.toLong(),
-                videoUrl = exercise.videoUrl,
-                imageUrl = exercise.imageUrl
-            )
-        }
-    }
-
-    private fun getExercisesForWorkoutSync(workoutId: String): List<ExerciseModel> =
+    private fun getExercisesForWorkoutSync(workoutId: Long): List<ExerciseModel> =
         dbRef.workoutSmartDatabaseQueries
             .selectExercisesByWorkoutId(workoutId)
             .executeAsList()
