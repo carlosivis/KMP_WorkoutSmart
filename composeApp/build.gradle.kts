@@ -20,10 +20,12 @@ kotlin {
             }
         }
     }
+
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     compilerOptions {
         freeCompilerArgs.add("-Xexpect-actual-classes")
     }
+
     androidTarget {
         @Suppress("OPT_IN_USAGE")
         unitTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)

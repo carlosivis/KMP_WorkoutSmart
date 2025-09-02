@@ -8,40 +8,39 @@ import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 
 
 val AppLightColorScheme = lightColorScheme(
-    primary = VioletRoyal,          // Cor principal para botões, ícones
-    onPrimary = WhitePure,          // Cor do texto sobre a cor primária
-    primaryContainer = LilacSoft,   // Variação mais clara da cor primária
-    onPrimaryContainer = PurpleDeep, // Cor do texto sobre o primaryContainer
-    secondary = MagentaAccent,      // Cor secundária, para acentos
+    primary = BluePrimary,
+    onPrimary = WhitePure,
+    primaryContainer = BluePrimary,
+    onPrimaryContainer = WhitePure,
+    secondary = OrangeAccent,
     onSecondary = WhitePure,
-    background = LavenderPale,      // Fundo principal
-    onBackground = GreyNeutral,     // Cor do texto no fundo principal
-    surface = WhitePure,            // Cor da superfície de cards, diálogos
-    onSurface = GreyNeutral,        // Cor do texto na superfície
-    error = Color(0xFFB00020),      // Cor para erros
+    background = BackgroundLight,
+    onBackground = TextPrimaryLight,
+    surface = SurfaceLight,
+    onSurface = TextPrimaryLight,
+    error = ErrorRed,
     onError = WhitePure
 )
 
 val AppDarkColorScheme = darkColorScheme(
-    primary = VioletRoyal,
+    primary = BluePrimary,
     onPrimary = WhitePure,
-    primaryContainer = PurpleDeep,
-    onPrimaryContainer = LilacSoft,
-    secondary = MagentaAccent,
+    primaryContainer = BluePrimary,
+    onPrimaryContainer = WhitePure,
+    secondary = OrangeAccent,
     onSecondary = WhitePure,
-    background = Color(0xFF121212), // Fundo escuro (pode ser um roxo bem escuro)
-    onBackground = WhitePure,
-    surface = Color(0xFF1E1E1E),
-    onSurface = WhitePure,
-    error = Color(0xFFCF6679),
-    onError = Color(0xFF121212)
+    background = BackgroundDark,
+    onBackground = TextPrimaryDark,
+    surface = SurfaceDark,
+    onSurface = TextPrimaryDark,
+    error = ErrorRed,
+    onError = WhitePure
 )
 val typography = Typography(
     bodyMedium = TextStyle(
