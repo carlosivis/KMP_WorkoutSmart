@@ -29,7 +29,6 @@ import androidx.compose.ui.text.font.FontWeight
 import dev.carlosivis.workoutsmart.Utils.Dimens
 import dev.carlosivis.workoutsmart.Utils.FontSizes
 import dev.carlosivis.workoutsmart.Utils.Shapes
-import dev.carlosivis.workoutsmart.Utils.shapes
 import dev.carlosivis.workoutsmart.screens.home.HomeViewAction
 import dev.carlosivis.workoutsmart.screens.home.HomeViewModel
 import dev.carlosivis.workoutsmart.screens.home.HomeViewState
@@ -61,7 +60,7 @@ private fun  Content(
                 onClick = { action(HomeViewAction.Navigate.CreateWorkout)},
                 containerColor = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(Dimens.Medium),
-                shape = shapes.large
+                shape = RoundedCornerShape(Shapes.ExtraLarge)
             ) {
                 Icon(Icons.Filled.Add, "Criar Treino")
             }

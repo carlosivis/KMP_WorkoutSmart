@@ -14,4 +14,6 @@ sealed class CreateWorkoutViewAction {
     data class RemoveExercise(val exerciseId: Int) : CreateWorkoutViewAction()
     object SaveWorkout : CreateWorkoutViewAction()
     object NavigateBack : CreateWorkoutViewAction()
+    object AttemptToNavigateBack : CreateWorkoutViewAction()
+    object CancelNavigateBack : CreateWorkoutViewAction()
 }

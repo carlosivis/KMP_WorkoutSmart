@@ -5,6 +5,7 @@ import dev.carlosivis.workoutsmart.models.WorkoutModel
 
 data class CreateWorkoutViewState(
     val isLoading: Boolean = false,
+    val showExitConfirmationDialog: Boolean = false,
     val errorMessage: String? = null,
     val workout: WorkoutModel = WorkoutModel.empty(),
     val isAddingExercise: Boolean = false,

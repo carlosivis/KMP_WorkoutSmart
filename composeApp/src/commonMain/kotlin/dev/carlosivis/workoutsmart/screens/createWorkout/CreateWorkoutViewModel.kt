@@ -2,6 +2,7 @@ package dev.carlosivis.workoutsmart.screens.createWorkout
 
 import androidx.lifecycle.ViewModel
 import dev.carlosivis.workoutsmart.models.ExerciseModel
+import dev.carlosivis.workoutsmart.models.WorkoutModel
 import dev.carlosivis.workoutsmart.repository.WorkoutRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +25,7 @@ class CreateWorkoutViewModel(
         when (action) {
             is CreateWorkoutViewAction.SaveWorkout -> saveWorkout()
             is CreateWorkoutViewAction.RemoveExercise -> removeExercise(action.exerciseId)
-            is CreateWorkoutViewAction.GetExercises -> TODO()
+            is CreateWorkoutViewAction.GetExercises -> TODO("show exercises from others workout to choose")
             is CreateWorkoutViewAction.NavigateBack -> onNavigateBack()
             is CreateWorkoutViewAction.AddName -> addName(action.name)
             is CreateWorkoutViewAction.AddDescription -> addDescription(action.description)
@@ -33,6 +34,8 @@ class CreateWorkoutViewModel(
             is CreateWorkoutViewAction.CancelAddingExercise -> cancelAddingExercise()
             is CreateWorkoutViewAction.UpdateNewExercise -> updateNewExercise(action.exercise)
             is CreateWorkoutViewAction.ConfirmNewExercise -> confirmNewExercise()
+            is CreateWorkoutViewAction.AttemptToNavigateBack -> attemptToNavigateBack()
+            is CreateWorkoutViewAction.CancelNavigateBack -> cancelNavigateBack()
         }
     }
 
@@ -104,6 +107,21 @@ class CreateWorkoutViewModel(
 
     private fun updateNewExercise(exercise: ExerciseModel) {
         _state.update { it.copy(newExercise = exercise) }
+    }
+
+    private fun attemptToNavigateBack() {
+        if (_state.value.isAddingExercise) {
+            _state.update { it.copy(showExitConfirmationDialog = true) }
+        }
+        else if (_state.value.workout != WorkoutModel.empty()) {
+            _state.update { it.copy(showExitConfirmationDialog = true)}
+        }
+        else {
+            onNavigateBack()
+        }
+    }
+    private fun cancelNavigateBack() {
+        _state.update { it.copy(showExitConfirmationDialog = false) }
     }
 }
 

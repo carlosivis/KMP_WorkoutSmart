@@ -35,6 +35,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import dev.carlosivis.workoutsmart.Utils.Dimens
 import dev.carlosivis.workoutsmart.Utils.Shapes
 import dev.carlosivis.workoutsmart.models.ExerciseModel
+import dev.carlosivis.workoutsmart.screens.components.CustomDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,7 +50,7 @@ fun CreateWorkoutScreen(
             TopAppBar(
                 title = { Text("Criar Treino") },
                 navigationIcon = {
-                    IconButton(onClick = { action(CreateWorkoutViewAction.NavigateBack) }) {
+                    IconButton(onClick = { action(CreateWorkoutViewAction.AttemptToNavigateBack) }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Voltar"
@@ -72,6 +73,16 @@ private fun Content(
     modifier: Modifier = Modifier,
     state: CreateWorkoutViewState,
     action: (CreateWorkoutViewAction) -> Unit){
+
+    if (state.showExitConfirmationDialog) {
+        CustomDialog(
+            title = "Sair sem salvar?",
+            message = "Você tem alterações não salvas. Deseja realmente sair?",
+            onConfirm = { action(CreateWorkoutViewAction.NavigateBack) },
+            onCancel = { action(CreateWorkoutViewAction.CancelNavigateBack) }
+        )
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
