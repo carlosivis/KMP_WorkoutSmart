@@ -8,5 +8,8 @@ data class ActiveWorkoutViewState(
     val showExitConfirmationDialog: Boolean = false,
     val isWorkoutActive: Boolean = false,
     val elapsedTime: Long = 0L,
+    val restTime: Int = 60,
+    val isRestTimerActive: Boolean = false,
+    val restTimerValue: Int = 0,
     val workout: WorkoutModel = WorkoutModel.empty()
 )

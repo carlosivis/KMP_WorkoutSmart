@@ -19,7 +19,6 @@ class DatabaseHelper(
 ) {
     private val dbRef: WorkoutSmartDatabase = WorkoutSmartDatabase(sqlDriver)
 
-    // Workout Operations
     suspend fun insertWorkout(workout: WorkoutModel) {
         dbRef.transactionWithContext(backgroundDispatcher) {
             dbRef.workoutSmartDatabaseQueries.insertWorkout(

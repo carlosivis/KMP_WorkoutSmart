@@ -6,8 +6,11 @@ sealed class ActiveWorkoutViewAction {
     object StopWorkout : ActiveWorkoutViewAction()
     object Tick : ActiveWorkoutViewAction()
     object StartTimer : ActiveWorkoutViewAction()
+    object StopTimer : ActiveWorkoutViewAction()
     object CancelNavigateBack : ActiveWorkoutViewAction()
     object AttemptToNavigateBack : ActiveWorkoutViewAction()
     object NavigateBack : ActiveWorkoutViewAction()
     object GetWorkout : ActiveWorkoutViewAction()
+    data class UpdateRestTime(val seconds: Int) : ActiveWorkoutViewAction()
+
 }
