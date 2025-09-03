@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.update
 class ActiveWorkoutViewModel(
     val workout: WorkoutModel,
     private val onNavigateBack: () -> Unit
-): ViewModel() {
+) : ViewModel() {
     private val _state = MutableStateFlow(ActiveWorkoutViewState())
     val state = _state.asStateFlow()
 
@@ -17,10 +17,13 @@ class ActiveWorkoutViewModel(
         when (action) {
             ActiveWorkoutViewAction.NavigateBack -> onNavigateBack()
             ActiveWorkoutViewAction.PauseWorkout -> TODO()
-            ActiveWorkoutViewAction.ResumeWorkout -> TODO()
             ActiveWorkoutViewAction.StartWorkout -> TODO()
             ActiveWorkoutViewAction.StopWorkout -> TODO()
             ActiveWorkoutViewAction.Tick -> TODO()
+            ActiveWorkoutViewAction.AttemptToNavigateBack -> attemptToNavigateBack()
+            ActiveWorkoutViewAction.CancelNavigateBack -> cancelNavigateBack()
+            ActiveWorkoutViewAction.StartTimer -> TODO()
+            ActiveWorkoutViewAction.GetWorkout -> getWorkout()
         }
     }
 
@@ -28,4 +31,14 @@ class ActiveWorkoutViewModel(
         _state.update { it.copy(isLoading = isLoading) }
     }
 
+    private fun getWorkout() {
+        _state.update { it.copy(workout = workout) }
+    }
+    private fun attemptToNavigateBack() {
+        _state.update { it.copy(showExitConfirmationDialog = true) }
+    }
+
+    private fun cancelNavigateBack() {
+        _state.update { it.copy(showExitConfirmationDialog = false) }
+    }
 }

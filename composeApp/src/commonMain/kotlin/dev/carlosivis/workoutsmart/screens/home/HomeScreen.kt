@@ -1,5 +1,4 @@
-
-import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,6 +28,8 @@ import androidx.compose.ui.text.font.FontWeight
 import dev.carlosivis.workoutsmart.Utils.Dimens
 import dev.carlosivis.workoutsmart.Utils.FontSizes
 import dev.carlosivis.workoutsmart.Utils.Shapes
+import dev.carlosivis.workoutsmart.models.HistoryModel
+import dev.carlosivis.workoutsmart.models.WorkoutModel
 import dev.carlosivis.workoutsmart.screens.home.HomeViewAction
 import dev.carlosivis.workoutsmart.screens.home.HomeViewModel
 import dev.carlosivis.workoutsmart.screens.home.HomeViewState
@@ -36,7 +37,7 @@ import dev.carlosivis.workoutsmart.screens.home.HomeViewState
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel,
-){
+) {
     val state by viewModel.state.collectAsState()
     val action: (HomeViewAction) -> Unit = viewModel::dispatchAction
     Content(
@@ -51,13 +52,14 @@ fun HomeScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun  Content(
+private fun Content(
     state: HomeViewState,
-    action : (HomeViewAction) -> Unit){
+    action: (HomeViewAction) -> Unit
+) {
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { action(HomeViewAction.Navigate.CreateWorkout)},
+                onClick = { action(HomeViewAction.Navigate.CreateWorkout) },
                 containerColor = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(Dimens.Medium),
                 shape = RoundedCornerShape(Shapes.ExtraLarge)
@@ -74,7 +76,6 @@ private fun  Content(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
                 .padding(padding)
                 .padding(Dimens.Medium)
         ) {
@@ -91,21 +92,9 @@ private fun  Content(
                     .fillMaxWidth()
             ) {
                 items(state.workouts) { workout ->
-                    Card(
-                        shape = RoundedCornerShape(Shapes.ExtraLarge),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceVariant
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = Dimens.Small)
-                    ) {
-                        Text(
-                            workout.name,
-                            modifier = Modifier.padding(Dimens.Large),
-                            fontSize = FontSizes.BodyLarge
-                        )
-                    }
+                    WorkoutCard(
+                        workout = workout,
+                        navigate = { action(HomeViewAction.Navigate.Workout(workout)) })
                 }
             }
             Spacer(modifier = Modifier.height(Dimens.Large))
@@ -122,23 +111,49 @@ private fun  Content(
                     .fillMaxWidth()
             ) {
                 items(state.history) { history ->
-                    Card(
-                        shape = RoundedCornerShape(Shapes.ExtraLarge),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceVariant
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = Dimens.Small)
-                    ) {
-                        Text(
-                            history.workoutName + " - " + history.date,
-                            modifier = Modifier.padding(Dimens.Large),
-                            fontSize = FontSizes.BodyLarge
-                        )
-                    }
+                    HistoryCard(history = history)
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun WorkoutCard(workout: WorkoutModel, navigate: () -> Unit = {}) {
+    Card(
+        shape = RoundedCornerShape(Shapes.ExtraLarge),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        ),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = Dimens.Small)
+            .clickable { navigate() }
+    ) {
+        Text(
+            workout.name,
+            modifier = Modifier.padding(Dimens.Large),
+            fontSize = FontSizes.BodyLarge
+        )
+    }
+
+}
+
+@Composable
+private fun HistoryCard(history: HistoryModel) {
+    Card(
+        shape = RoundedCornerShape(Shapes.ExtraLarge),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        ),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = Dimens.Small)
+    ) {
+        Text(
+            history.workoutName + " - " + history.date,
+            modifier = Modifier.padding(Dimens.Large),
+            fontSize = FontSizes.BodyLarge
+        )
     }
 }
