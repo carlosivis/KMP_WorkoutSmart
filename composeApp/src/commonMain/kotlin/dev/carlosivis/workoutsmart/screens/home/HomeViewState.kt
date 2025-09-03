@@ -7,5 +7,6 @@ data class HomeViewState(
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
     val workouts: List<WorkoutModel> = emptyList(),
-    val history: List<HistoryModel> = emptyList()
+    val history: List<HistoryModel> = emptyList(),
+    val workoutToDelete: WorkoutModel? = null
 )

@@ -1,5 +1,7 @@
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,12 +12,14 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -23,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import dev.carlosivis.workoutsmart.Utils.Dimens
@@ -30,6 +35,7 @@ import dev.carlosivis.workoutsmart.Utils.FontSizes
 import dev.carlosivis.workoutsmart.Utils.Shapes
 import dev.carlosivis.workoutsmart.models.HistoryModel
 import dev.carlosivis.workoutsmart.models.WorkoutModel
+import dev.carlosivis.workoutsmart.screens.components.CustomDialog
 import dev.carlosivis.workoutsmart.screens.home.HomeViewAction
 import dev.carlosivis.workoutsmart.screens.home.HomeViewModel
 import dev.carlosivis.workoutsmart.screens.home.HomeViewState
@@ -56,6 +62,15 @@ private fun Content(
     state: HomeViewState,
     action: (HomeViewAction) -> Unit
 ) {
+    if (state.workoutToDelete != null) {
+        CustomDialog(
+            title = "Deletar Treino",
+            message = "Você tem certeza que deseja deletar o treino \"${state.workoutToDelete.name}\"?",
+            onConfirm = { action(HomeViewAction.ConfirmDeleteWorkout) },
+            onCancel = { action(HomeViewAction.CancelDeleteWorkout) }
+        )
+    }
+
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
@@ -94,7 +109,8 @@ private fun Content(
                 items(state.workouts) { workout ->
                     WorkoutCard(
                         workout = workout,
-                        navigate = { action(HomeViewAction.Navigate.Workout(workout)) })
+                        navigate = { action(HomeViewAction.Navigate.Workout(workout)) },
+                        delete = { action(HomeViewAction.AttemptDeleteWorkout(workout)) })
                 }
             }
             Spacer(modifier = Modifier.height(Dimens.Large))
@@ -119,7 +135,8 @@ private fun Content(
 }
 
 @Composable
-private fun WorkoutCard(workout: WorkoutModel, navigate: () -> Unit = {}) {
+private fun WorkoutCard(workout: WorkoutModel, navigate: () -> Unit = {},
+                        delete: () -> Unit = {}) {
     Card(
         shape = RoundedCornerShape(Shapes.ExtraLarge),
         colors = CardDefaults.cardColors(
@@ -130,11 +147,20 @@ private fun WorkoutCard(workout: WorkoutModel, navigate: () -> Unit = {}) {
             .padding(vertical = Dimens.Small)
             .clickable { navigate() }
     ) {
-        Text(
-            workout.name,
-            modifier = Modifier.padding(Dimens.Large),
-            fontSize = FontSizes.BodyLarge
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(start = Dimens.Large),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                workout.name,
+                modifier = Modifier.weight(1f),
+                fontSize = FontSizes.BodyLarge
+            )
+
+            IconButton(onClick = delete) { Icon(Icons.Filled.Delete, "Deletar") }
+        }
+
     }
 
 }

@@ -27,6 +27,9 @@ class HomeViewModel(
             is HomeViewAction.Navigate.Details -> TODO()
             is HomeViewAction.Navigate.CreateWorkout -> onNavigateToCreateWorkout()
             is HomeViewAction.Navigate.Workout -> onNavigateToWorkout(action.workout)
+            is HomeViewAction.AttemptDeleteWorkout -> attemptDeleteWorkout(action.workout)
+            is HomeViewAction.ConfirmDeleteWorkout -> deleteWorkout()
+            is HomeViewAction.CancelDeleteWorkout -> cancelDeleteWorkout()
         }
     }
 
@@ -47,6 +50,7 @@ class HomeViewModel(
             }
         }
     }
+
     private fun getHistory() {
         viewModelScope.launch {
             setLoading(true)
@@ -61,4 +65,25 @@ class HomeViewModel(
         }
     }
 
+    private fun attemptDeleteWorkout(workout: WorkoutModel) {
+        _state.update { it.copy(workoutToDelete = workout) }
+    }
+
+    private fun cancelDeleteWorkout() {
+        _state.update { it.copy(workoutToDelete = null) }
+    }
+
+    private fun deleteWorkout() {
+        state.value.workoutToDelete?.let { workout ->
+            viewModelScope.launch {
+                setLoading(true)
+                try {
+                    repository.deleteWorkout(workout.id)
+                } finally {
+                    setLoading(false)
+                    cancelDeleteWorkout()
+                }
+            }
+        }
+    }
 }

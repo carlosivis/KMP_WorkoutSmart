@@ -5,6 +5,9 @@ import dev.carlosivis.workoutsmart.models.WorkoutModel
 sealed class HomeViewAction {
     object GetWorkouts : HomeViewAction()
     object GetHistory : HomeViewAction()
+    data class AttemptDeleteWorkout(val workout: WorkoutModel) : HomeViewAction()
+    object ConfirmDeleteWorkout : HomeViewAction()
+    object CancelDeleteWorkout : HomeViewAction()
 
     object Navigate {
         data class Details(val workoutId: Int) : HomeViewAction()
