@@ -57,6 +57,7 @@ class ActiveWorkoutViewModel(
     private fun startTimer() {
         timerJob?.cancel()
         _state.update { it.copy(isRestTimerActive = true, restTimerValue = it.restTime) }
+        if (!_state.value.isWorkoutActive) startWorkout()
         timerJob = viewModelScope.launch {
             while (state.value.restTimerValue > 0) {
                 delay(1000)
