@@ -17,12 +17,13 @@ class ActiveWorkoutViewModel(
     private val _state = MutableStateFlow(ActiveWorkoutViewState())
     val state = _state.asStateFlow()
     private var timerJob: Job? = null
+    private var workoutTimerJob: Job? = null
 
     fun dispatchAction(action: ActiveWorkoutViewAction) {
         when (action) {
             is ActiveWorkoutViewAction.NavigateBack -> onNavigateBack()
             is ActiveWorkoutViewAction.PauseWorkout -> TODO()
-            is ActiveWorkoutViewAction.StartWorkout -> TODO()
+            is ActiveWorkoutViewAction.StartWorkout -> startWorkout()
             is ActiveWorkoutViewAction.StopWorkout -> TODO()
             is ActiveWorkoutViewAction.Tick -> timerTick()
             is ActiveWorkoutViewAction.AttemptToNavigateBack -> attemptToNavigateBack()
@@ -74,8 +75,21 @@ class ActiveWorkoutViewModel(
         _state.update { it.copy(restTimerValue = it.restTimerValue - 1) }
     }
 
+    private fun startWorkout(){
+        workoutTimerJob?.cancel()
+        _state.update { it.copy(isWorkoutActive = true, elapsedTime = 0L) }
+        workoutTimerJob = viewModelScope.launch {
+            while (true) {
+                delay(1000)
+                _state.update { it.copy(elapsedTime = it.elapsedTime + 1) }
+            }
+        }
+
+    }
+
     override fun onCleared() {
         super.onCleared()
         timerJob?.cancel()
+        workoutTimerJob?.cancel()
     }
 }

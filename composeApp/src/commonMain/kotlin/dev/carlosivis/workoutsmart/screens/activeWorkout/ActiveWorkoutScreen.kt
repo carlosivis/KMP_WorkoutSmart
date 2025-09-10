@@ -92,6 +92,25 @@ private fun Content(
             contentAlignment = Alignment.Center
         ) {
             Column {
+                if (!state.isWorkoutActive) {
+                    Button(
+                        onClick = { action(ActiveWorkoutViewAction.StartWorkout) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = Dimens.Medium)
+                    ) {
+                        Text("Iniciar Treino")
+                    }
+                } else {
+                    Text(
+                        text = "Tempo decorrido: ${state.elapsedTime}s",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = Dimens.Medium),
+                        fontSize = FontSizes.BodyLarge
+                    )
+                }
+
                 RestTimeSelector(
                     selectedTime = state.restTime,
                     onTimeSelected = { action(ActiveWorkoutViewAction.UpdateRestTime(it)) }
