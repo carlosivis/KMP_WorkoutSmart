@@ -22,7 +22,7 @@ fun initKoin() = startKoin {
 val commonModule = module {
     viewModel { HomeViewModel(get(), get(), get()) }
     viewModel { (workout: WorkoutModel, onNavigateBack: () -> Unit) ->
-        ActiveWorkoutViewModel(workout, onNavigateBack)
+        ActiveWorkoutViewModel(workout, get(), onNavigateBack)
     }
     viewModel { (onNavigateBack: () -> Unit) ->
         CreateWorkoutViewModel(get(), onNavigateBack)

@@ -3,15 +3,18 @@ package dev.carlosivis.workoutsmart.screens.activeWorkout
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.carlosivis.workoutsmart.models.WorkoutModel
+import dev.carlosivis.workoutsmart.repository.WorkoutRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 
 class ActiveWorkoutViewModel(
     val workout: WorkoutModel,
+    private val repository: WorkoutRepository,
     private val onNavigateBack: () -> Unit
 ) : ViewModel() {
     private val _state = MutableStateFlow(ActiveWorkoutViewState())
@@ -32,6 +35,7 @@ class ActiveWorkoutViewModel(
             is ActiveWorkoutViewAction.StopTimer -> stopTimer()
             is ActiveWorkoutViewAction.GetWorkout -> getWorkout()
             is ActiveWorkoutViewAction.UpdateRestTime -> updateRestTime(action.seconds)
+            is ActiveWorkoutViewAction.SaveWorkoutHistory -> saveWorkoutHistory()
         }
     }
 
@@ -86,6 +90,15 @@ class ActiveWorkoutViewModel(
             }
         }
 
+    }
+    private fun saveWorkoutHistory() {
+        viewModelScope.launch {
+            setLoading(true)
+            val timestamp: String = Clock.System.now().toString()
+            repository.insertHistory(workout.name, timestamp)
+            setLoading(false)
+            onNavigateBack()
+        }
     }
 
     override fun onCleared() {

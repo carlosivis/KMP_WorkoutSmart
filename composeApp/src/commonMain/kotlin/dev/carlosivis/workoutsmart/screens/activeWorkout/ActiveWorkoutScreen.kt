@@ -32,6 +32,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -42,6 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.carlosivis.workoutsmart.Utils.Dimens
 import dev.carlosivis.workoutsmart.Utils.FontSizes
@@ -196,11 +198,22 @@ private fun ExerciseCard(
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
-                Text(
-                    exercise.name,
-                    fontSize = FontSizes.TitleLarge,
-                    modifier = Modifier.padding(bottom = Dimens.Small)
-                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = exercise.name,
+                        fontSize = FontSizes.TitleLarge,
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(bottom = Dimens.Small),
+                        textAlign = TextAlign.Center )
+                    TextButton(onClick = { /*TODO change visibility of card*/ }) {
+                        Text("Concluido", fontSize = FontSizes.BodySmall)
+                    }
+                }
                 Text(
                     exercise.notes,
                     fontSize = FontSizes.BodySmall,
