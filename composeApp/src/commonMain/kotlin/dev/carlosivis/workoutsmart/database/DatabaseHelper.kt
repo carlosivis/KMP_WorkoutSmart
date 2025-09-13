@@ -36,8 +36,7 @@ class DatabaseHelper(
                     notes = exercise.notes,
                     series = exercise.series.toLong(),
                     repetitions = exercise.repetitions.toLong(),
-                    videoUrl = exercise.videoUrl,
-                    imageUrl = exercise.imageUrl
+                    image = null
                 )
             }
         }
@@ -56,8 +55,7 @@ class DatabaseHelper(
                 notes = exercise.notes,
                 series = exercise.series.toLong(),
                 repetitions = exercise.repetitions.toLong(),
-                videoUrl = exercise.videoUrl,
-                imageUrl = exercise.imageUrl,
+                image = null,
                 id = exercise.id.toLong()
             )
         }
@@ -96,8 +94,7 @@ class DatabaseHelper(
                     notes = exercise.notes,
                     series = exercise.series.toInt(),
                     repetitions = exercise.repetitions.toInt(),
-                    videoUrl = exercise.videoUrl,
-                    imageUrl = exercise.imageUrl
+                    image = null
                 )
             }
 
@@ -109,7 +106,7 @@ class DatabaseHelper(
         .map { historyEntries ->
             historyEntries.map { history ->
                 HistoryModel(
-                    id = history.id.toLong(),
+                    id = history.id,
                     workoutName = history.workoutName,
                     date = history.date
                 )

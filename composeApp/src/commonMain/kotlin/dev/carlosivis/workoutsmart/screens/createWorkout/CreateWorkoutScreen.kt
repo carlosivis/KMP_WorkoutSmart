@@ -239,13 +239,7 @@ private fun ExerciseInput(
             Spacer(modifier = Modifier.height(Dimens.Small))
 
             //TODO("change to image picker")
-            TextField(
-                value = exercise.imageUrl.toString(),
-                onValueChange = { onExerciseChange(exercise.copy(imageUrl = it)) },
-                label = { Text("URL da Imagem (opcional)") },
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(Shapes.ExtraLarge)
-            )
+
         }
     }
 }

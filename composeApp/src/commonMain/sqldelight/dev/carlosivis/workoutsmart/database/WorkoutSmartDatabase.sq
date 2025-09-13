@@ -11,8 +11,7 @@ CREATE TABLE Exercise (
     notes TEXT NOT NULL,
     series INTEGER NOT NULL,
     repetitions INTEGER NOT NULL,
-    videoUrl TEXT,
-    imageUrl TEXT,
+    image BLOB ,
     FOREIGN KEY (workoutId) REFERENCES Workout(id) ON DELETE CASCADE
 );
 
@@ -43,15 +42,15 @@ selectExercisesByWorkoutId:
 SELECT * FROM Exercise WHERE workoutId = ?;
 
 insertExercise:
-INSERT INTO Exercise(workoutId, name, notes, series, repetitions, videoUrl, imageUrl)
-VALUES (?, ?, ?, ?, ?, ?, ?);
+INSERT INTO Exercise(workoutId, name, notes, series, repetitions, image)
+VALUES (?, ?, ?, ?, ?, ?);
 
 deleteExercise:
 DELETE FROM Exercise WHERE id = ?;
 
 updateExercise:
 UPDATE Exercise
-SET name = ?, notes = ?, series = ?, repetitions = ?, videoUrl = ?, imageUrl = ?
+SET name = ?, notes = ?, series = ?, repetitions = ?, image = ?
 WHERE id = ?;
 
 deleteExercisesFromWorkout:
