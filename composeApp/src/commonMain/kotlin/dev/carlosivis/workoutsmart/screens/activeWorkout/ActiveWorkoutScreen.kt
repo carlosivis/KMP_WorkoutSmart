@@ -2,6 +2,7 @@ package dev.carlosivis.workoutsmart.screens.activeWorkout
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -43,13 +45,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.carlosivis.workoutsmart.Utils.Dimens
 import dev.carlosivis.workoutsmart.Utils.FontSizes
 import dev.carlosivis.workoutsmart.Utils.WhitePure
+import dev.carlosivis.workoutsmart.composeResources.Res
+import dev.carlosivis.workoutsmart.composeResources.exercise_default
 import dev.carlosivis.workoutsmart.models.ExerciseModel
 import dev.carlosivis.workoutsmart.screens.components.CustomDialog
+import org.jetbrains.compose.resources.painterResource
+
 
 @Composable
 fun ActiveWorkoutScreen(
@@ -197,7 +204,8 @@ private fun ExerciseCard(
                 .fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth()) {
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -214,9 +222,15 @@ private fun ExerciseCard(
                         Text("Concluido", fontSize = FontSizes.BodySmall)
                     }
                 }
-                Text(
-                    exercise.notes,
-                    fontSize = FontSizes.BodySmall,
+                //TODO("adds check if exercise have image")
+                Image(
+                    painter = painterResource(Res.drawable.exercise_default),
+                    contentDescription = exercise.name,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(2f / 3f)
+                        .clip(RoundedCornerShape(Dimens.Medium)),
+                    contentScale = ContentScale.Crop
                 )
             }
             Button(

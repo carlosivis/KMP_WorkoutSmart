@@ -47,8 +47,9 @@ kotlin {
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.materialIconsExtended)
-            implementation(compose.material3)
             implementation(compose.ui)
+            implementation(libs.compose.multiplatform.resources)
+            implementation(libs.compose.multiplatform.material3)
 
             implementation(libs.sqldelight.coroutines)
 
@@ -104,6 +105,10 @@ sqldelight {
             packageName.set("dev.carlosivis.workoutsmart.database")
         }
     }
+}
+compose.resources{
+    packageOfResClass = "dev.carlosivis.workoutsmart.composeResources"
+    generateResClass = auto
 }
 
 tasks.register("testClasses") {
