@@ -1,3 +1,4 @@
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -33,12 +34,21 @@ import androidx.compose.ui.text.font.FontWeight
 import dev.carlosivis.workoutsmart.Utils.Dimens
 import dev.carlosivis.workoutsmart.Utils.FontSizes
 import dev.carlosivis.workoutsmart.Utils.Shapes
+import dev.carlosivis.workoutsmart.composeResources.Res
+import dev.carlosivis.workoutsmart.composeResources.create_workout_fab
+import dev.carlosivis.workoutsmart.composeResources.delete_action
+import dev.carlosivis.workoutsmart.composeResources.delete_workout_message
+import dev.carlosivis.workoutsmart.composeResources.delete_workout_title
+import dev.carlosivis.workoutsmart.composeResources.home_screen_title
+import dev.carlosivis.workoutsmart.composeResources.saved_workouts_section_title
+import dev.carlosivis.workoutsmart.composeResources.workout_history_section_title
 import dev.carlosivis.workoutsmart.models.HistoryModel
 import dev.carlosivis.workoutsmart.models.WorkoutModel
 import dev.carlosivis.workoutsmart.screens.components.CustomDialog
 import dev.carlosivis.workoutsmart.screens.home.HomeViewAction
 import dev.carlosivis.workoutsmart.screens.home.HomeViewModel
 import dev.carlosivis.workoutsmart.screens.home.HomeViewState
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun HomeScreen(
@@ -64,8 +74,8 @@ private fun Content(
 ) {
     if (state.workoutToDelete != null) {
         CustomDialog(
-            title = "Deletar Treino",
-            message = "Você tem certeza que deseja deletar o treino \"${state.workoutToDelete.name}\"?",
+            title = stringResource(Res.string.delete_workout_title),
+            message = stringResource(Res.string.delete_workout_message, state.workoutToDelete.name),
             onConfirm = { action(HomeViewAction.ConfirmDeleteWorkout) },
             onCancel = { action(HomeViewAction.CancelDeleteWorkout) }
         )
@@ -79,12 +89,12 @@ private fun Content(
                 modifier = Modifier.padding(Dimens.Medium),
                 shape = RoundedCornerShape(Shapes.ExtraLarge)
             ) {
-                Icon(Icons.Filled.Add, "Criar Treino")
+                Icon(Icons.Filled.Add, stringResource(Res.string.create_workout_fab))
             }
         },
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Workout Smart", fontWeight = FontWeight.Bold) }
+                title = { Text(stringResource(Res.string.home_screen_title), fontWeight = FontWeight.Bold) }
             )
         }
     ) { padding ->
@@ -95,7 +105,7 @@ private fun Content(
                 .padding(Dimens.Medium)
         ) {
             Text(
-                "Treinos Salvos",
+                stringResource(Res.string.saved_workouts_section_title),
                 fontSize = FontSizes.TitleMedium,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.primary
@@ -115,7 +125,7 @@ private fun Content(
             }
             Spacer(modifier = Modifier.height(Dimens.Large))
             Text(
-                "Histórico de Treinos",
+                stringResource(Res.string.workout_history_section_title),
                 fontSize = FontSizes.TitleMedium,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.primary
@@ -158,7 +168,7 @@ private fun WorkoutCard(workout: WorkoutModel, navigate: () -> Unit = {},
                 fontSize = FontSizes.BodyLarge
             )
 
-            IconButton(onClick = delete) { Icon(Icons.Filled.Delete, "Deletar") }
+            IconButton(onClick = delete) { Icon(Icons.Filled.Delete, stringResource(Res.string.delete_action)) }
         }
 
     }

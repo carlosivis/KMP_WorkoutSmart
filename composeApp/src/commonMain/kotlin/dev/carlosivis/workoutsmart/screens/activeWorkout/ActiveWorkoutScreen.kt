@@ -52,10 +52,20 @@ import dev.carlosivis.workoutsmart.Utils.Dimens
 import dev.carlosivis.workoutsmart.Utils.FontSizes
 import dev.carlosivis.workoutsmart.Utils.WhitePure
 import dev.carlosivis.workoutsmart.composeResources.Res
+import dev.carlosivis.workoutsmart.composeResources.action_back
+import dev.carlosivis.workoutsmart.composeResources.elapsed_time_label
 import dev.carlosivis.workoutsmart.composeResources.exercise_default
+import dev.carlosivis.workoutsmart.composeResources.exit_active_workout_confirmation_message
+import dev.carlosivis.workoutsmart.composeResources.exit_without_saving_title
+import dev.carlosivis.workoutsmart.composeResources.mark_as_completed_button
+import dev.carlosivis.workoutsmart.composeResources.rest_time_label
+import dev.carlosivis.workoutsmart.composeResources.skip_button
+import dev.carlosivis.workoutsmart.composeResources.start_rest_button
+import dev.carlosivis.workoutsmart.composeResources.start_workout_button
 import dev.carlosivis.workoutsmart.models.ExerciseModel
 import dev.carlosivis.workoutsmart.screens.components.CustomDialog
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 
 @Composable
@@ -89,7 +99,7 @@ private fun Content(
                     IconButton(onClick = { action(ActiveWorkoutViewAction.AttemptToNavigateBack) }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Voltar"
+                            contentDescription = stringResource(Res.string.action_back)
                         )
                     }
                 }
@@ -108,11 +118,11 @@ private fun Content(
                             .fillMaxWidth()
                             .padding(horizontal = Dimens.Medium)
                     ) {
-                        Text("Iniciar Treino")
+                        Text(stringResource(Res.string.start_workout_button))
                     }
                 } else {
                     Text(
-                        text = "Tempo decorrido: ${state.elapsedTime}s",
+                        text = stringResource(Res.string.elapsed_time_label, state.elapsedTime),
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = Dimens.Medium),
@@ -151,8 +161,8 @@ private fun Content(
 
         if (state.showExitConfirmationDialog) {
             CustomDialog(
-                title = "Sair sem salvar?",
-                message = "Você ainda não terminou o treino. Deseja realmente sair?",
+                title = stringResource(Res.string.exit_without_saving_title),
+                message = stringResource(Res.string.exit_active_workout_confirmation_message),
                 onConfirm = { action(ActiveWorkoutViewAction.NavigateBack) },
                 onCancel = { action(ActiveWorkoutViewAction.CancelNavigateBack) }
             )
@@ -172,7 +182,7 @@ private fun RestTimeSelector(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text("Tempo de descanso:", fontSize = FontSizes.BodyMedium)
+        Text(stringResource(Res.string.rest_time_label), fontSize = FontSizes.BodyMedium)
         Row(
             horizontalArrangement = Arrangement.spacedBy(Dimens.Small)
         ) {
@@ -180,7 +190,7 @@ private fun RestTimeSelector(
                 FilterChip(
                     selected = selectedTime == seconds,
                     onClick = { onTimeSelected(seconds) },
-                    label = { Text("${seconds}s") }
+                    label = { Text("${seconds}s") } // stringResource(Res.string.seconds_value, seconds)
                 )
             }
         }
@@ -219,7 +229,7 @@ private fun ExerciseCard(
                             .padding(bottom = Dimens.Small),
                         textAlign = TextAlign.Center )
                     TextButton(onClick = { /*TODO change visibility of card*/ }) {
-                        Text("Concluido", fontSize = FontSizes.BodySmall)
+                        Text(stringResource(Res.string.mark_as_completed_button), fontSize = FontSizes.BodySmall)
                     }
                 }
                 //TODO("adds check if exercise have image")
@@ -237,7 +247,7 @@ private fun ExerciseCard(
                 onClick = restTimer,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Iniciar Descanso")
+                Text(stringResource(Res.string.start_rest_button))
             }
         }
     }
@@ -276,7 +286,7 @@ private fun RestTimerCard(time: Int, onStop: () -> Unit) {
                     modifier = Modifier.padding(bottom = Dimens.Medium)
                 )
                 Button(onClick = onStop) {
-                    Text("Pular")
+                    Text(stringResource(Res.string.skip_button))
                 }
             }
         }

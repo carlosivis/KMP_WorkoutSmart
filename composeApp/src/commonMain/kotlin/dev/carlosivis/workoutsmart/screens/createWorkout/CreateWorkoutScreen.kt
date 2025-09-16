@@ -34,8 +34,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import dev.carlosivis.workoutsmart.Utils.Dimens
 import dev.carlosivis.workoutsmart.Utils.Shapes
+import dev.carlosivis.workoutsmart.composeResources.Res
+import dev.carlosivis.workoutsmart.composeResources.action_back
+import dev.carlosivis.workoutsmart.composeResources.action_cancel
+import dev.carlosivis.workoutsmart.composeResources.action_confirm
+import dev.carlosivis.workoutsmart.composeResources.add_exercise_button
+import dev.carlosivis.workoutsmart.composeResources.create_workout_screen_title
+import dev.carlosivis.workoutsmart.composeResources.exercise_name_label
+import dev.carlosivis.workoutsmart.composeResources.exercise_notes_label
+import dev.carlosivis.workoutsmart.composeResources.exercise_repetitions_label
+import dev.carlosivis.workoutsmart.composeResources.exercise_series_label
+import dev.carlosivis.workoutsmart.composeResources.exit_unsaved_changes_message
+import dev.carlosivis.workoutsmart.composeResources.exit_without_saving_title
+import dev.carlosivis.workoutsmart.composeResources.save_workout_button
+import dev.carlosivis.workoutsmart.composeResources.workout_description_label
+import dev.carlosivis.workoutsmart.composeResources.workout_title_label
 import dev.carlosivis.workoutsmart.models.ExerciseModel
 import dev.carlosivis.workoutsmart.screens.components.CustomDialog
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,12 +64,12 @@ fun CreateWorkoutScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Criar Treino") },
+                title = { Text(stringResource(Res.string.create_workout_screen_title)) },
                 navigationIcon = {
                     IconButton(onClick = { action(CreateWorkoutViewAction.AttemptToNavigateBack) }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Voltar"
+                            contentDescription = stringResource(Res.string.action_back)
                         )
                     }
                 }
@@ -76,8 +92,8 @@ private fun Content(
 
     if (state.showExitConfirmationDialog) {
         CustomDialog(
-            title = "Sair sem salvar?",
-            message = "Você tem alterações não salvas. Deseja realmente sair?",
+            title = stringResource(Res.string.exit_without_saving_title),
+            message = stringResource(Res.string.exit_unsaved_changes_message),
             onConfirm = { action(CreateWorkoutViewAction.NavigateBack) },
             onCancel = { action(CreateWorkoutViewAction.CancelNavigateBack) }
         )
@@ -95,7 +111,7 @@ private fun Content(
             onValueChange = { name ->
                 action(CreateWorkoutViewAction.AddName(name))
             },
-            label = { Text("Título do Treino") },
+            label = { Text(stringResource(Res.string.workout_title_label)) },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -106,7 +122,7 @@ private fun Content(
             onValueChange = { description ->
                 action(CreateWorkoutViewAction.AddDescription(description))
             },
-            label = { Text("Descrição do Treino") },
+            label = { Text(stringResource(Res.string.workout_description_label)) },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -121,7 +137,7 @@ private fun Content(
             )
         } else {
             Button(onClick = { action(CreateWorkoutViewAction.StartAddingExercise) }) {
-                Text("Adicionar Exercício")
+                Text(stringResource(Res.string.add_exercise_button))
             }
         }
 
@@ -147,7 +163,7 @@ private fun Content(
             onClick = { action(CreateWorkoutViewAction.SaveWorkout) },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Salvar Treino")
+            Text(stringResource(Res.string.save_workout_button))
         }
     }
 }
@@ -170,11 +186,11 @@ private fun NewExerciseCard(
                 horizontalArrangement = Arrangement.End
             ) {
                 OutlinedButton(onClick = onCancel) {
-                    Text("Cancelar")
+                    Text(stringResource(Res.string.action_cancel))
                 }
                 Spacer(modifier = Modifier.width(Dimens.Small))
                 Button(onClick = onConfirm) {
-                    Text("Confirmar")
+                    Text(stringResource(Res.string.action_confirm))
                 }
             }
         }
@@ -191,7 +207,7 @@ private fun ExerciseInput(
             TextField(
                 value = exercise.name,
                 onValueChange = { onExerciseChange(exercise.copy(name = it)) },
-                label = { Text("Nome do Exercício") },
+                label = { Text(stringResource(Res.string.exercise_name_label)) },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(Shapes.ExtraLarge)
             )
@@ -201,7 +217,7 @@ private fun ExerciseInput(
             TextField(
                 value = exercise.notes,
                 onValueChange = { onExerciseChange(exercise.copy(notes = it)) },
-                label = { Text("Observações") },
+                label = { Text(stringResource(Res.string.exercise_notes_label)) },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(Shapes.ExtraLarge)
             )
@@ -215,7 +231,7 @@ private fun ExerciseInput(
                         val series = it.toIntOrNull() ?: 0
                         onExerciseChange(exercise.copy(series = series))
                     },
-                    label = { Text("Séries") },
+                    label = { Text(stringResource(Res.string.exercise_series_label)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier.weight(1f),
                     shape = RoundedCornerShape(Shapes.ExtraLarge)
@@ -229,7 +245,7 @@ private fun ExerciseInput(
                         val repetitions = it.toIntOrNull() ?: 0
                         onExerciseChange(exercise.copy(repetitions = repetitions))
                     },
-                    label = { Text("Repetições") },
+                    label = { Text(stringResource(Res.string.exercise_repetitions_label)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier.weight(1f),
                     shape = RoundedCornerShape(Shapes.ExtraLarge)

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Workout Smart</string>
+    <!-- HomeScreen.kt -->
+    <string name="delete_workout_title">Deletar Treino</string>
+    <string name="delete_workout_message">Você tem certeza que deseja deletar o treino "%1$s"?</string>
+    <string name="create_workout_fab">Criar Treino</string>
+    <string name="home_screen_title">Workout Smart</string>
+    <string name="saved_workouts_section_title">Treinos Salvos</string>
+    <string name="workout_history_section_title">Histórico de Treinos</string>
+    <string name="delete_action">Deletar</string>
+
+    <!-- ActiveWorkoutScreen.kt -->
+    <string name="action_back">Voltar</string>
+    <string name="start_workout_button">Iniciar Treino</string>
+    <string name="elapsed_time_label">Tempo decorrido: %1$d s</string>
+    <string name="exit_without_saving_title">Sair sem salvar?</string>
+    <string name="exit_active_workout_confirmation_message">Você ainda não terminou o treino. Deseja realmente sair?</string>
+    <string name="rest_time_label">Tempo de descanso:</string>
+    <string name="mark_as_completed_button">Concluido</string>
+    <string name="start_rest_button">Iniciar Descanso</string>
+    <string name="skip_button">Pular</string>
+
+    <!-- CreateWorkoutScreen.kt -->
+    <string name="create_workout_screen_title">Criar Treino</string>
+    <string name="exit_unsaved_changes_message">Você tem alterações não salvas. Deseja realmente sair?</string>
+    <string name="workout_title_label">Título do Treino</string>
+    <string name="workout_description_label">Descrição do Treino</string>
+    <string name="add_exercise_button">Adicionar Exercício</string>
+    <string name="save_workout_button">Salvar Treino</string>
+    <string name="exercise_name_label">Nome do Exercício</string>
+    <string name="exercise_notes_label">Observações</string>
+    <string name="exercise_series_label">Séries</string>
+    <string name="exercise_repetitions_label">Repetições</string>
+
+    <!-- Common / Dialogs.kt -->
+    <string name="action_cancel">Cancelar</string>
+    <string name="action_confirm">Confirmar</string>
+</resources>

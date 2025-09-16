@@ -17,6 +17,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.Dialog
 import dev.carlosivis.workoutsmart.Utils.Dimens
+import dev.carlosivis.workoutsmart.composeResources.Res
+import dev.carlosivis.workoutsmart.composeResources.action_cancel
+import dev.carlosivis.workoutsmart.composeResources.action_confirm
+import org.jetbrains.compose.resources.stringResource
 
 
 @Composable
@@ -51,12 +55,12 @@ fun CustomDialog(
                     horizontalArrangement = Arrangement.spacedBy(Dimens.Medium, Alignment.CenterHorizontally)
                 ) {
                     OutlinedButton(onClick = onCancel) {
-                        Text("Cancelar")
+                        Text(stringResource(Res.string.action_cancel))
                     }
                     Button(
                         onClick = onConfirm
                     ) {
-                        Text("Confirmar")
+                        Text(stringResource(Res.string.action_confirm))
                     }
                 }
             }
