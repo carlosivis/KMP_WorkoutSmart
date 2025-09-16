@@ -36,6 +36,8 @@ class ActiveWorkoutViewModel(
             is ActiveWorkoutViewAction.GetWorkout -> getWorkout()
             is ActiveWorkoutViewAction.UpdateRestTime -> updateRestTime(action.seconds)
             is ActiveWorkoutViewAction.SaveWorkoutHistory -> saveWorkoutHistory()
+            is ActiveWorkoutViewAction.MarkExerciseAsCompleted -> markExerciseAsCompleted(action.exerciseName)
+            is ActiveWorkoutViewAction.DismissFinishedWorkoutDialog -> dismissFinishedWorkoutDialog()
         }
     }
 
@@ -46,6 +48,7 @@ class ActiveWorkoutViewModel(
     private fun getWorkout() {
         _state.update { it.copy(workout = workout) }
     }
+
     private fun attemptToNavigateBack() {
         _state.update { it.copy(showExitConfirmationDialog = true) }
     }
@@ -80,7 +83,7 @@ class ActiveWorkoutViewModel(
         _state.update { it.copy(restTimerValue = it.restTimerValue - 1) }
     }
 
-    private fun startWorkout(){
+    private fun startWorkout() {
         workoutTimerJob?.cancel()
         _state.update { it.copy(isWorkoutActive = true, elapsedTime = 0L) }
         workoutTimerJob = viewModelScope.launch {
@@ -91,14 +94,31 @@ class ActiveWorkoutViewModel(
         }
 
     }
+
     private fun saveWorkoutHistory() {
         viewModelScope.launch {
             setLoading(true)
-            val timestamp: String = Clock.System.now().toString()
+            val timestamp: Long = Clock.System.now().epochSeconds
             repository.insertHistory(workout.name, timestamp)
+            _state.update { it.copy(showFinishedWorkoutDialog = false) }
             setLoading(false)
             onNavigateBack()
         }
+    }
+
+    private fun markExerciseAsCompleted(exerciseName: String) {
+        _state.update { currentState ->
+            val updatedCompletedExercises = currentState.completedExercises + exerciseName
+            val allExercisesCompleted = updatedCompletedExercises.size == currentState.workout.exercises.size && currentState.workout.exercises.isNotEmpty()
+            currentState.copy(
+                completedExercises = updatedCompletedExercises,
+                showFinishedWorkoutDialog = allExercisesCompleted
+            )
+        }
+    }
+
+    private fun dismissFinishedWorkoutDialog() {
+        _state.update { it.copy(showFinishedWorkoutDialog = false) }
     }
 
     override fun onCleared() {

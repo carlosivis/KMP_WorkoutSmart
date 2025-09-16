@@ -26,7 +26,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun CustomDialog(
     title: String,
-    message: String,
+    message: String?,
     onConfirm: () -> Unit,
     onCancel: () -> Unit
 ) {
@@ -44,7 +44,7 @@ fun CustomDialog(
                 )
                 Spacer(Modifier.height(Dimens.Medium))
                 Text(
-                    text = message,
+                    text = message ?: "",
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center
                 )

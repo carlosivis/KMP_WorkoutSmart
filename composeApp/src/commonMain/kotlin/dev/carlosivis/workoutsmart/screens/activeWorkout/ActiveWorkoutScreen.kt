@@ -1,5 +1,6 @@
 package dev.carlosivis.workoutsmart.screens.activeWorkout
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -57,6 +58,7 @@ import dev.carlosivis.workoutsmart.composeResources.elapsed_time_label
 import dev.carlosivis.workoutsmart.composeResources.exercise_default
 import dev.carlosivis.workoutsmart.composeResources.exit_active_workout_confirmation_message
 import dev.carlosivis.workoutsmart.composeResources.exit_without_saving_title
+import dev.carlosivis.workoutsmart.composeResources.finished_workout_tittle
 import dev.carlosivis.workoutsmart.composeResources.mark_as_completed_button
 import dev.carlosivis.workoutsmart.composeResources.rest_time_label
 import dev.carlosivis.workoutsmart.composeResources.skip_button
@@ -142,11 +144,14 @@ private fun Content(
                     flingBehavior = rememberSnapFlingBehavior(lazyListState = lazyListState),
                     contentPadding = PaddingValues(horizontal = Dimens.Medium)
                 ) {
-                    items(state.workout.exercises) {
-                        ExerciseCard(
-                            exercise = it,
-                            restTimer = { action(ActiveWorkoutViewAction.StartTimer) }
-                        )
+                    items(state.workout.exercises) { exercise ->
+                        AnimatedVisibility(visible = !state.completedExercises.contains(exercise.name)) {
+                            ExerciseCard(
+                                exercise = exercise,
+                                restTimer = { action(ActiveWorkoutViewAction.StartTimer) },
+                                onMarkAsCompleted = { action(ActiveWorkoutViewAction.MarkExerciseAsCompleted(exercise.name)) }
+                            )
+                        }
                     }
                 }
             }
@@ -165,6 +170,15 @@ private fun Content(
                 message = stringResource(Res.string.exit_active_workout_confirmation_message),
                 onConfirm = { action(ActiveWorkoutViewAction.NavigateBack) },
                 onCancel = { action(ActiveWorkoutViewAction.CancelNavigateBack) }
+            )
+        }
+
+        if (state.showFinishedWorkoutDialog) {
+            CustomDialog(
+                title = stringResource(Res.string.finished_workout_tittle),
+                message = "",
+                onConfirm = { action(ActiveWorkoutViewAction.SaveWorkoutHistory) },
+                onCancel = { action(ActiveWorkoutViewAction.DismissFinishedWorkoutDialog) }
             )
         }
     }
@@ -200,7 +214,8 @@ private fun RestTimeSelector(
 @Composable
 private fun ExerciseCard(
     exercise: ExerciseModel,
-    restTimer: () -> Unit
+    restTimer: () -> Unit,
+    onMarkAsCompleted: () -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -228,7 +243,7 @@ private fun ExerciseCard(
                             .weight(1f)
                             .padding(bottom = Dimens.Small),
                         textAlign = TextAlign.Center )
-                    TextButton(onClick = { /*TODO change visibility of card*/ }) {
+                    TextButton(onClick = onMarkAsCompleted) {
                         Text(stringResource(Res.string.mark_as_completed_button), fontSize = FontSizes.BodySmall)
                     }
                 }
@@ -291,5 +306,6 @@ private fun RestTimerCard(time: Int, onStop: () -> Unit) {
             }
         }
     }
-
 }
+
+//Removed finishWorkout Composable as it's now handled by the CustomDialog in Content

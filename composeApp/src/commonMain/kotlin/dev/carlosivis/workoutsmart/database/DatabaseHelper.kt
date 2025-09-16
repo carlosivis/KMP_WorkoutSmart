@@ -114,7 +114,7 @@ class DatabaseHelper(
         }
         .flowOn(backgroundDispatcher)
 
-    suspend fun insertHistory(workoutName: String, date: String) {
+    suspend fun insertHistory(workoutName: String, date: Long) {
         dbRef.transactionWithContext(backgroundDispatcher) {
             dbRef.workoutSmartDatabaseQueries.insertHistory(
                 workoutName = workoutName,

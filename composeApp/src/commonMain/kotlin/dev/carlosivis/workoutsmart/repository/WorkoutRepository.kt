@@ -9,6 +9,6 @@ interface WorkoutRepository {
     fun getAllHistory(): Flow<List<HistoryModel>>
     suspend fun insertWorkout(workout: WorkoutModel)
     suspend fun deleteWorkout(workoutId: Long)
-    suspend fun insertHistory(workoutName: String, date: String)
+    suspend fun insertHistory(workoutName: String, date: Long)
 }
 

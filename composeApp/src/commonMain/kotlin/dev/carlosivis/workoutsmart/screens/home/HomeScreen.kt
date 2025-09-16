@@ -48,6 +48,9 @@ import dev.carlosivis.workoutsmart.screens.components.CustomDialog
 import dev.carlosivis.workoutsmart.screens.home.HomeViewAction
 import dev.carlosivis.workoutsmart.screens.home.HomeViewModel
 import dev.carlosivis.workoutsmart.screens.home.HomeViewState
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -177,6 +180,14 @@ private fun WorkoutCard(workout: WorkoutModel, navigate: () -> Unit = {},
 
 @Composable
 private fun HistoryCard(history: HistoryModel) {
+    val instant = Instant.fromEpochSeconds(history.date)
+    val localDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
+    val formattedDate = "${localDateTime.dayOfMonth.toString().padStart(2, '0')}/"
+        .plus("${localDateTime.monthNumber.toString().padStart(2, '0')}/")
+        .plus("${localDateTime.year} ")
+        .plus("${localDateTime.hour.toString().padStart(2, '0')}:")
+        .plus(localDateTime.minute.toString().padStart(2, '0'))
+
     Card(
         shape = RoundedCornerShape(Shapes.ExtraLarge),
         colors = CardDefaults.cardColors(
@@ -187,7 +198,7 @@ private fun HistoryCard(history: HistoryModel) {
             .padding(vertical = Dimens.Small)
     ) {
         Text(
-            history.workoutName + " - " + history.date,
+            text = "${history.workoutName} - $formattedDate",
             modifier = Modifier.padding(Dimens.Large),
             fontSize = FontSizes.BodyLarge
         )
