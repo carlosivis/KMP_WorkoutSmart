@@ -171,7 +171,8 @@ private fun WorkoutCard(workout: WorkoutModel, navigate: () -> Unit = {},
                 fontSize = FontSizes.BodyLarge
             )
 
-            IconButton(onClick = delete) { Icon(Icons.Filled.Delete, stringResource(Res.string.delete_action)) }
+            IconButton(onClick = delete) { Icon(Icons.Filled.Delete,
+                stringResource(Res.string.delete_action)) }
         }
 
     }

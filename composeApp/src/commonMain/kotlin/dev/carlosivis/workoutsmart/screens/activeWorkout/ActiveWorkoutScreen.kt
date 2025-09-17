@@ -124,7 +124,8 @@ private fun Content(
                     }
                 } else {
                     Text(
-                        text = stringResource(Res.string.elapsed_time_label, state.elapsedTime),
+                        text = stringResource(Res.string.elapsed_time_label,
+                            state.elapsedTime),
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = Dimens.Medium),
@@ -307,5 +308,3 @@ private fun RestTimerCard(time: Int, onStop: () -> Unit) {
         }
     }
 }
-
-//Removed finishWorkout Composable as it's now handled by the CustomDialog in Content
