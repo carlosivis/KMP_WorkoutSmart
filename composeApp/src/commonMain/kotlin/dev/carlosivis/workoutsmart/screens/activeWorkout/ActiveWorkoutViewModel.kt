@@ -25,7 +25,6 @@ class ActiveWorkoutViewModel(
     fun dispatchAction(action: ActiveWorkoutViewAction) {
         when (action) {
             is ActiveWorkoutViewAction.NavigateBack -> onNavigateBack()
-            is ActiveWorkoutViewAction.PauseWorkout -> TODO()
             is ActiveWorkoutViewAction.StartWorkout -> startWorkout()
             is ActiveWorkoutViewAction.StopWorkout -> TODO()
             is ActiveWorkoutViewAction.Tick -> timerTick()
