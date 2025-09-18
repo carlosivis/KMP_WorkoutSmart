@@ -49,6 +49,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import dev.carlosivis.workoutsmart.Utils.Dimens
 import dev.carlosivis.workoutsmart.Utils.FontSizes
 import dev.carlosivis.workoutsmart.Utils.WhitePure
@@ -248,16 +249,7 @@ private fun ExerciseCard(
                         Text(stringResource(Res.string.mark_as_completed_button), fontSize = FontSizes.BodySmall)
                     }
                 }
-                //TODO("adds check if exercise have image")
-                Image(
-                    painter = painterResource(Res.drawable.exercise_default),
-                    contentDescription = exercise.name,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(2f / 3f)
-                        .clip(RoundedCornerShape(Dimens.Medium)),
-                    contentScale = ContentScale.Crop
-                )
+                ExerciseImage(exercise = exercise)
             }
             Button(
                 onClick = restTimer,
@@ -306,5 +298,28 @@ private fun RestTimerCard(time: Int, onStop: () -> Unit) {
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun ExerciseImage(exercise: ExerciseModel) {
+    if (exercise.image != null) {
+        AsyncImage(
+            model = exercise.image,
+            contentDescription = exercise.name,
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(1f),
+            contentScale = ContentScale.Crop
+        )
+    } else {
+        Image(
+            painter = painterResource(Res.drawable.exercise_default),
+            contentDescription = exercise.name,
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(1f),
+            contentScale = ContentScale.Crop
+        )
     }
 }

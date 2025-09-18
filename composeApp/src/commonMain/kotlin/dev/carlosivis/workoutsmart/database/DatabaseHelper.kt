@@ -28,7 +28,6 @@ class DatabaseHelper(
             val workoutId: Long =
                 dbRef.workoutSmartDatabaseQueries.selectLastInsertedWorkoutId().executeAsOne()
 
-            // Inserir os exercícios
             workout.exercises.forEach { exercise ->
                 dbRef.workoutSmartDatabaseQueries.insertExercise(
                     workoutId = workoutId,
@@ -36,7 +35,7 @@ class DatabaseHelper(
                     notes = exercise.notes,
                     series = exercise.series.toLong(),
                     repetitions = exercise.repetitions.toLong(),
-                    image = null
+                    image = exercise.image
                 )
             }
         }
@@ -55,7 +54,7 @@ class DatabaseHelper(
                 notes = exercise.notes,
                 series = exercise.series.toLong(),
                 repetitions = exercise.repetitions.toLong(),
-                image = null,
+                image = exercise.image,
                 id = exercise.id.toLong()
             )
         }
@@ -94,7 +93,7 @@ class DatabaseHelper(
                     notes = exercise.notes,
                     series = exercise.series.toInt(),
                     repetitions = exercise.repetitions.toInt(),
-                    image = null
+                    image = exercise.image
                 )
             }
 
