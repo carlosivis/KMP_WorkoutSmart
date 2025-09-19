@@ -1,20 +1,13 @@
-name: iOS CI
+name: iOS Build
 
 on:
   push:
     branches: [ "master" ]
   pull_request:
-    branches: [ "master" ]
 
 jobs:
-  build:
-    name: Build and Test iOS
+  build-ios:
     runs-on: macos-latest
-
-    env:
-      SCHEME: 'iosApp'
-      XC_WORKSPACE: 'composeApp/iosApp/iosApp.xcworkspace'
-      IOS_DEVICE: 'iPhone 15'
 
     steps:
       - name: Checkout
@@ -23,36 +16,14 @@ jobs:
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          distribution: temurin
+          java-version: 17
 
-      - name: Cache Gradle packages
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v3
 
-      - name: Grant executable permission to gradlew
-        run: chmod +x gradlew
+      - name: Build iOS (Simulator)
+        run: ./gradlew :composeApp:linkIosSimulatorArm64
 
-      - name: Build shared framework
-        run: ./gradlew :composeApp:embedAndSignAppleFrameworkForXcode
-        env:
-          SDK_NAME: iphonesimulator
-          ARCHS: arm64
-
-      - name: Select Xcode version
-        run: sudo xcode-select -s /Applications/Xcode_15.2.app/Contents/Developer
-
-      - name: Build and Test with Xcode
-        run: |
-          set -o pipefail
-          xcodebuild test \
-            -workspace "${{ env.XC_WORKSPACE }}" \
-            -scheme "${{ env.SCHEME }}" \
-            -destination "platform=iOS Simulator,name=${{ env.IOS_DEVICE }}" \
-            | xcpretty
+      - name: Run iOS tests (optional)
+        run: ./gradlew :composeApp:iosSimulatorArm64Test
