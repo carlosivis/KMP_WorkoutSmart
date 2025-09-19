@@ -46,4 +46,6 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build iOS (Simulator)
+         env:
+          GRADLE_OPTS: -Xmx4096m
         run: ./gradlew iosSimulatorArm64MainBinaries
