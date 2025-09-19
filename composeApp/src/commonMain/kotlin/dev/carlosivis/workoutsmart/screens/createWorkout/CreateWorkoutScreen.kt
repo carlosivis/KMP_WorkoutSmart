@@ -30,13 +30,13 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import coil3.compose.AsyncImage
+import com.preat.peekaboo.image.picker.SelectionMode
+import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
 import dev.carlosivis.workoutsmart.Utils.Dimens
 import dev.carlosivis.workoutsmart.Utils.Shapes
 import dev.carlosivis.workoutsmart.composeResources.Res
@@ -57,9 +57,6 @@ import dev.carlosivis.workoutsmart.composeResources.workout_description_label
 import dev.carlosivis.workoutsmart.composeResources.workout_title_label
 import dev.carlosivis.workoutsmart.models.ExerciseModel
 import dev.carlosivis.workoutsmart.screens.components.CustomDialog
-import io.github.ismoy.imagepickerkmp.domain.config.ImagePickerConfig
-import io.github.ismoy.imagepickerkmp.domain.models.PhotoResult
-import io.github.ismoy.imagepickerkmp.presentation.ui.components.ImagePickerLauncher
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -144,8 +141,8 @@ private fun Content(
                 onExerciseChange = { action(CreateWorkoutViewAction.UpdateNewExercise(it)) },
                 onConfirm = { action(CreateWorkoutViewAction.ConfirmNewExercise) },
                 onCancel = { action(CreateWorkoutViewAction.CancelAddingExercise) },
-                onImageSelected = { photoResult -> // Add this parameter
-                    action(CreateWorkoutViewAction.UpdateNewExerciseImage(photoResult))
+                onImageSelected = { byteArray ->
+                    action(CreateWorkoutViewAction.UpdateNewExerciseImage(byteArray))
                 }
             )
         } else {
@@ -166,10 +163,9 @@ private fun Content(
                     onExerciseChange = { updatedExercise ->
                         action(CreateWorkoutViewAction.UpdateExercise(index, updatedExercise))
                     },
-                    onImageSelected = { photoResult -> // Add this parameter
-                        action(CreateWorkoutViewAction.UpdateExistingExerciseImage(index, photoResult))
-                    },
-                    isNewExercise = false // Add this parameter
+                    onImageSelected = { byteArray ->
+                        action(CreateWorkoutViewAction.UpdateExistingExerciseImage(index, byteArray))
+                    }
                 )
             }
         }
@@ -191,7 +187,7 @@ private fun NewExerciseCard(
     onExerciseChange: (ExerciseModel) -> Unit,
     onConfirm: () -> Unit,
     onCancel: () -> Unit,
-    onImageSelected: (PhotoResult) -> Unit // Add this parameter
+    onImageSelected: (ByteArray) -> Unit
 ) {
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = Dimens.Medium)
@@ -200,8 +196,7 @@ private fun NewExerciseCard(
             ExerciseInput(
                 exercise = exercise,
                 onExerciseChange = onExerciseChange,
-                onImageSelected = onImageSelected, // Pass this parameter
-                isNewExercise = true // Add this parameter
+                onImageSelected = onImageSelected
             )
             Spacer(modifier = Modifier.height(Dimens.Medium))
             Row(
@@ -224,13 +219,21 @@ private fun NewExerciseCard(
 private fun ExerciseInput(
     exercise: ExerciseModel,
     onExerciseChange: (ExerciseModel) -> Unit,
-    onImageSelected: (PhotoResult) -> Unit,
-    isNewExercise: Boolean
+    onImageSelected: (ByteArray) -> Unit
 ) {
-    var showImagePicker by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    val imagePickerLauncher = rememberImagePickerLauncher(
+        selectionMode = SelectionMode.Single,
+        scope = scope,
+        onResult = { byteArrayList ->
+            byteArrayList.firstOrNull()?.let {
+                onImageSelected(it)
+            }
+        }
+    )
 
     Card {
-        Column(modifier = Modifier.fillMaxWidth().padding(Dimens.Small)) { // Added padding
+        Column(modifier = Modifier.fillMaxWidth().padding(Dimens.Small)) {
             TextField(
                 value = exercise.name,
                 onValueChange = { onExerciseChange(exercise.copy(name = it)) },
@@ -281,17 +284,7 @@ private fun ExerciseInput(
 
             Spacer(modifier = Modifier.height(Dimens.Medium))
 
-            ImagePickerLauncher(
-                show = showImagePicker,
-                onResult = { photoResult ->
-                    showImagePicker = false
-                    onImageSelected(photoResult)
-                },
-                onDismiss = { showImagePicker = false } // Handle dismiss
-            )
-
             if (exercise.image != null) {
-
                 AsyncImage(
                     model = exercise.image,
                     contentDescription = "Captured photo",
@@ -300,29 +293,14 @@ private fun ExerciseInput(
                 )
             } else {
                 Button(
-                    onClick = { showImagePicker = true },
+                    onClick = {
+                        imagePickerLauncher.launch()
+                    },
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
-                    Text(stringResource(Res.string.add_photo_button)) // Use new string resource
+                    Text(stringResource(Res.string.add_photo_button))
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun ImagePickerLauncher(
-    show: Boolean,
-    onResult: (PhotoResult) -> Unit,
-    onDismiss: () -> Unit
-) {
-    if (show) {
-        ImagePickerLauncher(
-            config = ImagePickerConfig(
-                onPhotoCaptured = { onResult(it) },
-                onDismiss = { onDismiss() },
-                onError = { onDismiss() }
-            ),
-        )
     }
 }

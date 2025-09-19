@@ -63,8 +63,10 @@ kotlin {
 
             implementation(libs.decompose)
             implementation(libs.decompose.compose)
-            implementation(libs.imagePickerKMP)
             implementation(libs.coil.compose)
+
+            implementation(libs.peekaboo.image.picker)
+            implementation(libs.peekaboo.ui)
 
         }
 

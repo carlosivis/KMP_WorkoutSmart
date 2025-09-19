@@ -9,6 +9,5 @@ data class CreateWorkoutViewState(
     val errorMessage: String? = null,
     val workout: WorkoutModel = WorkoutModel.empty(),
     val isAddingExercise: Boolean = false,
-    val newExercise: ExerciseModel = ExerciseModel.empty(),
-    val showImageSourceDialog: Boolean = false,
-    val exerciseImagePickerTargetIndex: Int? = null)
+    val newExercise: ExerciseModel = ExerciseModel.empty()
+)

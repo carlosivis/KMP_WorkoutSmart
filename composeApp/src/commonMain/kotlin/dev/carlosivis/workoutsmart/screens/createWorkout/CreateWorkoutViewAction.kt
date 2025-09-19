@@ -1,7 +1,6 @@
 package dev.carlosivis.workoutsmart.screens.createWorkout
 
 import dev.carlosivis.workoutsmart.models.ExerciseModel
-import io.github.ismoy.imagepickerkmp.domain.models.PhotoResult // Add this import
 
 sealed class CreateWorkoutViewAction {
     object GetExercises : CreateWorkoutViewAction()
@@ -17,8 +16,6 @@ sealed class CreateWorkoutViewAction {
     object NavigateBack : CreateWorkoutViewAction()
     object AttemptToNavigateBack : CreateWorkoutViewAction()
     object CancelNavigateBack : CreateWorkoutViewAction()
-
-    // New actions for image handling
-    data class UpdateNewExerciseImage(val photoResult: PhotoResult) : CreateWorkoutViewAction()
-    data class UpdateExistingExerciseImage(val index: Int, val photoResult: PhotoResult) : CreateWorkoutViewAction()
+    data class UpdateNewExerciseImage(val image: ByteArray) : CreateWorkoutViewAction()
+    data class UpdateExistingExerciseImage(val index: Int, val image: ByteArray) : CreateWorkoutViewAction()
 }

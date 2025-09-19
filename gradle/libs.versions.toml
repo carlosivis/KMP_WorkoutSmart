@@ -13,7 +13,7 @@ kotlinx-serialization = "1.8.1"
 material3-android = "1.3.2"
 decompose = "3.3.0"
 androidx-lifecycle = "2.9.3"
-imagePickerKMP = "1.0.23"
+peekaboo = "0.5.2"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
@@ -41,7 +41,8 @@ sqldelight-jvm = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "
 sqldelight-native = { module = "app.cash.sqldelight:native-driver", version.ref = "sqldelight" }
 sqldelight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
 decompose-android = { group = "com.arkivanov.decompose", name = "decompose-android", version.ref = "decompose" }
-imagePickerKMP = { module = "io.github.ismoy:imagepickerkmp", version.ref = "imagePickerKMP" }
+peekaboo-ui = { module = "io.github.onseok:peekaboo-ui", version.ref = "peekaboo" }
+peekaboo-image-picker = { module = "io.github.onseok:peekaboo-image-picker", version.ref = "peekaboo" }
 
 
 [plugins]

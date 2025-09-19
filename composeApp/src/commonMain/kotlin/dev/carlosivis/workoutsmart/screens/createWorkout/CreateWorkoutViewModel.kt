@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import dev.carlosivis.workoutsmart.models.ExerciseModel
 import dev.carlosivis.workoutsmart.models.WorkoutModel
 import dev.carlosivis.workoutsmart.repository.WorkoutRepository
-import io.github.ismoy.imagepickerkmp.domain.models.PhotoResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,9 +36,8 @@ class CreateWorkoutViewModel(
             is CreateWorkoutViewAction.ConfirmNewExercise -> confirmNewExercise()
             is CreateWorkoutViewAction.AttemptToNavigateBack -> attemptToNavigateBack()
             is CreateWorkoutViewAction.CancelNavigateBack -> cancelNavigateBack()
-            // Handle new image actions
-            is CreateWorkoutViewAction.UpdateNewExerciseImage -> updateNewExerciseImage(action.photoResult)
-            is CreateWorkoutViewAction.UpdateExistingExerciseImage -> updateExistingExerciseImage(action.index, action.photoResult)
+            is CreateWorkoutViewAction.UpdateNewExerciseImage -> updateNewExerciseImage(action.image)
+            is CreateWorkoutViewAction.UpdateExistingExerciseImage -> updateExistingExerciseImage(action.index, action.image)
         }
     }
 
@@ -94,8 +92,8 @@ class CreateWorkoutViewModel(
     private fun updateExercise(index: Int, exercise: ExerciseModel) {
         _state.update {
             val mutableExercises = it.workout.exercises.toMutableList()
-            if (mutableExercises.indices.contains(index) ) { // Removed unnecessary ?.
-                mutableExercises[index] = exercise // Corrected to use set operator
+            if (mutableExercises.indices.contains(index) ) { 
+                mutableExercises[index] = exercise 
             }
             it.copy(workout = it.workout.copy(exercises = mutableExercises))
         }
@@ -128,27 +126,20 @@ class CreateWorkoutViewModel(
         _state.update { it.copy(showExitConfirmationDialog = false) }
     }
 
-    // New functions to handle image conversion and update state
-    private fun updateNewExerciseImage(photoResult: PhotoResult) {
-        viewModelScope.launch {
-            val byteArray = photoResult.uri
-            _state.update {
-                it.copy(newExercise = it.newExercise.copy(image = byteArray))
-            }
+    private fun updateNewExerciseImage(image: ByteArray) {
+        _state.update {
+            it.copy(newExercise = it.newExercise.copy(image = image))
         }
     }
 
-    private fun updateExistingExerciseImage(index: Int, photoResult: PhotoResult) {
-        viewModelScope.launch {
-            val byteArray = photoResult.uri
-            _state.update {
-                val mutableExercises = it.workout.exercises.toMutableList()
-                if (mutableExercises.indices.contains(index)) {
-                    val updatedExercise = mutableExercises[index].copy(image = byteArray)
-                    mutableExercises[index] = updatedExercise
-                }
-                it.copy(workout = it.workout.copy(exercises = mutableExercises))
+    private fun updateExistingExerciseImage(index: Int, image: ByteArray) {
+        _state.update {
+            val mutableExercises = it.workout.exercises.toMutableList()
+            if (mutableExercises.indices.contains(index)) {
+                val updatedExercise = mutableExercises[index].copy(image = image)
+                mutableExercises[index] = updatedExercise
             }
+            it.copy(workout = it.workout.copy(exercises = mutableExercises))
         }
     }
 }
