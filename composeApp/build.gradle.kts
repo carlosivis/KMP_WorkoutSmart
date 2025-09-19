@@ -38,6 +38,7 @@ kotlin {
         it.binaries.framework {
             baseName = "composeApp"
             isStatic = true
+            freeCompilerArgs += listOf("-Xbinary=bundleId=dev.carlosivis.workoutsmart")
         }
     }
 
