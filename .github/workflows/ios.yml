@@ -8,23 +8,33 @@ on:
 
 jobs:
   build:
-    name: Build and Test
+    name: Build and Test iOS
     runs-on: macos-latest
 
     env:
       SCHEME: 'iosApp'
-      PROJECT_DIR: 'composeApp/iosApp'
-      XC_WORKSPACE: 'iosApp.xcworkspace'
+      XC_WORKSPACE: 'composeApp/iosApp/iosApp.xcworkspace'
+      IOS_DEVICE: 'iPhone 15'
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up JDK
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
 
       - name: Grant executable permission to gradlew
         run: chmod +x gradlew
@@ -38,14 +48,11 @@ jobs:
       - name: Select Xcode version
         run: sudo xcode-select -s /Applications/Xcode_15.2.app/Contents/Developer
 
-      - name: Build and Test
-        working-directory: ${{ env.PROJECT_DIR }}
+      - name: Build and Test with Xcode
         run: |
           set -o pipefail
-          device=$(xcrun xctrace list devices 2>&1 | grep -oE 'iPhone.*?[^\(]+' | head -1 | awk '{$1=$1;print}' | sed -e "s/ Simulator$//")
-          echo "Using device: $device"
           xcodebuild test \
-            -workspace "$XC_WORKSPACE" \
-            -scheme "$SCHEME" \
-            -destination "platform=iOS Simulator,name=$device" \
+            -workspace "${{ env.XC_WORKSPACE }}" \
+            -scheme "${{ env.SCHEME }}" \
+            -destination "platform=iOS Simulator,name=${{ env.IOS_DEVICE }}" \
             | xcpretty
