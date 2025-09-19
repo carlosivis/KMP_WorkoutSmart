@@ -56,10 +56,10 @@ import dev.carlosivis.workoutsmart.composeResources.save_workout_button
 import dev.carlosivis.workoutsmart.composeResources.workout_description_label
 import dev.carlosivis.workoutsmart.composeResources.workout_title_label
 import dev.carlosivis.workoutsmart.models.ExerciseModel
+import dev.carlosivis.workoutsmart.platform.ImagePicker
+import dev.carlosivis.workoutsmart.platform.PermissionType
 import dev.carlosivis.workoutsmart.screens.components.CustomDialog
-import io.github.ismoy.imagepickerkmp.domain.config.ImagePickerConfig
-import io.github.ismoy.imagepickerkmp.domain.models.PhotoResult
-import io.github.ismoy.imagepickerkmp.presentation.ui.components.ImagePickerLauncher
+import dev.carlosivis.workoutsmart.screens.components.ImageSourceDialog
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -144,9 +144,11 @@ private fun Content(
                 onExerciseChange = { action(CreateWorkoutViewAction.UpdateNewExercise(it)) },
                 onConfirm = { action(CreateWorkoutViewAction.ConfirmNewExercise) },
                 onCancel = { action(CreateWorkoutViewAction.CancelAddingExercise) },
-                onImageSelected = { photoResult -> // Add this parameter
+                onImageSelected = { photoResult ->
                     action(CreateWorkoutViewAction.UpdateNewExerciseImage(photoResult))
-                }
+                },
+                state = state,
+                action = action
             )
         } else {
             Button(onClick = { action(CreateWorkoutViewAction.StartAddingExercise) }) {
@@ -166,10 +168,12 @@ private fun Content(
                     onExerciseChange = { updatedExercise ->
                         action(CreateWorkoutViewAction.UpdateExercise(index, updatedExercise))
                     },
-                    onImageSelected = { photoResult -> // Add this parameter
+                    onImageSelected = { photoResult ->
                         action(CreateWorkoutViewAction.UpdateExistingExerciseImage(index, photoResult))
                     },
-                    isNewExercise = false // Add this parameter
+                    isNewExercise = false,
+                    state = state,
+                    action = action
                 )
             }
         }
@@ -191,7 +195,9 @@ private fun NewExerciseCard(
     onExerciseChange: (ExerciseModel) -> Unit,
     onConfirm: () -> Unit,
     onCancel: () -> Unit,
-    onImageSelected: (PhotoResult) -> Unit // Add this parameter
+    onImageSelected: (ByteArray) -> Unit,
+    state: CreateWorkoutViewState,
+    action: (CreateWorkoutViewAction) -> Unit
 ) {
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = Dimens.Medium)
@@ -200,8 +206,10 @@ private fun NewExerciseCard(
             ExerciseInput(
                 exercise = exercise,
                 onExerciseChange = onExerciseChange,
-                onImageSelected = onImageSelected, // Pass this parameter
-                isNewExercise = true // Add this parameter
+                onImageSelected = onImageSelected,
+                isNewExercise = true,
+                state = state,
+                action = action
             )
             Spacer(modifier = Modifier.height(Dimens.Medium))
             Row(
@@ -224,13 +232,50 @@ private fun NewExerciseCard(
 private fun ExerciseInput(
     exercise: ExerciseModel,
     onExerciseChange: (ExerciseModel) -> Unit,
-    onImageSelected: (PhotoResult) -> Unit,
-    isNewExercise: Boolean
+    onImageSelected: (ByteArray) -> Unit,
+    isNewExercise: Boolean,
+    state: CreateWorkoutViewState,
+    action: (CreateWorkoutViewAction) -> Unit,
 ) {
-    var showImagePicker by remember { mutableStateOf(false) }
+    var showImageSourceDialog by remember { mutableStateOf(false) }
+
+    val imagePicker = remember {
+        ImagePicker(
+            onImageSelected = {
+                onImageSelected(it)
+                showImageSourceDialog = false
+            },
+            onDismiss = {
+                showImageSourceDialog = false
+                action(CreateWorkoutViewAction.OnImagePickerLaunched)
+            }
+        )
+    }
+
+    if (state.launchCamera) {
+        imagePicker.CameraPicker()
+    }
+
+    if (state.launchGallery) {
+        imagePicker.GalleryPicker()
+    }
+
+    ImageSourceDialog(
+        showDialog = showImageSourceDialog,
+        onDismiss = { showImageSourceDialog = false },
+        onPermissionResult = { isGranted, permissionType ->
+            action(CreateWorkoutViewAction.OnPermissionResult(isGranted, permissionType))
+        },
+        onLaunchCamera = {
+            action(CreateWorkoutViewAction.OnPermissionResult(true, PermissionType.CAMERA))
+        },
+        onLaunchGallery = {
+            action(CreateWorkoutViewAction.OnPermissionResult(true, PermissionType.GALLERY))
+        }
+    )
 
     Card {
-        Column(modifier = Modifier.fillMaxWidth().padding(Dimens.Small)) { // Added padding
+        Column(modifier = Modifier.fillMaxWidth().padding(Dimens.Small)) {
             TextField(
                 value = exercise.name,
                 onValueChange = { onExerciseChange(exercise.copy(name = it)) },
@@ -281,17 +326,7 @@ private fun ExerciseInput(
 
             Spacer(modifier = Modifier.height(Dimens.Medium))
 
-            ImagePickerLauncher(
-                show = showImagePicker,
-                onResult = { photoResult ->
-                    showImagePicker = false
-                    onImageSelected(photoResult)
-                },
-                onDismiss = { showImagePicker = false } // Handle dismiss
-            )
-
             if (exercise.image != null) {
-
                 AsyncImage(
                     model = exercise.image,
                     contentDescription = "Captured photo",
@@ -300,29 +335,12 @@ private fun ExerciseInput(
                 )
             } else {
                 Button(
-                    onClick = { showImagePicker = true },
+                    onClick = { showImageSourceDialog = true },
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
-                    Text(stringResource(Res.string.add_photo_button)) // Use new string resource
+                    Text(stringResource(Res.string.add_photo_button))
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun ImagePickerLauncher(
-    show: Boolean,
-    onResult: (PhotoResult) -> Unit,
-    onDismiss: () -> Unit
-) {
-    if (show) {
-        ImagePickerLauncher(
-            config = ImagePickerConfig(
-                onPhotoCaptured = { onResult(it) },
-                onDismiss = { onDismiss() },
-                onError = { onDismiss() }
-            ),
-        )
     }
 }

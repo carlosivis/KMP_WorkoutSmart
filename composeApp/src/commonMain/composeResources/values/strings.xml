@@ -43,6 +43,9 @@
     <string name="action_save">Salvar</string>"
     <string name="action_back">Voltar</string>
     <string name="add_photo_button">Adicionar Foto</string>
+    <string name="camera_option">Câmera</string>
+    <string name="choose_image_source_title">Escolha a fonte da imagem</string>
+    <string name="gallery_option">Galeria</string>
 
 
 </resources>
