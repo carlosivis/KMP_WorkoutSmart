@@ -190,7 +190,7 @@ private fun NewExerciseCard(
     onImageSelected: (ByteArray) -> Unit
 ) {
     Card(
-        elevation = CardDefaults.cardElevation(defaultElevation = Dimens.Medium)
+        elevation = CardDefaults.cardElevation(defaultElevation = Dimens.Large) // Increased elevation
     ) {
         Column(modifier = Modifier.padding(Dimens.Medium)) {
             ExerciseInput(
@@ -232,8 +232,8 @@ private fun ExerciseInput(
         }
     )
 
-    Card {
-        Column(modifier = Modifier.fillMaxWidth().padding(Dimens.Small)) {
+    Card { // This Card is for individual exercise items in the list, not the "new exercise" popup
+        Column(modifier = Modifier.fillMaxWidth().padding(Dimens.Medium)) { 
             TextField(
                 value = exercise.name,
                 onValueChange = { onExerciseChange(exercise.copy(name = it)) },
@@ -242,7 +242,7 @@ private fun ExerciseInput(
                 shape = RoundedCornerShape(Shapes.ExtraLarge)
             )
 
-            Spacer(modifier = Modifier.height(Dimens.Small))
+            Spacer(modifier = Modifier.height(Dimens.Medium))
 
             TextField(
                 value = exercise.notes,
@@ -252,7 +252,7 @@ private fun ExerciseInput(
                 shape = RoundedCornerShape(Shapes.ExtraLarge)
             )
 
-            Spacer(modifier = Modifier.height(Dimens.Small))
+            Spacer(modifier = Modifier.height(Dimens.Medium))
 
             Row(modifier = Modifier.fillMaxWidth()) {
                 TextField(
@@ -282,13 +282,14 @@ private fun ExerciseInput(
                 )
             }
 
-            Spacer(modifier = Modifier.height(Dimens.Medium))
+            Spacer(modifier = Modifier.height(Dimens.Large)) 
 
             if (exercise.image != null) {
                 AsyncImage(
                     model = exercise.image,
                     contentDescription = "Captured photo",
                     modifier = Modifier.align(Alignment.CenterHorizontally)
+                        .fillMaxWidth() 
                         .aspectRatio(16f / 9f)
                 )
             } else {
@@ -296,7 +297,7 @@ private fun ExerciseInput(
                     onClick = {
                         imagePickerLauncher.launch()
                     },
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                    modifier = Modifier.fillMaxWidth() 
                 ) {
                     Text(stringResource(Res.string.add_photo_button))
                 }
