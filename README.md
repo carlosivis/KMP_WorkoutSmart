@@ -1,7 +1,3 @@
-Of course\! Here is the `README.md` file for your project in English.
-
------
-
 # WorkoutSmart KMP
 
 WorkoutSmart is a cross-platform application (Android and iOS) developed with Kotlin Multiplatform and Compose Multiplatform. It allows users to create, manage, and track their workouts in a simple and efficient way.
