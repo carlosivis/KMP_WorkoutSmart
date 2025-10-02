@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -144,10 +143,14 @@ private fun Content(
                     modifier = Modifier.fillMaxSize(),
                     state = lazyListState,
                     flingBehavior = rememberSnapFlingBehavior(lazyListState = lazyListState),
-                    contentPadding = PaddingValues(horizontal = Dimens.Medium)
+                    contentPadding = PaddingValues(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(state.workout.exercises) { exercise ->
-                        AnimatedVisibility(visible = !state.completedExercises.contains(exercise.name)) {
+                        AnimatedVisibility(
+                            visible = !state.completedExercises.contains(exercise.name),
+                            modifier = Modifier.fillParentMaxWidth(0.9f)
+                        ) {
                             ExerciseCard(
                                 exercise = exercise,
                                 restTimer = { action(ActiveWorkoutViewAction.StartTimer) },
@@ -191,22 +194,22 @@ private fun RestTimeSelector(
     selectedTime: Int,
     onTimeSelected: (Int) -> Unit
 ) {
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = Dimens.Medium),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalArrangement = Arrangement.spacedBy(Dimens.Small)
     ) {
         Text(stringResource(Res.string.rest_time_label), fontSize = FontSizes.BodyMedium)
         Row(
-            horizontalArrangement = Arrangement.spacedBy(Dimens.Small)
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             listOf(30, 60, 90, 120).forEach { seconds ->
                 FilterChip(
                     selected = selectedTime == seconds,
                     onClick = { onTimeSelected(seconds) },
-                    label = { Text("${seconds}s") } // stringResource(Res.string.seconds_value, seconds)
+                    label = { Text("${seconds}s") }
                 )
             }
         }
@@ -221,9 +224,8 @@ private fun ExerciseCard(
 ) {
     Card(
         modifier = Modifier
-            .fillMaxHeight()
-            .width(420.dp)
-            .padding(horizontal = Dimens.Small)
+            .fillMaxHeight(0.85f)
+            .padding(vertical = Dimens.Small)
     ) {
         Column(
             modifier = Modifier
@@ -231,11 +233,16 @@ private fun ExerciseCard(
                 .fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth()) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.weight(1f)
+            ) {
 
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = Dimens.Small),
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
@@ -243,17 +250,34 @@ private fun ExerciseCard(
                         fontSize = FontSizes.TitleLarge,
                         modifier = Modifier
                             .weight(1f)
-                            .padding(bottom = Dimens.Small),
-                        textAlign = TextAlign.Center )
-                    TextButton(onClick = onMarkAsCompleted) {
-                        Text(stringResource(Res.string.mark_as_completed_button), fontSize = FontSizes.BodySmall)
+                            .padding(end = Dimens.Small),
+                        textAlign = TextAlign.Center,
+                        maxLines = 2
+                    )
+                    TextButton(
+                        onClick = onMarkAsCompleted,
+                        modifier = Modifier.padding(start = Dimens.Small)
+                    ) {
+                        Text(
+                            stringResource(Res.string.mark_as_completed_button),
+                            fontSize = FontSizes.BodySmall,
+                            maxLines = 1
+                        )
                     }
                 }
-                ExerciseImage(exercise = exercise)
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                ) {
+                    ExerciseImage(exercise = exercise)
+                }
             }
             Button(
                 onClick = restTimer,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = Dimens.Small)
             ) {
                 Text(stringResource(Res.string.start_rest_button))
             }

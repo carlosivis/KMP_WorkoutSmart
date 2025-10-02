@@ -34,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import dev.carlosivis.workoutsmart.Utils.Dimens
 import dev.carlosivis.workoutsmart.Utils.FontSizes
 import dev.carlosivis.workoutsmart.Utils.Shapes
+import dev.carlosivis.workoutsmart.Utils.formatDateToString
 import dev.carlosivis.workoutsmart.composeResources.Res
 import dev.carlosivis.workoutsmart.composeResources.create_workout_fab
 import dev.carlosivis.workoutsmart.composeResources.delete_action
@@ -48,9 +49,6 @@ import dev.carlosivis.workoutsmart.screens.components.CustomDialog
 import dev.carlosivis.workoutsmart.screens.home.HomeViewAction
 import dev.carlosivis.workoutsmart.screens.home.HomeViewModel
 import dev.carlosivis.workoutsmart.screens.home.HomeViewState
-import kotlinx.datetime.Instant
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -181,14 +179,7 @@ private fun WorkoutCard(workout: WorkoutModel, navigate: () -> Unit = {},
 
 @Composable
 private fun HistoryCard(history: HistoryModel) {
-    val instant = Instant.fromEpochSeconds(history.date)
-    val localDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
-    val formattedDate = "${localDateTime.dayOfMonth.toString().padStart(2, '0')}/"
-        .plus("${localDateTime.monthNumber.toString().padStart(2, '0')}/")
-        .plus("${localDateTime.year} ")
-        .plus("${localDateTime.hour.toString().padStart(2, '0')}:")
-        .plus(localDateTime.minute.toString().padStart(2, '0'))
-
+    val formattedDate = formatDateToString(history.date)
     Card(
         shape = RoundedCornerShape(Shapes.ExtraLarge),
         colors = CardDefaults.cardColors(
