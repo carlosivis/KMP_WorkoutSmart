@@ -33,6 +33,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import coil3.compose.AsyncImage
 import com.preat.peekaboo.image.picker.SelectionMode
@@ -119,7 +120,8 @@ private fun Content(
                 action(CreateWorkoutViewAction.AddName(name))
             },
             label = { Text(stringResource(Res.string.workout_title_label)) },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences)
         )
 
         Spacer(modifier = Modifier.height(Dimens.Medium))
@@ -130,7 +132,8 @@ private fun Content(
                 action(CreateWorkoutViewAction.AddDescription(description))
             },
             label = { Text(stringResource(Res.string.workout_description_label)) },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences)
         )
 
         Spacer(modifier = Modifier.height(Dimens.Medium))
@@ -239,7 +242,11 @@ private fun ExerciseInput(
                 onValueChange = { onExerciseChange(exercise.copy(name = it)) },
                 label = { Text(stringResource(Res.string.exercise_name_label)) },
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(Shapes.ExtraLarge)
+                shape = RoundedCornerShape(Shapes.ExtraLarge),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    capitalization = KeyboardCapitalization.Sentences
+                )
             )
 
             Spacer(modifier = Modifier.height(Dimens.Medium))
@@ -249,7 +256,8 @@ private fun ExerciseInput(
                 onValueChange = { onExerciseChange(exercise.copy(notes = it)) },
                 label = { Text(stringResource(Res.string.exercise_notes_label)) },
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(Shapes.ExtraLarge)
+                shape = RoundedCornerShape(Shapes.ExtraLarge),
+                keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences)
             )
 
             Spacer(modifier = Modifier.height(Dimens.Medium))

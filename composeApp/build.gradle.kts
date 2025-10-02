@@ -49,6 +49,7 @@ kotlin {
             implementation(compose.foundation)
             implementation(compose.materialIconsExtended)
             implementation(compose.ui)
+            implementation(libs.compose.multiplatform.ui)
             implementation(libs.compose.multiplatform.resources)
             implementation(libs.compose.multiplatform.material3)
 
