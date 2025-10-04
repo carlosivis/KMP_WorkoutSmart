@@ -26,10 +26,16 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Engineering
+import androidx.compose.material.icons.filled.Timelapse
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -40,7 +46,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -106,7 +114,14 @@ private fun Content(
                     }
                 }
             )
-        }
+        },
+        floatingActionButton = {
+            ExpandableFABMenu(
+                onSelectFinish = { action(ActiveWorkoutViewAction.StopWorkout) },
+                onSelectRestTimer = { action(ActiveWorkoutViewAction.ToggleRestTimer) }
+            )
+        },
+        floatingActionButtonPosition = FabPosition.Center
     ) { paddingValues ->
         Box(
             modifier = Modifier.fillMaxSize().padding(paddingValues),
@@ -124,8 +139,10 @@ private fun Content(
                     }
                 } else {
                     Text(
-                        text = stringResource(Res.string.elapsed_time_label,
-                            state.elapsedTime),
+                        text = stringResource(
+                            Res.string.elapsed_time_label,
+                            state.elapsedTime
+                        ),
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = Dimens.Medium),
@@ -154,7 +171,13 @@ private fun Content(
                             ExerciseCard(
                                 exercise = exercise,
                                 restTimer = { action(ActiveWorkoutViewAction.StartTimer) },
-                                onMarkAsCompleted = { action(ActiveWorkoutViewAction.MarkExerciseAsCompleted(exercise.name)) }
+                                onMarkAsCompleted = {
+                                    action(
+                                        ActiveWorkoutViewAction.MarkExerciseAsCompleted(
+                                            exercise.name
+                                        )
+                                    )
+                                }
                             )
                         }
                     }
@@ -346,4 +369,40 @@ private fun ExerciseImage(exercise: ExerciseModel) {
             contentScale = ContentScale.Crop
         )
     }
+}
+
+@Composable
+fun ExpandableFABMenu(
+    onSelectFinish: () -> Unit = {},
+    onSelectRestTimer: () -> Unit = {}
+) {
+    var isMenuExpanded by remember { mutableStateOf(false) }
+
+    FloatingActionButton(
+        onClick = { isMenuExpanded = !isMenuExpanded },
+    ) {
+        Icon(
+            imageVector = if (isMenuExpanded) Icons.Filled.Close else Icons.Filled.Engineering,
+            contentDescription = "Toggle Menu"
+        )
+    }
+    if (isMenuExpanded) {
+        Column(
+            modifier = Modifier.padding(Dimens.Medium)
+        ) {
+            TextButton(
+                onClick = { onSelectFinish },
+            ) {
+                Text("Finalizar")
+                Icon(Icons.Filled.Check, contentDescription = "Finish workout")
+            }
+            TextButton(
+                onClick = { onSelectRestTimer },
+            ) {
+                Text("Timer")
+                Icon(Icons.Filled.Timelapse, contentDescription = "Change rest timer")
+            }
+        }
+    }
+
 }

@@ -12,6 +12,7 @@ sealed class ActiveWorkoutViewAction {
     object GetWorkout : ActiveWorkoutViewAction()
     object SaveWorkoutHistory : ActiveWorkoutViewAction()
     object DismissFinishedWorkoutDialog : ActiveWorkoutViewAction()
+    object ToggleRestTimer : ActiveWorkoutViewAction()
     data class UpdateRestTime(val seconds: Int) : ActiveWorkoutViewAction()
     data class MarkExerciseAsCompleted(val exerciseName: String) : ActiveWorkoutViewAction()
 

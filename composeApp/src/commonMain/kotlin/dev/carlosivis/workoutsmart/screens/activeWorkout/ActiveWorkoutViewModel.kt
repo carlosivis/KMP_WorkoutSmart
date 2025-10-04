@@ -37,6 +37,7 @@ class ActiveWorkoutViewModel(
             is ActiveWorkoutViewAction.SaveWorkoutHistory -> saveWorkoutHistory()
             is ActiveWorkoutViewAction.MarkExerciseAsCompleted -> markExerciseAsCompleted(action.exerciseName)
             is ActiveWorkoutViewAction.DismissFinishedWorkoutDialog -> dismissFinishedWorkoutDialog()
+            is ActiveWorkoutViewAction.ToggleRestTimer -> TODO()
         }
     }
 
