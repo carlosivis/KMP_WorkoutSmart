@@ -37,7 +37,7 @@ class ActiveWorkoutViewModel(
             is ActiveWorkoutViewAction.SaveWorkoutHistory -> saveWorkoutHistory()
             is ActiveWorkoutViewAction.MarkExerciseAsCompleted -> markExerciseAsCompleted(action.exerciseName)
             is ActiveWorkoutViewAction.DismissFinishedWorkoutDialog -> dismissFinishedWorkoutDialog()
-            is ActiveWorkoutViewAction.ToggleRestTimer -> TODO()
+            is ActiveWorkoutViewAction.ToggleRestTimer -> toggleRestTimer()
         }
     }
 
@@ -58,7 +58,7 @@ class ActiveWorkoutViewModel(
     }
 
     private fun updateRestTime(seconds: Int) {
-        _state.update { it.copy(restTime = seconds) }
+        _state.update { it.copy(restTime = seconds, showRestTimerSelector = false) }
     }
 
     private fun startTimer() {
@@ -119,6 +119,10 @@ class ActiveWorkoutViewModel(
 
     private fun dismissFinishedWorkoutDialog() {
         _state.update { it.copy(showFinishedWorkoutDialog = false) }
+    }
+    
+    private fun toggleRestTimer() {
+        _state.update { it.copy(showRestTimerSelector = !it.showRestTimerSelector) }
     }
 
     override fun onCleared() {

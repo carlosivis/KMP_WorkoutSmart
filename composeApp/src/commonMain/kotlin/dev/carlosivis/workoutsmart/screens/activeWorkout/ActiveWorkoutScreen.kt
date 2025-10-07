@@ -101,6 +101,7 @@ private fun Content(
     state: ActiveWorkoutViewState,
     action: (ActiveWorkoutViewAction) -> Unit
 ) {
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -150,11 +151,6 @@ private fun Content(
                     )
                 }
 
-                RestTimeSelector(
-                    selectedTime = state.restTime,
-                    onTimeSelected = { action(ActiveWorkoutViewAction.UpdateRestTime(it)) }
-                )
-
                 val lazyListState = rememberLazyListState()
                 LazyRow(
                     modifier = Modifier.fillMaxSize(),
@@ -190,6 +186,17 @@ private fun Content(
                     onStop = { action(ActiveWorkoutViewAction.StopTimer) }
                 )
             }
+
+            if (state.showRestTimerSelector) {
+                RestTimerSelector(
+                    currentTime = state.restTime,
+                    onTimeSelected = {
+                        action(ActiveWorkoutViewAction.UpdateRestTime(it))
+                        action(ActiveWorkoutViewAction.ToggleRestTimer)
+                    },
+                    onDismiss = { action(ActiveWorkoutViewAction.ToggleRestTimer) }
+                )
+            }
         }
 
         if (state.showExitConfirmationDialog) {
@@ -213,27 +220,81 @@ private fun Content(
 }
 
 @Composable
-private fun RestTimeSelector(
-    selectedTime: Int,
-    onTimeSelected: (Int) -> Unit
+private fun RestTimerSelector(
+    currentTime: Int,
+    onTimeSelected: (Int) -> Unit,
+    onDismiss: () -> Unit
 ) {
-    Column(
+    Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = Dimens.Medium),
-        verticalArrangement = Arrangement.spacedBy(Dimens.Small)
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.5f))
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = onDismiss
+            ),
+        contentAlignment = Alignment.Center
     ) {
-        Text(stringResource(Res.string.rest_time_label), fontSize = FontSizes.BodyMedium)
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
+        Card(
+            modifier = Modifier
+                .fillMaxWidth(0.85f)
+                .padding(Dimens.Medium)
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = {}
+                ),
         ) {
-            listOf(30, 60, 90, 120).forEach { seconds ->
-                FilterChip(
-                    selected = selectedTime == seconds,
-                    onClick = { onTimeSelected(seconds) },
-                    label = { Text("${seconds}s") }
+            Column(
+                modifier = Modifier
+                    .padding(Dimens.Medium),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(Dimens.Medium)
+            ) {
+                Text(
+                    text = stringResource(Res.string.rest_time_label),
+                    fontSize = FontSizes.TitleMedium,
+                    textAlign = TextAlign.Center
                 )
+
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(Dimens.Small)
+                ) {
+                    listOf(30, 60, 90, 120, 180, 300).forEach { seconds ->
+                        val isSelected = currentTime == seconds
+                        val minutes = seconds / 60
+                        val remainingSeconds = seconds % 60
+                        val timeText = if (minutes > 0) {
+                            if (remainingSeconds > 0) {
+                                "${minutes}m ${remainingSeconds}s"
+                            } else {
+                                "${minutes}m"
+                            }
+                        } else {
+                            "${seconds}s"
+                        }
+
+                        FilterChip(
+                            selected = isSelected,
+                            onClick = { onTimeSelected(seconds) },
+                            label = { Text(timeText) },
+                            modifier = Modifier.fillMaxWidth(0.7f)
+                        )
+                    }
+                }
+
+                TextButton(
+                    onClick = onDismiss,
+                    modifier = Modifier.padding(top = Dimens.Small)
+                ) {
+                    Text(
+                        text = "Cancel",
+                        fontSize = FontSizes.BodyMedium
+                    )
+                }
             }
         }
     }
@@ -386,9 +447,11 @@ fun ExpandableFABMenu(
             contentDescription = "Toggle Menu"
         )
     }
-    if (isMenuExpanded) {
-        Column(
-            modifier = Modifier.padding(Dimens.Medium)
+    AnimatedVisibility(isMenuExpanded) {
+        Row(
+            modifier = Modifier.padding(Dimens.Medium).fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             TextButton(
                 onClick = { onSelectFinish },

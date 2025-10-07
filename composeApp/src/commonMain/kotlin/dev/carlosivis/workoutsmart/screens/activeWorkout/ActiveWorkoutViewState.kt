@@ -13,5 +13,6 @@ data class ActiveWorkoutViewState(
     val restTimerValue: Int = 0,
     val workout: WorkoutModel = WorkoutModel.empty(),
     val completedExercises: Set<String> = emptySet(),
-    val showFinishedWorkoutDialog: Boolean = false
+    val showFinishedWorkoutDialog: Boolean = false,
+    val showRestTimerSelector: Boolean = false
 )
