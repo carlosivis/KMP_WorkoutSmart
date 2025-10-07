@@ -34,7 +34,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -62,6 +61,8 @@ import dev.carlosivis.workoutsmart.Utils.FontSizes
 import dev.carlosivis.workoutsmart.Utils.WhitePure
 import dev.carlosivis.workoutsmart.composeResources.Res
 import dev.carlosivis.workoutsmart.composeResources.action_back
+import dev.carlosivis.workoutsmart.composeResources.action_cancel
+import dev.carlosivis.workoutsmart.composeResources.action_save
 import dev.carlosivis.workoutsmart.composeResources.elapsed_time_label
 import dev.carlosivis.workoutsmart.composeResources.exercise_default
 import dev.carlosivis.workoutsmart.composeResources.exit_active_workout_confirmation_message
@@ -74,6 +75,7 @@ import dev.carlosivis.workoutsmart.composeResources.start_rest_button
 import dev.carlosivis.workoutsmart.composeResources.start_workout_button
 import dev.carlosivis.workoutsmart.models.ExerciseModel
 import dev.carlosivis.workoutsmart.screens.components.CustomDialog
+import dev.carlosivis.workoutsmart.screens.components.TimeWheelPicker
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -192,7 +194,6 @@ private fun Content(
                     currentTime = state.restTime,
                     onTimeSelected = {
                         action(ActiveWorkoutViewAction.UpdateRestTime(it))
-                        action(ActiveWorkoutViewAction.ToggleRestTimer)
                     },
                     onDismiss = { action(ActiveWorkoutViewAction.ToggleRestTimer) }
                 )
@@ -225,6 +226,12 @@ private fun RestTimerSelector(
     onTimeSelected: (Int) -> Unit,
     onDismiss: () -> Unit
 ) {
+    val initialMinutes = currentTime / 60
+    val initialSeconds = currentTime % 60
+
+    var selectedMinutes by remember { mutableStateOf(initialMinutes) }
+    var selectedSeconds by remember { mutableStateOf(initialSeconds) }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -258,42 +265,45 @@ private fun RestTimerSelector(
                     textAlign = TextAlign.Center
                 )
 
-                Column(
+                Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(Dimens.Small)
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    listOf(30, 60, 90, 120, 180, 300).forEach { seconds ->
-                        val isSelected = currentTime == seconds
-                        val minutes = seconds / 60
-                        val remainingSeconds = seconds % 60
-                        val timeText = if (minutes > 0) {
-                            if (remainingSeconds > 0) {
-                                "${minutes}m ${remainingSeconds}s"
-                            } else {
-                                "${minutes}m"
-                            }
-                        } else {
-                            "${seconds}s"
-                        }
-
-                        FilterChip(
-                            selected = isSelected,
-                            onClick = { onTimeSelected(seconds) },
-                            label = { Text(timeText) },
-                            modifier = Modifier.fillMaxWidth(0.7f)
-                        )
-                    }
+                    TimeWheelPicker(
+                        range = 0..59,
+                        initialValue = selectedMinutes,
+                        onValueChange = { selectedMinutes = it }
+                    )
+                    Text(":", fontSize = FontSizes.TitleLarge)
+                    TimeWheelPicker(
+                        range = 0..59,
+                        initialValue = selectedSeconds,
+                        onValueChange = { selectedSeconds = it }
+                    )
                 }
 
-                TextButton(
-                    onClick = onDismiss,
-                    modifier = Modifier.padding(top = Dimens.Small)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
                 ) {
-                    Text(
-                        text = "Cancel",
-                        fontSize = FontSizes.BodyMedium
-                    )
+                    TextButton(
+                        onClick = onDismiss,
+                    ) {
+                        Text(
+                            text = stringResource(Res.string.action_cancel),
+                        )
+                    }
+                    TextButton(
+                        onClick = {
+                            val totalSeconds = selectedMinutes * 60 + selectedSeconds
+                            onTimeSelected(totalSeconds)
+                        },
+                    ) {
+                        Text(
+                            text = stringResource(Res.string.action_save),
+                        )
+                    }
                 }
             }
         }
@@ -454,18 +464,17 @@ fun ExpandableFABMenu(
             verticalAlignment = Alignment.CenterVertically
         ) {
             TextButton(
-                onClick = { onSelectFinish },
+                onClick = onSelectFinish ,
             ) {
                 Text("Finalizar")
                 Icon(Icons.Filled.Check, contentDescription = "Finish workout")
             }
             TextButton(
-                onClick = { onSelectRestTimer },
+                onClick = onSelectRestTimer ,
             ) {
                 Text("Timer")
                 Icon(Icons.Filled.Timelapse, contentDescription = "Change rest timer")
             }
         }
     }
-
 }

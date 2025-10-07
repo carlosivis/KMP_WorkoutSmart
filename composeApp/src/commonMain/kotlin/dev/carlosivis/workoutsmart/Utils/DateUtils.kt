@@ -14,3 +14,7 @@ fun formatDateToString(date: Long): String{
         .plus(localDateTime.minute.toString().padStart(2, '0'))
     return formattedDate
 }
+
+fun Int.format(): String {
+    return if (this < 10) "0$this" else this.toString()
+}
