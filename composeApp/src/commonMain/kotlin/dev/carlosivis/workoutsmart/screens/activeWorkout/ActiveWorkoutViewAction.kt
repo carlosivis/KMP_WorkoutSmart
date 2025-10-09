@@ -4,7 +4,7 @@ sealed class ActiveWorkoutViewAction {
     object StartWorkout : ActiveWorkoutViewAction()
     object StopWorkout : ActiveWorkoutViewAction()
     object Tick : ActiveWorkoutViewAction()
-    object StartTimer : ActiveWorkoutViewAction()
+    data class StartTimer(val exerciseName: String) : ActiveWorkoutViewAction()
     object StopTimer : ActiveWorkoutViewAction()
     object CancelNavigateBack : ActiveWorkoutViewAction()
     object AttemptToNavigateBack : ActiveWorkoutViewAction()

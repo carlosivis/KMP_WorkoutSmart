@@ -1,6 +1,10 @@
 package dev.carlosivis.workoutsmart.screens.activeWorkout
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -168,28 +172,34 @@ private fun Content(
                         ) {
                             ExerciseCard(
                                 exercise = exercise,
-                                restTimer = { action(ActiveWorkoutViewAction.StartTimer) },
+                                restTimer = { action(ActiveWorkoutViewAction.StartTimer(exercise.name)) },
                                 onMarkAsCompleted = {
                                     action(
                                         ActiveWorkoutViewAction.MarkExerciseAsCompleted(
                                             exercise.name
                                         )
                                     )
-                                }
+                                },
+                                remainingSeries = state.remainingSeries[exercise.name] ?: 0
                             )
                         }
                     }
                 }
             }
 
-            if (state.isRestTimerActive) {
+            AnimatedVisibility (state.isRestTimerActive,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
                 RestTimerCard(
                     time = state.restTimerValue,
                     onStop = { action(ActiveWorkoutViewAction.StopTimer) }
                 )
             }
 
-            if (state.showRestTimerSelector) {
+            AnimatedVisibility (state.showRestTimerSelector,
+                enter = scaleIn(),
+                exit = shrinkOut()) {
                 RestTimerSelector(
                     currentTime = state.restTime,
                     onTimeSelected = {
@@ -314,7 +324,8 @@ private fun RestTimerSelector(
 private fun ExerciseCard(
     exercise: ExerciseModel,
     restTimer: () -> Unit,
-    onMarkAsCompleted: () -> Unit
+    onMarkAsCompleted: () -> Unit,
+    remainingSeries: Int
 ) {
     Card(
         modifier = Modifier
@@ -365,6 +376,15 @@ private fun ExerciseCard(
                         .fillMaxWidth()
                 ) {
                     ExerciseImage(exercise = exercise)
+                }
+
+
+                Row(modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceAround,) {
+                  
+                    Text(text = "Sets: \n$remainingSeries")
+
+                    Text(text = "Reps: \n${exercise.repetitions}")
                 }
             }
             Button(

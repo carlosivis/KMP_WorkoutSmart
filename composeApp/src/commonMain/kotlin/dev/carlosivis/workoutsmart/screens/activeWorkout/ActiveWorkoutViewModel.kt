@@ -30,7 +30,7 @@ class ActiveWorkoutViewModel(
             is ActiveWorkoutViewAction.Tick -> timerTick()
             is ActiveWorkoutViewAction.AttemptToNavigateBack -> attemptToNavigateBack()
             is ActiveWorkoutViewAction.CancelNavigateBack -> cancelNavigateBack()
-            is ActiveWorkoutViewAction.StartTimer -> startTimer()
+            is ActiveWorkoutViewAction.StartTimer -> startTimer(action.exerciseName)
             is ActiveWorkoutViewAction.StopTimer -> stopTimer()
             is ActiveWorkoutViewAction.GetWorkout -> getWorkout()
             is ActiveWorkoutViewAction.UpdateRestTime -> updateRestTime(action.seconds)
@@ -46,7 +46,12 @@ class ActiveWorkoutViewModel(
     }
 
     private fun getWorkout() {
-        _state.update { it.copy(workout = workout) }
+        _state.update {
+            it.copy(
+                workout = workout,
+                remainingSeries = workout.exercises.associate { exercise -> exercise.name to exercise.series }
+            )
+        }
     }
 
     private fun attemptToNavigateBack() {
@@ -61,7 +66,22 @@ class ActiveWorkoutViewModel(
         _state.update { it.copy(restTime = seconds, showRestTimerSelector = false) }
     }
 
-    private fun startTimer() {
+    private fun startTimer(exerciseName: String) {
+        val currentSeries = _state.value.remainingSeries[exerciseName] ?: 0
+        if (currentSeries > 0) {
+            val newSeries = currentSeries - 1
+            _state.update {
+                it.copy(
+                    remainingSeries = it.remainingSeries.toMutableMap().apply {
+                        this[exerciseName] = newSeries
+                    }
+                )
+            }
+            if (newSeries == 0) {
+                markExerciseAsCompleted(exerciseName)
+            }
+        }
+
         timerJob?.cancel()
         _state.update { it.copy(isRestTimerActive = true, restTimerValue = it.restTime) }
         if (!_state.value.isWorkoutActive) startWorkout()
@@ -92,7 +112,6 @@ class ActiveWorkoutViewModel(
                 _state.update { it.copy(elapsedTime = it.elapsedTime + 1) }
             }
         }
-
     }
 
     private fun saveWorkoutHistory() {
