@@ -21,7 +21,18 @@
     <string name="skip_button">Pular</string>
     <string name="finish_workout_button">Finalizar Treino</string>
     <string name="finish_workout_uncompleted_exercises_message">Deseja sair sem salvar?</string>
-    <string name="finished_workout_tittle">Treino finalizado!</string>"
+    <string name="finished_workout_tittle">Treino finalizado!</string>
+    <string name="finished_workout_message">Bom trabalho! Você concluiu seu treino. Salve seu progresso no histórico.</string>
+    <string name="active_workout_sets">Séries: 
+%1$d</string>
+    <string name="active_workout_reps">Repetições: 
+%1$d</string>
+    <string name="active_workout_timer_separator">:</string>
+    <string name="active_workout_toggle_menu">Alternar Menu</string>
+    <string name="active_workout_finish">Finalizar</string>
+    <string name="active_workout_finish_workout">Finalizar treino</string>
+    <string name="active_workout_timer">Timer</string>
+    <string name="active_workout_change_rest_timer">Alterar timer de descanso</string>
 
     <!-- CreateWorkoutScreen.kt -->
     <string name="create_workout_screen_title">Criar Treino</string>

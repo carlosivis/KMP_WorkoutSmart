@@ -67,10 +67,19 @@ import dev.carlosivis.workoutsmart.composeResources.Res
 import dev.carlosivis.workoutsmart.composeResources.action_back
 import dev.carlosivis.workoutsmart.composeResources.action_cancel
 import dev.carlosivis.workoutsmart.composeResources.action_save
+import dev.carlosivis.workoutsmart.composeResources.active_workout_change_rest_timer
+import dev.carlosivis.workoutsmart.composeResources.active_workout_finish
+import dev.carlosivis.workoutsmart.composeResources.active_workout_finish_workout
+import dev.carlosivis.workoutsmart.composeResources.active_workout_reps
+import dev.carlosivis.workoutsmart.composeResources.active_workout_sets
+import dev.carlosivis.workoutsmart.composeResources.active_workout_timer
+import dev.carlosivis.workoutsmart.composeResources.active_workout_timer_separator
+import dev.carlosivis.workoutsmart.composeResources.active_workout_toggle_menu
 import dev.carlosivis.workoutsmart.composeResources.elapsed_time_label
 import dev.carlosivis.workoutsmart.composeResources.exercise_default
 import dev.carlosivis.workoutsmart.composeResources.exit_active_workout_confirmation_message
 import dev.carlosivis.workoutsmart.composeResources.exit_without_saving_title
+import dev.carlosivis.workoutsmart.composeResources.finished_workout_message
 import dev.carlosivis.workoutsmart.composeResources.finished_workout_tittle
 import dev.carlosivis.workoutsmart.composeResources.mark_as_completed_button
 import dev.carlosivis.workoutsmart.composeResources.rest_time_label
@@ -222,7 +231,7 @@ private fun Content(
         if (state.showFinishedWorkoutDialog) {
             CustomDialog(
                 title = stringResource(Res.string.finished_workout_tittle),
-                message = "",
+                message = stringResource(Res.string.finished_workout_message),
                 onConfirm = { action(ActiveWorkoutViewAction.SaveWorkoutHistory) },
                 onCancel = { action(ActiveWorkoutViewAction.DismissFinishedWorkoutDialog) }
             )
@@ -285,7 +294,7 @@ private fun RestTimerSelector(
                         initialValue = selectedMinutes,
                         onValueChange = { selectedMinutes = it }
                     )
-                    Text(":", fontSize = FontSizes.TitleLarge)
+                    Text(stringResource(Res.string.active_workout_timer_separator), fontSize = FontSizes.TitleLarge)
                     TimeWheelPicker(
                         range = 0..59,
                         initialValue = selectedSeconds,
@@ -382,9 +391,9 @@ private fun ExerciseCard(
                 Row(modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceAround,) {
                   
-                    Text(text = "Sets: \n$remainingSeries")
+                    Text(text = stringResource(Res.string.active_workout_sets, remainingSeries), textAlign = TextAlign.Center)
 
-                    Text(text = "Reps: \n${exercise.repetitions}")
+                    Text(text = stringResource(Res.string.active_workout_reps, exercise.repetitions),  textAlign = TextAlign.Center)
                 }
             }
             Button(
@@ -474,7 +483,7 @@ fun ExpandableFABMenu(
     ) {
         Icon(
             imageVector = if (isMenuExpanded) Icons.Filled.Close else Icons.Filled.Engineering,
-            contentDescription = "Toggle Menu"
+            contentDescription = stringResource(Res.string.active_workout_toggle_menu)
         )
     }
     AnimatedVisibility(isMenuExpanded) {
@@ -486,14 +495,14 @@ fun ExpandableFABMenu(
             TextButton(
                 onClick = onSelectFinish ,
             ) {
-                Text("Finalizar")
-                Icon(Icons.Filled.Check, contentDescription = "Finish workout")
+                Text(stringResource(Res.string.active_workout_finish))
+                Icon(Icons.Filled.Check, contentDescription = stringResource(Res.string.active_workout_finish_workout))
             }
             TextButton(
                 onClick = onSelectRestTimer ,
             ) {
-                Text("Timer")
-                Icon(Icons.Filled.Timelapse, contentDescription = "Change rest timer")
+                Text(stringResource(Res.string.active_workout_timer))
+                Icon(Icons.Filled.Timelapse, contentDescription = stringResource(Res.string.active_workout_change_rest_timer))
             }
         }
     }
