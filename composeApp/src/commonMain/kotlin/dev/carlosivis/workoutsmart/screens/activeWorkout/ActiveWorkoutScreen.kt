@@ -23,7 +23,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -44,7 +43,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -66,6 +64,7 @@ import dev.carlosivis.workoutsmart.Utils.WhitePure
 import dev.carlosivis.workoutsmart.composeResources.Res
 import dev.carlosivis.workoutsmart.composeResources.action_back
 import dev.carlosivis.workoutsmart.composeResources.action_cancel
+import dev.carlosivis.workoutsmart.composeResources.action_not_saved
 import dev.carlosivis.workoutsmart.composeResources.action_save
 import dev.carlosivis.workoutsmart.composeResources.active_workout_change_rest_timer
 import dev.carlosivis.workoutsmart.composeResources.active_workout_finish
@@ -78,6 +77,7 @@ import dev.carlosivis.workoutsmart.composeResources.active_workout_toggle_menu
 import dev.carlosivis.workoutsmart.composeResources.elapsed_time_label
 import dev.carlosivis.workoutsmart.composeResources.exercise_default
 import dev.carlosivis.workoutsmart.composeResources.exit_active_workout_confirmation_message
+import dev.carlosivis.workoutsmart.composeResources.exit_confirmation_save_or_cancel
 import dev.carlosivis.workoutsmart.composeResources.exit_without_saving_title
 import dev.carlosivis.workoutsmart.composeResources.finished_workout_message
 import dev.carlosivis.workoutsmart.composeResources.finished_workout_tittle
@@ -118,19 +118,6 @@ private fun Content(
 ) {
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(state.workout.name) },
-                navigationIcon = {
-                    IconButton(onClick = { action(ActiveWorkoutViewAction.AttemptToNavigateBack) }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(Res.string.action_back)
-                        )
-                    }
-                }
-            )
-        },
         floatingActionButton = {
             ExpandableFABMenu(
                 onSelectFinish = { action(ActiveWorkoutViewAction.StopWorkout) },
@@ -144,6 +131,25 @@ private fun Content(
             contentAlignment = Alignment.Center
         ) {
             Column {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ){
+                    IconButton(
+                        onClick = { action(ActiveWorkoutViewAction.AttemptToNavigateBack) },
+                        modifier = Modifier.align(Alignment.CenterStart)
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(Res.string.action_back)
+                        )
+                    }
+                    Text(
+                        text = state.workout.name,
+                        fontSize = FontSizes.TitleMedium,
+                        textAlign = TextAlign.Center
+                    )
+                }
                 if (!state.isWorkoutActive) {
                     Button(
                         onClick = { action(ActiveWorkoutViewAction.StartWorkout) },
@@ -171,8 +177,8 @@ private fun Content(
                     modifier = Modifier.fillMaxSize(),
                     state = lazyListState,
                     flingBehavior = rememberSnapFlingBehavior(lazyListState = lazyListState),
-                    contentPadding = PaddingValues(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    contentPadding = PaddingValues(horizontal = Dimens.Medium),
+                    horizontalArrangement = Arrangement.spacedBy(Dimens.Small)
                 ) {
                     items(state.workout.exercises) { exercise ->
                         AnimatedVisibility(
@@ -228,6 +234,16 @@ private fun Content(
             )
         }
 
+        if (state.showExitUnfinishedDialog){
+            CustomDialog(
+                title = stringResource(Res.string.exit_without_saving_title),
+                message = stringResource(Res.string.exit_confirmation_save_or_cancel),
+                onConfirm = { action(ActiveWorkoutViewAction.SaveWorkoutHistory) },
+                onCancel = { action(ActiveWorkoutViewAction.ExitWithoutSave) },
+                confirmButtonText = stringResource(Res.string.action_save),
+                cancelButtonText = stringResource(Res.string.action_not_saved)
+            )
+        }
         if (state.showFinishedWorkoutDialog) {
             CustomDialog(
                 title = stringResource(Res.string.finished_workout_tittle),
@@ -423,7 +439,8 @@ private fun RestTimerCard(time: Int, onStop: () -> Unit) {
     ) {
         Box(
             modifier = Modifier
-                .size(250.dp)
+                .fillMaxHeight(0.25f)
+                .fillMaxWidth(0.50f)
                 .clip(RoundedCornerShape(percent = 100))
                 .background(Color.DarkGray)
                 .border(BorderStroke(2.dp, WhitePure), RoundedCornerShape(percent = 100)),

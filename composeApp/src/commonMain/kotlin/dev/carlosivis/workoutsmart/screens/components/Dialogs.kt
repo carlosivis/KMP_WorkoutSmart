@@ -28,7 +28,9 @@ fun CustomDialog(
     title: String,
     message: String?,
     onConfirm: () -> Unit,
-    onCancel: () -> Unit
+    onCancel: () -> Unit,
+    confirmButtonText: String? = null,
+    cancelButtonText: String? = null
 ) {
     Dialog(onDismissRequest = onCancel) {
         Card {
@@ -55,12 +57,12 @@ fun CustomDialog(
                     horizontalArrangement = Arrangement.spacedBy(Dimens.Medium, Alignment.CenterHorizontally)
                 ) {
                     OutlinedButton(onClick = onCancel) {
-                        Text(stringResource(Res.string.action_cancel))
+                        Text(cancelButtonText?.takeIf { it.isNotBlank() } ?: stringResource(Res.string.action_cancel))
                     }
                     Button(
                         onClick = onConfirm
                     ) {
-                        Text(stringResource(Res.string.action_confirm))
+                        Text(confirmButtonText?.takeIf { it.isNotBlank() } ?: stringResource(Res.string.action_confirm))
                     }
                 }
             }

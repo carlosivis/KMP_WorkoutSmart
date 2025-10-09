@@ -26,7 +26,7 @@ class ActiveWorkoutViewModel(
         when (action) {
             is ActiveWorkoutViewAction.NavigateBack -> onNavigateBack()
             is ActiveWorkoutViewAction.StartWorkout -> startWorkout()
-            is ActiveWorkoutViewAction.StopWorkout -> TODO()
+            is ActiveWorkoutViewAction.StopWorkout -> stopWorkout()
             is ActiveWorkoutViewAction.Tick -> timerTick()
             is ActiveWorkoutViewAction.AttemptToNavigateBack -> attemptToNavigateBack()
             is ActiveWorkoutViewAction.CancelNavigateBack -> cancelNavigateBack()
@@ -38,6 +38,7 @@ class ActiveWorkoutViewModel(
             is ActiveWorkoutViewAction.MarkExerciseAsCompleted -> markExerciseAsCompleted(action.exerciseName)
             is ActiveWorkoutViewAction.DismissFinishedWorkoutDialog -> dismissFinishedWorkoutDialog()
             is ActiveWorkoutViewAction.ToggleRestTimer -> toggleRestTimer()
+            is ActiveWorkoutViewAction.ExitWithoutSave -> exitWithoutSave()
         }
     }
 
@@ -54,6 +55,9 @@ class ActiveWorkoutViewModel(
         }
     }
 
+    private fun stopWorkout() {
+        _state.update { it.copy(showExitUnfinishedDialog = true) }
+    }
     private fun attemptToNavigateBack() {
         _state.update { it.copy(showExitConfirmationDialog = true) }
     }
@@ -119,10 +123,15 @@ class ActiveWorkoutViewModel(
             setLoading(true)
             val timestamp: Long = Clock.System.now().epochSeconds
             repository.insertHistory(workout.name, timestamp)
-            _state.update { it.copy(showFinishedWorkoutDialog = false) }
+            _state.update { it.copy(showFinishedWorkoutDialog = false, showExitUnfinishedDialog = false) }
             setLoading(false)
             onNavigateBack()
         }
+    }
+
+    private fun exitWithoutSave(){
+        _state.update { it.copy(showExitUnfinishedDialog = false) }
+        onNavigateBack()
     }
 
     private fun markExerciseAsCompleted(exerciseName: String) {

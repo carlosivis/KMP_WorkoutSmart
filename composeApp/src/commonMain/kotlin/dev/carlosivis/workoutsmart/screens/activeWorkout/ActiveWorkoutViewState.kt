@@ -14,6 +14,7 @@ data class ActiveWorkoutViewState(
     val workout: WorkoutModel = WorkoutModel.empty(),
     val completedExercises: Set<String> = emptySet(),
     val showFinishedWorkoutDialog: Boolean = false,
+    val showExitUnfinishedDialog: Boolean = false,
     val showRestTimerSelector: Boolean = false,
     val remainingSeries: Map<String, Int> = emptyMap(),
 )
