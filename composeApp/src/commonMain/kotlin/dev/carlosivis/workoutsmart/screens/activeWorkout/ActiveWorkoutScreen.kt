@@ -85,7 +85,6 @@ import dev.carlosivis.workoutsmart.composeResources.mark_as_completed_button
 import dev.carlosivis.workoutsmart.composeResources.rest_time_label
 import dev.carlosivis.workoutsmart.composeResources.skip_button
 import dev.carlosivis.workoutsmart.composeResources.start_rest_button
-import dev.carlosivis.workoutsmart.composeResources.start_workout_button
 import dev.carlosivis.workoutsmart.models.ExerciseModel
 import dev.carlosivis.workoutsmart.screens.components.CustomDialog
 import dev.carlosivis.workoutsmart.screens.components.TimeWheelPicker
@@ -134,7 +133,7 @@ private fun Content(
                 Box(
                     modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.Center
-                ){
+                ) {
                     IconButton(
                         onClick = { action(ActiveWorkoutViewAction.AttemptToNavigateBack) },
                         modifier = Modifier.align(Alignment.CenterStart)
@@ -150,27 +149,19 @@ private fun Content(
                         textAlign = TextAlign.Center
                     )
                 }
-                if (!state.isWorkoutActive) {
-                    Button(
-                        onClick = { action(ActiveWorkoutViewAction.StartWorkout) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = Dimens.Medium)
-                    ) {
-                        Text(stringResource(Res.string.start_workout_button))
-                    }
-                } else {
-                    Text(
-                        text = stringResource(
-                            Res.string.elapsed_time_label,
-                            state.elapsedTime
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = Dimens.Medium),
-                        fontSize = FontSizes.BodyLarge
-                    )
-                }
+
+
+                Text(
+                    text = stringResource(
+                        Res.string.elapsed_time_label,
+                        state.elapsedTime
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = Dimens.Medium),
+                    fontSize = FontSizes.BodyLarge,
+                )
+
 
                 val lazyListState = rememberLazyListState()
                 LazyRow(
@@ -201,8 +192,8 @@ private fun Content(
                     }
                 }
             }
-
-            AnimatedVisibility (state.isRestTimerActive,
+            AnimatedVisibility(
+                state.isRestTimerActive,
                 enter = fadeIn(),
                 exit = fadeOut()
             ) {
@@ -212,9 +203,12 @@ private fun Content(
                 )
             }
 
-            AnimatedVisibility (state.showRestTimerSelector,
+
+            AnimatedVisibility(
+                state.showRestTimerSelector,
                 enter = scaleIn(),
-                exit = shrinkOut()) {
+                exit = shrinkOut()
+            ) {
                 RestTimerSelector(
                     currentTime = state.restTime,
                     onTimeSelected = {
@@ -234,7 +228,7 @@ private fun Content(
             )
         }
 
-        if (state.showExitUnfinishedDialog){
+        if (state.showExitUnfinishedDialog) {
             CustomDialog(
                 title = stringResource(Res.string.exit_without_saving_title),
                 message = stringResource(Res.string.exit_confirmation_save_or_cancel),
@@ -310,7 +304,10 @@ private fun RestTimerSelector(
                         initialValue = selectedMinutes,
                         onValueChange = { selectedMinutes = it }
                     )
-                    Text(stringResource(Res.string.active_workout_timer_separator), fontSize = FontSizes.TitleLarge)
+                    Text(
+                        stringResource(Res.string.active_workout_timer_separator),
+                        fontSize = FontSizes.TitleLarge
+                    )
                     TimeWheelPicker(
                         range = 0..59,
                         initialValue = selectedSeconds,
@@ -404,12 +401,22 @@ private fun ExerciseCard(
                 }
 
 
-                Row(modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceAround,) {
-                  
-                    Text(text = stringResource(Res.string.active_workout_sets, remainingSeries), textAlign = TextAlign.Center)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceAround,
+                ) {
 
-                    Text(text = stringResource(Res.string.active_workout_reps, exercise.repetitions),  textAlign = TextAlign.Center)
+                    Text(
+                        text = stringResource(Res.string.active_workout_sets, remainingSeries),
+                        textAlign = TextAlign.Center
+                    )
+
+                    Text(
+                        text = stringResource(
+                            Res.string.active_workout_reps,
+                            exercise.repetitions
+                        ), textAlign = TextAlign.Center
+                    )
                 }
             }
             Button(
@@ -510,16 +517,22 @@ fun ExpandableFABMenu(
             verticalAlignment = Alignment.CenterVertically
         ) {
             TextButton(
-                onClick = onSelectFinish ,
+                onClick = onSelectFinish,
             ) {
                 Text(stringResource(Res.string.active_workout_finish))
-                Icon(Icons.Filled.Check, contentDescription = stringResource(Res.string.active_workout_finish_workout))
+                Icon(
+                    Icons.Filled.Check,
+                    contentDescription = stringResource(Res.string.active_workout_finish_workout)
+                )
             }
             TextButton(
-                onClick = onSelectRestTimer ,
+                onClick = onSelectRestTimer,
             ) {
                 Text(stringResource(Res.string.active_workout_timer))
-                Icon(Icons.Filled.Timelapse, contentDescription = stringResource(Res.string.active_workout_change_rest_timer))
+                Icon(
+                    Icons.Filled.Timelapse,
+                    contentDescription = stringResource(Res.string.active_workout_change_rest_timer)
+                )
             }
         }
     }
