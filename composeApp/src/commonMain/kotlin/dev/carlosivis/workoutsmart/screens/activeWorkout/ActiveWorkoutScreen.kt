@@ -400,6 +400,15 @@ private fun ExerciseCard(
                     ExerciseImage(exercise = exercise)
                 }
 
+                Row(Modifier.fillMaxWidth().padding(bottom = Dimens.Small)) {
+                    Text(
+                        text = exercise.notes,
+                        modifier = Modifier
+                            .weight(1f),
+                        textAlign = TextAlign.Center
+                    )
+                }
+
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
