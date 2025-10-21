@@ -46,10 +46,13 @@
     <string name="exercise_notes_label">Observações</string>
     <string name="exercise_series_label">Séries</string>
     <string name="exercise_repetitions_label">Repetições</string>
+    <string name="select_image_source">Selecione a fonte da imagem</string>
 
     <!-- Common / Dialogs.kt -->
     <string name="action_cancel">Cancelar</string>
     <string name="action_confirm">Confirmar</string>
+    <string name="camera_button">Câmera</string>
+    <string name="gallery_button">Galeria</string>
 
     <!-- Common / Strings.kt -->
     <string name="action_save">Salvar</string>

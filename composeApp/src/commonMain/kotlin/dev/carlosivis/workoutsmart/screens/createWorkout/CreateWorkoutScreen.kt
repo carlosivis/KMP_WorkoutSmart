@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -25,19 +26,26 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.window.Dialog
 import coil3.compose.AsyncImage
 import com.preat.peekaboo.image.picker.SelectionMode
 import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
+import com.preat.peekaboo.ui.camera.PeekabooCamera
+import com.preat.peekaboo.ui.camera.rememberPeekabooCameraState
 import dev.carlosivis.workoutsmart.Utils.Dimens
 import dev.carlosivis.workoutsmart.Utils.Shapes
 import dev.carlosivis.workoutsmart.composeResources.Res
@@ -46,6 +54,7 @@ import dev.carlosivis.workoutsmart.composeResources.action_cancel
 import dev.carlosivis.workoutsmart.composeResources.action_confirm
 import dev.carlosivis.workoutsmart.composeResources.add_exercise_button
 import dev.carlosivis.workoutsmart.composeResources.add_photo_button
+import dev.carlosivis.workoutsmart.composeResources.camera_button
 import dev.carlosivis.workoutsmart.composeResources.create_workout_screen_title
 import dev.carlosivis.workoutsmart.composeResources.exercise_name_label
 import dev.carlosivis.workoutsmart.composeResources.exercise_notes_label
@@ -53,7 +62,9 @@ import dev.carlosivis.workoutsmart.composeResources.exercise_repetitions_label
 import dev.carlosivis.workoutsmart.composeResources.exercise_series_label
 import dev.carlosivis.workoutsmart.composeResources.exit_unsaved_changes_message
 import dev.carlosivis.workoutsmart.composeResources.exit_without_saving_title
+import dev.carlosivis.workoutsmart.composeResources.gallery_button
 import dev.carlosivis.workoutsmart.composeResources.save_workout_button
+import dev.carlosivis.workoutsmart.composeResources.select_image_source
 import dev.carlosivis.workoutsmart.composeResources.workout_description_label
 import dev.carlosivis.workoutsmart.composeResources.workout_title_label
 import dev.carlosivis.workoutsmart.models.ExerciseModel
@@ -225,6 +236,9 @@ private fun ExerciseInput(
     onImageSelected: (ByteArray) -> Unit
 ) {
     val scope = rememberCoroutineScope()
+    var showImageSourceDialog by remember { mutableStateOf(false) }
+    var showCamera by remember { mutableStateOf(false) }
+
     val imagePickerLauncher = rememberImagePickerLauncher(
         selectionMode = SelectionMode.Single,
         scope = scope,
@@ -235,8 +249,55 @@ private fun ExerciseInput(
         }
     )
 
-    Card { // This Card is for individual exercise items in the list, not the "new exercise" popup
-        Column(modifier = Modifier.fillMaxWidth().padding(Dimens.Medium)) { 
+    val camerastate = rememberPeekabooCameraState(
+        onCapture = { byteArray ->
+            showCamera = false
+            byteArray?.let {
+                onImageSelected(it)
+            }
+        }
+    )
+
+    if (showImageSourceDialog) {
+        AlertDialog(
+            onDismissRequest = { showImageSourceDialog = false },
+            title = { Text(stringResource(Res.string.select_image_source)) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showImageSourceDialog = false
+                        showCamera = true
+                    }
+                ) {
+                    Text(stringResource(Res.string.camera_button))
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        showImageSourceDialog = false
+                        imagePickerLauncher.launch()
+                    }
+                ) {
+                    Text(stringResource(Res.string.gallery_button))
+                }
+            }
+        )
+    }
+
+    if (showCamera) {
+        Dialog(onDismissRequest = { showCamera = false }) {
+            PeekabooCamera(
+                state = camerastate,
+                modifier = Modifier.fillMaxSize(),
+                permissionDeniedContent = {}
+            )
+        }
+    }
+
+
+    Card {
+        Column(modifier = Modifier.fillMaxWidth().padding(Dimens.Medium)) {
             TextField(
                 value = exercise.name,
                 onValueChange = { onExerciseChange(exercise.copy(name = it)) },
@@ -290,22 +351,22 @@ private fun ExerciseInput(
                 )
             }
 
-            Spacer(modifier = Modifier.height(Dimens.Large)) 
+            Spacer(modifier = Modifier.height(Dimens.Large))
 
             if (exercise.image != null) {
                 AsyncImage(
                     model = exercise.image,
                     contentDescription = "Captured photo",
                     modifier = Modifier.align(Alignment.CenterHorizontally)
-                        .fillMaxWidth() 
+                        .fillMaxWidth()
                         .aspectRatio(16f / 9f)
                 )
             } else {
                 Button(
                     onClick = {
-                        imagePickerLauncher.launch()
+                        showImageSourceDialog = true
                     },
-                    modifier = Modifier.fillMaxWidth() 
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(stringResource(Res.string.add_photo_button))
                 }
