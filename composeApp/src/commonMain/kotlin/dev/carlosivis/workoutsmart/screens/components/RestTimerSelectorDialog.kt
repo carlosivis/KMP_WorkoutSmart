@@ -113,7 +113,7 @@ fun RestTimerSelectorDialog(
                         onClick = {
                             val totalSeconds = selectedMinutes * 60 + selectedSeconds
                             onTimeSelected(totalSeconds)
-                            onDismiss() // Fecha após selecionar
+                            onDismiss
                         },
                     ) {
                         Text(

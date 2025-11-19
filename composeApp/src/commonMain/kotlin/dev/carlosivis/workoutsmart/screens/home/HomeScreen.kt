@@ -191,7 +191,7 @@ private fun HistoryCard(history: HistoryModel) {
     ) {
         Text(
             text = "${history.workoutName} - $formattedDate",
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.padding(Dimens.Medium),
             fontSize = FontSizes.BodyLarge
         )
     }
