@@ -63,7 +63,6 @@ import dev.carlosivis.workoutsmart.Utils.FontSizes
 import dev.carlosivis.workoutsmart.Utils.WhitePure
 import dev.carlosivis.workoutsmart.composeResources.Res
 import dev.carlosivis.workoutsmart.composeResources.action_back
-import dev.carlosivis.workoutsmart.composeResources.action_cancel
 import dev.carlosivis.workoutsmart.composeResources.action_not_saved
 import dev.carlosivis.workoutsmart.composeResources.action_save
 import dev.carlosivis.workoutsmart.composeResources.active_workout_change_rest_timer
@@ -72,7 +71,6 @@ import dev.carlosivis.workoutsmart.composeResources.active_workout_finish_workou
 import dev.carlosivis.workoutsmart.composeResources.active_workout_reps
 import dev.carlosivis.workoutsmart.composeResources.active_workout_sets
 import dev.carlosivis.workoutsmart.composeResources.active_workout_timer
-import dev.carlosivis.workoutsmart.composeResources.active_workout_timer_separator
 import dev.carlosivis.workoutsmart.composeResources.active_workout_toggle_menu
 import dev.carlosivis.workoutsmart.composeResources.elapsed_time_label
 import dev.carlosivis.workoutsmart.composeResources.exercise_default
@@ -82,12 +80,11 @@ import dev.carlosivis.workoutsmart.composeResources.exit_without_saving_title
 import dev.carlosivis.workoutsmart.composeResources.finished_workout_message
 import dev.carlosivis.workoutsmart.composeResources.finished_workout_tittle
 import dev.carlosivis.workoutsmart.composeResources.mark_as_completed_button
-import dev.carlosivis.workoutsmart.composeResources.rest_time_label
 import dev.carlosivis.workoutsmart.composeResources.skip_button
 import dev.carlosivis.workoutsmart.composeResources.start_rest_button
 import dev.carlosivis.workoutsmart.models.ExerciseModel
 import dev.carlosivis.workoutsmart.screens.components.CustomDialog
-import dev.carlosivis.workoutsmart.screens.components.TimeWheelPicker
+import dev.carlosivis.workoutsmart.screens.components.RestTimerSelectorDialog
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -209,7 +206,7 @@ private fun Content(
                 enter = scaleIn(),
                 exit = shrinkOut()
             ) {
-                RestTimerSelector(
+                RestTimerSelectorDialog(
                     currentTime = state.restTime,
                     onTimeSelected = {
                         action(ActiveWorkoutViewAction.UpdateRestTime(it))
@@ -245,99 +242,6 @@ private fun Content(
                 onConfirm = { action(ActiveWorkoutViewAction.SaveWorkoutHistory) },
                 onCancel = { action(ActiveWorkoutViewAction.DismissFinishedWorkoutDialog) }
             )
-        }
-    }
-}
-
-@Composable
-private fun RestTimerSelector(
-    currentTime: Int,
-    onTimeSelected: (Int) -> Unit,
-    onDismiss: () -> Unit
-) {
-    val initialMinutes = currentTime / 60
-    val initialSeconds = currentTime % 60
-
-    var selectedMinutes by remember { mutableStateOf(initialMinutes) }
-    var selectedSeconds by remember { mutableStateOf(initialSeconds) }
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black.copy(alpha = 0.5f))
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-                onClick = onDismiss
-            ),
-        contentAlignment = Alignment.Center
-    ) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth(0.85f)
-                .padding(Dimens.Medium)
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null,
-                    onClick = {}
-                ),
-        ) {
-            Column(
-                modifier = Modifier
-                    .padding(Dimens.Medium),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(Dimens.Medium)
-            ) {
-                Text(
-                    text = stringResource(Res.string.rest_time_label),
-                    fontSize = FontSizes.TitleMedium,
-                    textAlign = TextAlign.Center
-                )
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    TimeWheelPicker(
-                        range = 0..59,
-                        initialValue = selectedMinutes,
-                        onValueChange = { selectedMinutes = it }
-                    )
-                    Text(
-                        stringResource(Res.string.active_workout_timer_separator),
-                        fontSize = FontSizes.TitleLarge
-                    )
-                    TimeWheelPicker(
-                        range = 0..59,
-                        initialValue = selectedSeconds,
-                        onValueChange = { selectedSeconds = it }
-                    )
-                }
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    TextButton(
-                        onClick = onDismiss,
-                    ) {
-                        Text(
-                            text = stringResource(Res.string.action_cancel),
-                        )
-                    }
-                    TextButton(
-                        onClick = {
-                            val totalSeconds = selectedMinutes * 60 + selectedSeconds
-                            onTimeSelected(totalSeconds)
-                        },
-                    ) {
-                        Text(
-                            text = stringResource(Res.string.action_save),
-                        )
-                    }
-                }
-            }
         }
     }
 }

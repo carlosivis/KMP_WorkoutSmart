@@ -1,6 +1,7 @@
 package dev.carlosivis.workoutsmart.screens.createWorkout
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -32,21 +33,19 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.text.style.TextAlign
 import coil3.compose.AsyncImage
 import com.preat.peekaboo.image.picker.SelectionMode
 import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
-import com.preat.peekaboo.ui.camera.PeekabooCamera
 import com.preat.peekaboo.ui.camera.rememberPeekabooCameraState
 import dev.carlosivis.workoutsmart.Utils.Dimens
+import dev.carlosivis.workoutsmart.Utils.FontSizes
 import dev.carlosivis.workoutsmart.Utils.Shapes
 import dev.carlosivis.workoutsmart.composeResources.Res
 import dev.carlosivis.workoutsmart.composeResources.action_back
@@ -68,7 +67,9 @@ import dev.carlosivis.workoutsmart.composeResources.select_image_source
 import dev.carlosivis.workoutsmart.composeResources.workout_description_label
 import dev.carlosivis.workoutsmart.composeResources.workout_title_label
 import dev.carlosivis.workoutsmart.models.ExerciseModel
+import dev.carlosivis.workoutsmart.screens.components.CameraCaptureScreen
 import dev.carlosivis.workoutsmart.screens.components.CustomDialog
+import dev.carlosivis.workoutsmart.screens.components.PhotoPreviewDialog
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,36 +79,76 @@ fun CreateWorkoutScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val action: (CreateWorkoutViewAction) -> Unit = viewModel::dispatchAction
+    val scope = rememberCoroutineScope()
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(Res.string.create_workout_screen_title)) },
-                navigationIcon = {
-                    IconButton(onClick = { action(CreateWorkoutViewAction.AttemptToNavigateBack) }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(Res.string.action_back)
-                        )
-                    }
-                }
-            )
+    val imagePickerLauncher = rememberImagePickerLauncher(
+        selectionMode = SelectionMode.Single,
+        scope = scope,
+        onResult = { byteArrayList ->
+            byteArrayList.firstOrNull()?.let {
+                action(CreateWorkoutViewAction.OnGalleryImageSelected(it))
+            }
         }
-    ) { paddingValues ->
+    )
         Content(
-            modifier = Modifier.padding(paddingValues),
             state = state,
-            action = action
+            action = action,
+            imagePickerLauncher = {
+                action(CreateWorkoutViewAction.SelectGallery)
+                imagePickerLauncher.launch()
+            }
         )
-    }
 }
 
 @Composable
 private fun Content(
     modifier: Modifier = Modifier,
     state: CreateWorkoutViewState,
-    action: (CreateWorkoutViewAction) -> Unit
+    action: (CreateWorkoutViewAction) -> Unit,
+    imagePickerLauncher: () -> Unit
 ) {
+
+    if (state.showImageSourceDialog) {
+        ImageSourceDialog(
+            onSelectCamera = {
+                action(CreateWorkoutViewAction.RequestCameraAccess(state.targetExerciseIndex)) },
+            onSelectGallery = {
+                imagePickerLauncher()
+            },
+            onDismiss = { action(CreateWorkoutViewAction.ToggleImageSourceDialog) }
+        )
+    }
+
+    if (state.showCameraPermissionDialog && !state.cameraPermissionGranted) {
+        CameraPermissionDialog(
+            onGrantPermission = { action(CreateWorkoutViewAction.GrantCameraPermission) },
+            onDenyPermission = { action(CreateWorkoutViewAction.DenyCameraPermission) },
+            onDismiss = { action(CreateWorkoutViewAction.ToggleCameraPermissionDialog) }
+        )
+    }
+
+    if (state.showCamera) {
+        CameraCaptureScreen(
+            state = rememberPeekabooCameraState(
+                onCapture = { byteArray ->
+                    byteArray?.let {
+                        action(CreateWorkoutViewAction.OnCameraCapture(it))
+                    }
+                }
+            ),
+            onDismiss = { action(CreateWorkoutViewAction.ToggleCamera) },
+        )
+        return
+    }
+
+    if (state.showPhotoPreviewDialog && state.capturedPhotoPreview != null) {
+        PhotoPreviewDialog(
+            photoByteArray = state.capturedPhotoPreview,
+            onConfirm = { action(CreateWorkoutViewAction.ConfirmCapturedPhoto) },
+            onRetake = { action(CreateWorkoutViewAction.RetakeCapturedPhoto) }
+        )
+        return
+    }
 
     if (state.showExitConfirmationDialog) {
         CustomDialog(
@@ -122,9 +163,28 @@ private fun Content(
         modifier = modifier
             .fillMaxSize()
             .padding(Dimens.Medium),
-        verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            IconButton(
+                onClick = { action(CreateWorkoutViewAction.AttemptToNavigateBack) },
+                modifier = Modifier.align(Alignment.CenterStart)
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = stringResource(Res.string.action_back)
+                )
+            }
+            Text(
+                text = stringResource(Res.string.create_workout_screen_title),
+                fontSize = FontSizes.TitleMedium,
+                textAlign = TextAlign.Center
+            )
+        }
+
         TextField(
             value = state.workout.name,
             onValueChange = { name ->
@@ -155,9 +215,7 @@ private fun Content(
                 onExerciseChange = { action(CreateWorkoutViewAction.UpdateNewExercise(it)) },
                 onConfirm = { action(CreateWorkoutViewAction.ConfirmNewExercise) },
                 onCancel = { action(CreateWorkoutViewAction.CancelAddingExercise) },
-                onImageSelected = { byteArray ->
-                    action(CreateWorkoutViewAction.UpdateNewExerciseImage(byteArray))
-                }
+                onAddPhotoClick = { action(CreateWorkoutViewAction.RequestImageSource(null)) }
             )
         } else {
             Button(onClick = { action(CreateWorkoutViewAction.StartAddingExercise) }) {
@@ -177,9 +235,7 @@ private fun Content(
                     onExerciseChange = { updatedExercise ->
                         action(CreateWorkoutViewAction.UpdateExercise(index, updatedExercise))
                     },
-                    onImageSelected = { byteArray ->
-                        action(CreateWorkoutViewAction.UpdateExistingExerciseImage(index, byteArray))
-                    }
+                    onAddPhotoClick = { action(CreateWorkoutViewAction.RequestImageSource(index)) }
                 )
             }
         }
@@ -201,16 +257,16 @@ private fun NewExerciseCard(
     onExerciseChange: (ExerciseModel) -> Unit,
     onConfirm: () -> Unit,
     onCancel: () -> Unit,
-    onImageSelected: (ByteArray) -> Unit
+    onAddPhotoClick: () -> Unit
 ) {
     Card(
-        elevation = CardDefaults.cardElevation(defaultElevation = Dimens.Large) // Increased elevation
+        elevation = CardDefaults.cardElevation(defaultElevation = Dimens.Large)
     ) {
         Column(modifier = Modifier.padding(Dimens.Medium)) {
             ExerciseInput(
                 exercise = exercise,
                 onExerciseChange = onExerciseChange,
-                onImageSelected = onImageSelected
+                onAddPhotoClick = onAddPhotoClick
             )
             Spacer(modifier = Modifier.height(Dimens.Medium))
             Row(
@@ -233,70 +289,11 @@ private fun NewExerciseCard(
 private fun ExerciseInput(
     exercise: ExerciseModel,
     onExerciseChange: (ExerciseModel) -> Unit,
-    onImageSelected: (ByteArray) -> Unit
+    onAddPhotoClick: () -> Unit
 ) {
-    val scope = rememberCoroutineScope()
-    var showImageSourceDialog by remember { mutableStateOf(false) }
-    var showCamera by remember { mutableStateOf(false) }
-
-    val imagePickerLauncher = rememberImagePickerLauncher(
-        selectionMode = SelectionMode.Single,
-        scope = scope,
-        onResult = { byteArrayList ->
-            byteArrayList.firstOrNull()?.let {
-                onImageSelected(it)
-            }
-        }
-    )
-
-    val camerastate = rememberPeekabooCameraState(
-        onCapture = { byteArray ->
-            showCamera = false
-            byteArray?.let {
-                onImageSelected(it)
-            }
-        }
-    )
-
-    if (showImageSourceDialog) {
-        AlertDialog(
-            onDismissRequest = { showImageSourceDialog = false },
-            title = { Text(stringResource(Res.string.select_image_source)) },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        showImageSourceDialog = false
-                        showCamera = true
-                    }
-                ) {
-                    Text(stringResource(Res.string.camera_button))
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = {
-                        showImageSourceDialog = false
-                        imagePickerLauncher.launch()
-                    }
-                ) {
-                    Text(stringResource(Res.string.gallery_button))
-                }
-            }
-        )
-    }
-
-    if (showCamera) {
-        Dialog(onDismissRequest = { showCamera = false }) {
-            PeekabooCamera(
-                state = camerastate,
-                modifier = Modifier.fillMaxSize(),
-                permissionDeniedContent = {}
-            )
-        }
-    }
-
-
-    Card {
+    Card(
+        modifier = Modifier.fillMaxWidth(0.9f)
+    ) {
         Column(modifier = Modifier.fillMaxWidth().padding(Dimens.Medium)) {
             TextField(
                 value = exercise.name,
@@ -353,24 +350,80 @@ private fun ExerciseInput(
 
             Spacer(modifier = Modifier.height(Dimens.Large))
 
-            if (exercise.image != null) {
-                AsyncImage(
-                    model = exercise.image,
-                    contentDescription = "Captured photo",
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                        .fillMaxWidth()
-                        .aspectRatio(16f / 9f)
-                )
-            } else {
-                Button(
-                    onClick = {
-                        showImageSourceDialog = true
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(stringResource(Res.string.add_photo_button))
-                }
-            }
+            ExerciseImageSection(
+                image = exercise.image,
+                onAddPhotoClick = onAddPhotoClick
+            )
         }
     }
+}
+
+@Composable
+private fun ExerciseImageSection(
+    image: ByteArray?,
+    onAddPhotoClick: () -> Unit
+) {
+    if (image != null) {
+        AsyncImage(
+            model = image,
+            contentDescription = "Exercise photo",
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(16f / 9f),
+            contentScale = ContentScale.Crop
+        )
+    } else {
+        Button(
+            onClick = onAddPhotoClick,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(stringResource(Res.string.add_photo_button))
+        }
+    }
+}
+
+@Composable
+private fun ImageSourceDialog(
+    onSelectCamera: () -> Unit,
+    onSelectGallery: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(Res.string.select_image_source)) },
+        text = { Text("Escolha a fonte da imagem:") },
+        confirmButton = {
+            TextButton(onClick = onSelectCamera) {
+                Text(stringResource(Res.string.camera_button))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onSelectGallery) {
+                Text(stringResource(Res.string.gallery_button))
+            }
+        }
+    )
+}
+
+@Composable
+private fun CameraPermissionDialog(
+    onGrantPermission: () -> Unit,
+    onDenyPermission: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Permissão de Câmera") },
+        text = { Text("Este app precisa de acesso à câmera para capturar fotos dos exercícios. Deseja permitir?") },
+        confirmButton = {
+            Button(onClick = onGrantPermission) {
+                Text("Permitir")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDenyPermission) {
+                Text("Negar")
+            }
+        }
+    )
 }

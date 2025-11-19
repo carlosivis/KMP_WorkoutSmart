@@ -38,8 +38,22 @@ class CreateWorkoutViewModel(
             is CreateWorkoutViewAction.CancelNavigateBack -> cancelNavigateBack()
             is CreateWorkoutViewAction.UpdateNewExerciseImage -> updateNewExerciseImage(action.image)
             is CreateWorkoutViewAction.UpdateExistingExerciseImage -> updateExistingExerciseImage(action.index, action.image)
+
+            is CreateWorkoutViewAction.RequestImageSource -> requestImageSource(action.exerciseIndex)
+            is CreateWorkoutViewAction.ToggleImageSourceDialog -> toggleImageSourceDialog()
+            is CreateWorkoutViewAction.SelectGallery -> selectGallery()
+            is CreateWorkoutViewAction.RequestCameraAccess -> requestCameraAccess(action.exerciseIndex)
+            is CreateWorkoutViewAction.ToggleCameraPermissionDialog -> toggleCameraPermissionDialog()
+            is CreateWorkoutViewAction.GrantCameraPermission -> grantCameraPermission()
+            is CreateWorkoutViewAction.DenyCameraPermission -> denyCameraPermission()
+            is CreateWorkoutViewAction.ToggleCamera -> toggleCamera()
+            is CreateWorkoutViewAction.OnCameraCapture -> onCameraCapture(action.image)
+            is CreateWorkoutViewAction.ConfirmCapturedPhoto -> confirmCapturedPhoto()
+            is CreateWorkoutViewAction.RetakeCapturedPhoto -> retakeCapturedPhoto()
+            is CreateWorkoutViewAction.OnGalleryImageSelected -> onGalleryImageSelected(action.image)
         }
     }
+
 
     private fun saveWorkout() {
         viewModelScope.launch {
@@ -140,6 +154,129 @@ class CreateWorkoutViewModel(
                 mutableExercises[index] = updatedExercise
             }
             it.copy(workout = it.workout.copy(exercises = mutableExercises))
+        }
+    }
+
+
+    private fun grantCameraPermission() {
+        _state.update { it.copy(
+            cameraPermissionGranted = true,
+            showCameraPermissionDialog = false,
+            showCamera = true
+        ) }
+    }
+
+    private fun denyCameraPermission() {
+        _state.update { it.copy(
+            cameraPermissionGranted = false,
+            showCameraPermissionDialog = false,
+            targetExerciseIndex = null
+        ) }
+    }
+
+    private fun requestImageSource(exerciseIndex: Int?) {
+        _state.update { it.copy(
+            showImageSourceDialog = true,
+            targetExerciseIndex = exerciseIndex
+        ) }
+    }
+
+    private fun toggleImageSourceDialog() {
+        _state.update { it.copy(showImageSourceDialog = !it.showImageSourceDialog) }
+    }
+
+    private fun selectGallery() {
+        _state.update { it.copy(showImageSourceDialog = false) }
+    }
+
+    private fun requestCameraAccess(exerciseIndex: Int?) {
+        _state.update { it.copy(
+            showImageSourceDialog = false,
+            targetExerciseIndex = exerciseIndex,
+            showCameraPermissionDialog = !_state.value.cameraPermissionGranted
+        ) }
+    }
+
+    private fun toggleCameraPermissionDialog() {
+        _state.update { it.copy(showCameraPermissionDialog = !it.showCameraPermissionDialog) }
+    }
+
+    private fun toggleCamera() {
+        _state.update {
+            if (it.showCamera) {
+                it.copy(
+                    showCamera = false,
+                    capturedPhotoPreview = null,
+                    showPhotoPreviewDialog = false
+                )
+            } else {
+                // Abrindo câmera
+                it.copy(showCamera = true)
+            }
+        }
+    }
+
+    private fun onCameraCapture(image: ByteArray) {
+        _state.update { currentState ->
+            currentState.copy(
+                capturedPhotoPreview = image,
+                showPhotoPreviewDialog = true,
+                showCamera = false
+            )
+        }
+    }
+
+    private fun confirmCapturedPhoto() {
+        _state.update { currentState ->
+            val image = currentState.capturedPhotoPreview ?: return@update currentState
+            val targetIndex = currentState.targetExerciseIndex
+
+            val newState = currentState.copy(
+                showCamera = false,
+                showImageSourceDialog = false,
+                showPhotoPreviewDialog = false,
+                capturedPhotoPreview = null
+            )
+
+            return@update if (targetIndex == null) {
+                // Novo exercício
+                newState.copy(newExercise = currentState.newExercise.copy(image = image))
+            } else {
+                // Exercício existente
+                val mutableExercises = currentState.workout.exercises.toMutableList()
+                if (mutableExercises.indices.contains(targetIndex)) {
+                    val updatedExercise = mutableExercises[targetIndex].copy(image = image)
+                    mutableExercises[targetIndex] = updatedExercise
+                }
+                newState.copy(workout = currentState.workout.copy(exercises = mutableExercises))
+            }
+        }
+    }
+
+    private fun retakeCapturedPhoto() {
+        _state.update { it.copy(
+            capturedPhotoPreview = null,
+            showPhotoPreviewDialog = false,
+            showCamera = true
+        ) }
+    }
+
+    private fun onGalleryImageSelected(image: ByteArray) {
+        _state.update { currentState ->
+            val targetIndex = currentState.targetExerciseIndex
+
+            if (targetIndex == null) {
+                // Novo exercício
+                currentState.copy(newExercise = currentState.newExercise.copy(image = image))
+            } else {
+                // Exercício existente
+                val mutableExercises = currentState.workout.exercises.toMutableList()
+                if (mutableExercises.indices.contains(targetIndex)) {
+                    val updatedExercise = mutableExercises[targetIndex].copy(image = image)
+                    mutableExercises[targetIndex] = updatedExercise
+                }
+                currentState.copy(workout = currentState.workout.copy(exercises = mutableExercises))
+            }
         }
     }
 }

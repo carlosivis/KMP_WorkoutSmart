@@ -14,8 +14,8 @@
     <string name="start_workout_button">Iniciar Treino</string>
     <string name="elapsed_time_label">Tempo decorrido: %1$d s</string>
     <string name="exit_without_saving_title">Sair sem salvar?</string>
-    <string name="exit_active_workout_confirmation_message">Você ainda não terminou o treino. Deseja realmente sair?</string>
-    <string name="exit_confirmation_save_or_cancel">Você ainda não terminou o treino. Deseja salvar seu progresso e sair?</string>">
+    <string name="exit_active_workout_confirmation_message">Você ainda não terminou o treino. Deseja realmente sair?</string>d
+    <string name="exit_confirmation_save_or_cancel">Você ainda não terminou o treino. Deseja salvar seu progresso e sair?</string>
     <string name="rest_time_label">Tempo de descanso:</string>
     <string name="mark_as_completed_button">Concluido</string>
     <string name="start_rest_button">Iniciar Descanso</string>
@@ -30,7 +30,7 @@
 %1$d</string>
     <string name="active_workout_timer_separator">:</string>
     <string name="active_workout_toggle_menu">Alternar Menu</string>
-    <string name="active_workout_finish">Finalizar</string>
+    <string name="active_workout_finish">Finalizar</string>d
     <string name="active_workout_finish_workout">Finalizar treino</string>
     <string name="active_workout_timer">Timer</string>
     <string name="active_workout_change_rest_timer">Alterar timer de descanso</string>
@@ -53,10 +53,11 @@
     <string name="action_confirm">Confirmar</string>
     <string name="camera_button">Câmera</string>
     <string name="gallery_button">Galeria</string>
+    <string name="camera_permission_denied_message">A permissão para acessar a câmera foi negada. Por favor, habilite-a nas configurações do aplicativo para continuar.</string>
 
     <!-- Common / Strings.kt -->
     <string name="action_save">Salvar</string>
-    <string name="action_not_saved">Não Salvar</string>">
+    <string name="action_not_saved">Não Salvar</string>
     <string name="action_back">Voltar</string>
     <string name="add_photo_button">Adicionar Foto</string>
 

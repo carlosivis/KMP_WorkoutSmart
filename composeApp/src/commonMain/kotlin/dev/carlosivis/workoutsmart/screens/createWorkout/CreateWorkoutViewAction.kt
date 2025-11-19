@@ -18,4 +18,17 @@ sealed class CreateWorkoutViewAction {
     object CancelNavigateBack : CreateWorkoutViewAction()
     data class UpdateNewExerciseImage(val image: ByteArray) : CreateWorkoutViewAction()
     data class UpdateExistingExerciseImage(val index: Int, val image: ByteArray) : CreateWorkoutViewAction()
+
+    data class RequestImageSource(val exerciseIndex: Int?) : CreateWorkoutViewAction()
+    object ToggleImageSourceDialog : CreateWorkoutViewAction()
+    object SelectGallery : CreateWorkoutViewAction()
+    data class RequestCameraAccess(val exerciseIndex: Int?) : CreateWorkoutViewAction()
+    object ToggleCameraPermissionDialog : CreateWorkoutViewAction()
+    object GrantCameraPermission : CreateWorkoutViewAction()
+    object DenyCameraPermission : CreateWorkoutViewAction()
+    object ToggleCamera : CreateWorkoutViewAction()
+    data class OnCameraCapture(val image: ByteArray) : CreateWorkoutViewAction()
+    object ConfirmCapturedPhoto : CreateWorkoutViewAction()
+    object RetakeCapturedPhoto : CreateWorkoutViewAction()
+    data class OnGalleryImageSelected(val image: ByteArray) : CreateWorkoutViewAction()
 }
