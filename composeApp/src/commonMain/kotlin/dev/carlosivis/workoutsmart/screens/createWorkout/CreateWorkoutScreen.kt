@@ -25,11 +25,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -48,15 +46,20 @@ import dev.carlosivis.workoutsmart.Utils.Dimens
 import dev.carlosivis.workoutsmart.Utils.FontSizes
 import dev.carlosivis.workoutsmart.Utils.Shapes
 import dev.carlosivis.workoutsmart.composeResources.Res
+import dev.carlosivis.workoutsmart.composeResources.action_allow
 import dev.carlosivis.workoutsmart.composeResources.action_back
 import dev.carlosivis.workoutsmart.composeResources.action_cancel
 import dev.carlosivis.workoutsmart.composeResources.action_confirm
+import dev.carlosivis.workoutsmart.composeResources.action_deny
 import dev.carlosivis.workoutsmart.composeResources.add_exercise_button
 import dev.carlosivis.workoutsmart.composeResources.add_photo_button
 import dev.carlosivis.workoutsmart.composeResources.camera_button
+import dev.carlosivis.workoutsmart.composeResources.camera_permission_message
+import dev.carlosivis.workoutsmart.composeResources.camera_permission_title
 import dev.carlosivis.workoutsmart.composeResources.create_workout_screen_title
 import dev.carlosivis.workoutsmart.composeResources.exercise_name_label
 import dev.carlosivis.workoutsmart.composeResources.exercise_notes_label
+import dev.carlosivis.workoutsmart.composeResources.exercise_photo_description
 import dev.carlosivis.workoutsmart.composeResources.exercise_repetitions_label
 import dev.carlosivis.workoutsmart.composeResources.exercise_series_label
 import dev.carlosivis.workoutsmart.composeResources.exit_unsaved_changes_message
@@ -366,7 +369,7 @@ private fun ExerciseImageSection(
     if (image != null) {
         AsyncImage(
             model = image,
-            contentDescription = "Exercise photo",
+            contentDescription = stringResource(Res.string.exercise_photo_description),
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(16f / 9f),
@@ -390,8 +393,7 @@ private fun ImageSourceDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(Res.string.select_image_source)) },
-        text = { Text("Escolha a fonte da imagem:") },
+        text = { Text(stringResource(Res.string.select_image_source)) },
         confirmButton = {
             TextButton(onClick = onSelectCamera) {
                 Text(stringResource(Res.string.camera_button))
@@ -413,16 +415,16 @@ private fun CameraPermissionDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Permissão de Câmera") },
-        text = { Text("Este app precisa de acesso à câmera para capturar fotos dos exercícios. Deseja permitir?") },
+        title = { Text(stringResource(Res.string.camera_permission_title)) },
+        text = { Text(stringResource(Res.string.camera_permission_message)) },
         confirmButton = {
             Button(onClick = onGrantPermission) {
-                Text("Permitir")
+                Text(stringResource(Res.string.action_allow))
             }
         },
         dismissButton = {
             TextButton(onClick = onDenyPermission) {
-                Text("Negar")
+                Text(stringResource(Res.string.action_deny))
             }
         }
     )

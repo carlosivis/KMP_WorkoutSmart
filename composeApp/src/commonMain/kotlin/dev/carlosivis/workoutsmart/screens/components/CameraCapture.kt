@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Flip
+import androidx.compose.material.icons.filled.FlipCameraAndroid
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,6 +26,16 @@ import coil3.compose.AsyncImage
 import com.preat.peekaboo.ui.camera.PeekabooCamera
 import com.preat.peekaboo.ui.camera.PeekabooCameraState
 import dev.carlosivis.workoutsmart.Utils.Dimens
+import dev.carlosivis.workoutsmart.composeResources.Res
+import dev.carlosivis.workoutsmart.composeResources.action_confirm
+import dev.carlosivis.workoutsmart.composeResources.camera_capture_capture_photo_description
+import dev.carlosivis.workoutsmart.composeResources.camera_capture_capture_photo_text
+import dev.carlosivis.workoutsmart.composeResources.camera_capture_close_description
+import dev.carlosivis.workoutsmart.composeResources.camera_capture_flip_camera_description
+import dev.carlosivis.workoutsmart.composeResources.camera_permission_denied_button
+import dev.carlosivis.workoutsmart.composeResources.photo_preview_image_description
+import dev.carlosivis.workoutsmart.composeResources.photo_preview_retake_button
+import org.jetbrains.compose.resources.stringResource
 
 
 @Composable
@@ -60,15 +70,15 @@ fun CameraCaptureScreen(
             IconButton(onClick = onDismiss) {
                 Icon(
                     imageVector = Icons.Default.Close,
-                    contentDescription = "Close",
+                    contentDescription = stringResource(Res.string.camera_capture_close_description),
                     tint = Color.White
                 )
             }
 
             IconButton(onClick = { state.toggleCamera() }) {
                 Icon(
-                    imageVector = Icons.Default.Flip,
-                    contentDescription = "Trocar câmera",
+                    imageVector = Icons.Default.FlipCameraAndroid,
+                    contentDescription = stringResource(Res.string.camera_capture_flip_camera_description),
                     tint = Color.White
                 )
             }
@@ -85,11 +95,11 @@ fun CameraCaptureScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.Camera,
-                    contentDescription = "Capturar foto",
+                    contentDescription = stringResource(Res.string.camera_capture_capture_photo_description),
                     tint = Color.White,
                     modifier = Modifier.padding(end = Dimens.Small)
                 )
-                Text("Capturar")
+                Text(stringResource(Res.string.camera_capture_capture_photo_text))
             }
         }
     }
@@ -117,7 +127,7 @@ fun PhotoPreviewDialog(
             // Preview da imagem
             AsyncImage(
                 model = photoByteArray,
-                contentDescription = "Photo preview",
+                contentDescription = stringResource(Res.string.photo_preview_image_description),
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth(),
@@ -134,13 +144,13 @@ fun PhotoPreviewDialog(
                     onClick = onRetake,
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text("Refazer", color = Color.White)
+                    Text(stringResource(Res.string.photo_preview_retake_button), color = Color.White)
                 }
                 TextButton(
                     onClick = onConfirm,
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text("Confirmar", color = Color.Green)
+                    Text(stringResource(Res.string.action_confirm), color = Color.Green)
                 }
             }
         }
@@ -150,11 +160,13 @@ fun PhotoPreviewDialog(
 @Composable
 private fun PermissionDeniedContent(onDismiss: () -> Unit) {
     Box(
-        modifier = Modifier.fillMaxSize().background(Color.Black),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black),
         contentAlignment = Alignment.Center
     ) {
         Button(onClick = onDismiss) {
-            Text("Camera permission denied")
+            Text(stringResource(Res.string.camera_permission_denied_button))
         }
     }
 }
