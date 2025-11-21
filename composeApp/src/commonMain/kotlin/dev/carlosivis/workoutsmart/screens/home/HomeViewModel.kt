@@ -1,10 +1,9 @@
 package dev.carlosivis.workoutsmart.screens.home
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dev.carlosivis.workoutsmart.models.WorkoutModel
 import dev.carlosivis.workoutsmart.repository.WorkoutRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -15,7 +14,6 @@ class HomeViewModel(
     private val onNavigateToCreateWorkout: () -> Unit,
     private val onNavigateToWorkout: (WorkoutModel) -> Unit
 ): ViewModel() {
-    private val viewModelScope = CoroutineScope(Dispatchers.Main)
     private val _state = MutableStateFlow(HomeViewState())
     val state = _state.asStateFlow()
 

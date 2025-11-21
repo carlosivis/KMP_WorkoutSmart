@@ -1,11 +1,10 @@
 package dev.carlosivis.workoutsmart.screens.createWorkout
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dev.carlosivis.workoutsmart.models.ExerciseModel
 import dev.carlosivis.workoutsmart.models.WorkoutModel
 import dev.carlosivis.workoutsmart.repository.WorkoutRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -15,8 +14,6 @@ class CreateWorkoutViewModel(
     private val repository: WorkoutRepository,
     private val onNavigateBack: () -> Unit
 ): ViewModel() {
-
-    private val viewModelScope = CoroutineScope(Dispatchers.Main)
 
     private val _state = MutableStateFlow(CreateWorkoutViewState())
     val state = _state.asStateFlow()
