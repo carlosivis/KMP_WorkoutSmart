@@ -21,6 +21,7 @@ fun App(root: RootComponent) {
                 is RootComponent.Child.Home -> HomeScreen(instance.component.viewModel)
                 is RootComponent.Child.CreateWorkout -> CreateWorkoutScreen(instance.component.viewModel)
                 is RootComponent.Child.ActiveWorkout -> ActiveWorkoutScreen(instance.component.viewModel)
+                is RootComponent.Child.EditWorkout -> CreateWorkoutScreen(instance.component.viewModel)
             }
         }
     }

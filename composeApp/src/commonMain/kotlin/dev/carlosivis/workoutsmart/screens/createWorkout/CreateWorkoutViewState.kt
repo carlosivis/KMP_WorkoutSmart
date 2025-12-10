@@ -17,6 +17,8 @@ data class CreateWorkoutViewState(
     val showImageSourceDialog: Boolean = false,
     val capturedPhotoPreview: ByteArray? = null,
     val showPhotoPreviewDialog: Boolean = false,
+    val isEditMode: Boolean = false,
+    val originalWorkout: WorkoutModel? = null,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -37,6 +39,8 @@ data class CreateWorkoutViewState(
         if (workout != other.workout) return false
         if (newExercise != other.newExercise) return false
         if (!capturedPhotoPreview.contentEquals(other.capturedPhotoPreview)) return false
+        if (isEditMode != other.isEditMode) return false
+        if (originalWorkout != other.originalWorkout) return false
 
         return true
     }
@@ -55,6 +59,8 @@ data class CreateWorkoutViewState(
         result = 31 * result + workout.hashCode()
         result = 31 * result + newExercise.hashCode()
         result = 31 * result + (capturedPhotoPreview?.contentHashCode() ?: 0)
+        result = 31 * result + isEditMode.hashCode()
+        result = 31 * result + (originalWorkout?.hashCode() ?: 0)
         return result
     }
 }

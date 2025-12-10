@@ -9,11 +9,13 @@ import org.koin.core.component.get
 class HomeComponent(
     componentContext: ComponentContext,
     val onNavigateToCreateWorkout: () -> Unit,
-    val onNavigateToWorkout: (WorkoutModel) -> Unit
+    val onNavigateToWorkout: (WorkoutModel) -> Unit,
+    val onNavigateToEditWorkout: (WorkoutModel) -> Unit = {}
 ) : ComponentContext by componentContext, KoinComponent {
     val viewModel = HomeViewModel(
         repository = get(),
         onNavigateToCreateWorkout = onNavigateToCreateWorkout,
-        onNavigateToWorkout = onNavigateToWorkout
+        onNavigateToWorkout = onNavigateToWorkout,
+        onNavigateToEditWorkout = onNavigateToEditWorkout
     )
 }

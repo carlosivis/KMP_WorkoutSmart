@@ -12,7 +12,8 @@ import kotlinx.coroutines.launch
 class HomeViewModel(
     private val repository: WorkoutRepository,
     private val onNavigateToCreateWorkout: () -> Unit,
-    private val onNavigateToWorkout: (WorkoutModel) -> Unit
+    private val onNavigateToWorkout: (WorkoutModel) -> Unit,
+    private val onNavigateToEditWorkout: (WorkoutModel) -> Unit = {}
 ): ViewModel() {
     private val _state = MutableStateFlow(HomeViewState())
     val state = _state.asStateFlow()
@@ -25,6 +26,7 @@ class HomeViewModel(
             is HomeViewAction.Navigate.Details -> TODO()
             is HomeViewAction.Navigate.CreateWorkout -> onNavigateToCreateWorkout()
             is HomeViewAction.Navigate.Workout -> onNavigateToWorkout(action.workout)
+            is HomeViewAction.Navigate.Edit -> onNavigateToEditWorkout(action.workout)
             is HomeViewAction.AttemptDeleteWorkout -> attemptDeleteWorkout(action.workout)
             is HomeViewAction.ConfirmDeleteWorkout -> deleteWorkout()
             is HomeViewAction.CancelDeleteWorkout -> cancelDeleteWorkout()

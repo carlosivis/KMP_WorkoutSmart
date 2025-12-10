@@ -57,6 +57,7 @@ import dev.carlosivis.workoutsmart.composeResources.camera_button
 import dev.carlosivis.workoutsmart.composeResources.camera_permission_message
 import dev.carlosivis.workoutsmart.composeResources.camera_permission_title
 import dev.carlosivis.workoutsmart.composeResources.create_workout_screen_title
+import dev.carlosivis.workoutsmart.composeResources.edit_workout_screen_title
 import dev.carlosivis.workoutsmart.composeResources.exercise_name_label
 import dev.carlosivis.workoutsmart.composeResources.exercise_notes_label
 import dev.carlosivis.workoutsmart.composeResources.exercise_photo_description
@@ -182,7 +183,7 @@ private fun Content(
                 )
             }
             Text(
-                text = stringResource(Res.string.create_workout_screen_title),
+                text = if (state.isEditMode) stringResource(Res.string.edit_workout_screen_title) else stringResource(Res.string.create_workout_screen_title),
                 fontSize = FontSizes.TitleMedium,
                 textAlign = TextAlign.Center
             )

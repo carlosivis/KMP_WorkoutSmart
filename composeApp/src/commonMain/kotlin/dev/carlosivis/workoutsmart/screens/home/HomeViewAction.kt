@@ -13,5 +13,6 @@ sealed class HomeViewAction {
         data class Details(val workoutId: Int) : HomeViewAction()
         object CreateWorkout : HomeViewAction()
         data class Workout(val workout: WorkoutModel) : HomeViewAction()
+        data class Edit(val workout: WorkoutModel) : HomeViewAction()
     }
 }

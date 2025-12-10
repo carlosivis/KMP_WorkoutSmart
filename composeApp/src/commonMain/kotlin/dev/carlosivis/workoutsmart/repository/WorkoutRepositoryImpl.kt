@@ -17,6 +17,9 @@ class WorkoutRepositoryImpl(
     override suspend fun insertWorkout(workout: WorkoutModel) =
         databaseHelper.insertWorkout(workout)
 
+    override suspend fun updateWorkout(workout: WorkoutModel) =
+        databaseHelper.updateWorkout(workout)
+
     override suspend fun deleteWorkout(workoutId: Long) =
         databaseHelper.deleteWorkout(workoutId)
 

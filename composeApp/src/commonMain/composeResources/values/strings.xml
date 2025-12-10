@@ -9,6 +9,7 @@
     <string name="saved_workouts_section_title">Treinos Salvos</string>
     <string name="workout_history_section_title">Histórico de Treinos</string>
     <string name="delete_action">Deletar</string>
+    <string name="edit_action">Editar</string>
 
     <!-- ActiveWorkoutScreen.kt -->
     <string name="start_workout_button">Iniciar Treino</string>
@@ -37,6 +38,7 @@
 
     <!-- CreateWorkoutScreen.kt -->
     <string name="create_workout_screen_title">Criar Treino</string>
+    <string name="edit_workout_screen_title">Editar Treino</string>
     <string name="exit_unsaved_changes_message">Você tem alterações não salvas. Deseja realmente sair?</string>
     <string name="workout_title_label">Título do Treino</string>
     <string name="workout_description_label">Descrição do Treino</string>

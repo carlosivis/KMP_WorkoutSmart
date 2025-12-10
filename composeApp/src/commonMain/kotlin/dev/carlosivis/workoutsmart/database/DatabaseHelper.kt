@@ -41,28 +41,35 @@ class DatabaseHelper(
         }
     }
 
+    suspend fun updateWorkout(workout: WorkoutModel) {
+        dbRef.transactionWithContext(backgroundDispatcher) {
+            // Atualizar informações do treino
+            dbRef.workoutSmartDatabaseQueries.updateWorkout(
+                name = workout.name,
+                description = workout.description.ifEmpty { "Sem descrição" },
+                id = workout.id.toLong()
+            )
+
+            // Remover exercícios antigos
+            dbRef.workoutSmartDatabaseQueries.deleteExercisesFromWorkout(workout.id.toLong())
+
+            // Inserir novos exercícios
+            workout.exercises.forEach { exercise ->
+                dbRef.workoutSmartDatabaseQueries.insertExercise(
+                    workoutId = workout.id.toLong(),
+                    name = exercise.name,
+                    notes = exercise.notes,
+                    series = exercise.series.toLong(),
+                    repetitions = exercise.repetitions.toLong(),
+                    image = exercise.image
+                )
+            }
+        }
+    }
+
     suspend fun deleteWorkout(workoutId: Long) {
         dbRef.transactionWithContext(backgroundDispatcher) {
             dbRef.workoutSmartDatabaseQueries.deleteWorkout(workoutId)
-        }
-    }
-
-    suspend fun updateExercise(exercise: ExerciseModel, workoutId: Long) {
-        dbRef.transactionWithContext(backgroundDispatcher) {
-            dbRef.workoutSmartDatabaseQueries.updateExercise(
-                name = exercise.name,
-                notes = exercise.notes,
-                series = exercise.series.toLong(),
-                repetitions = exercise.repetitions.toLong(),
-                image = exercise.image,
-                id = exercise.id.toLong()
-            )
-        }
-    }
-
-    suspend fun deleteExercise(exerciseId: Long) {
-        dbRef.transactionWithContext(backgroundDispatcher) {
-            dbRef.workoutSmartDatabaseQueries.deleteExercise(exerciseId)
         }
     }
 

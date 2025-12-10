@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -40,6 +41,7 @@ import dev.carlosivis.workoutsmart.composeResources.create_workout_fab
 import dev.carlosivis.workoutsmart.composeResources.delete_action
 import dev.carlosivis.workoutsmart.composeResources.delete_workout_message
 import dev.carlosivis.workoutsmart.composeResources.delete_workout_title
+import dev.carlosivis.workoutsmart.composeResources.edit_action
 import dev.carlosivis.workoutsmart.composeResources.home_screen_title
 import dev.carlosivis.workoutsmart.composeResources.saved_workouts_section_title
 import dev.carlosivis.workoutsmart.composeResources.workout_history_section_title
@@ -121,7 +123,9 @@ private fun Content(
                     WorkoutCard(
                         workout = workout,
                         navigate = { action(HomeViewAction.Navigate.Workout(workout)) },
-                        delete = { action(HomeViewAction.AttemptDeleteWorkout(workout)) })
+                        delete = { action(HomeViewAction.AttemptDeleteWorkout(workout)) },
+                        edit = { action(HomeViewAction.Navigate.Edit(workout)) }
+                    )
                 }
             }
             Spacer(modifier = Modifier.height(Dimens.Large))
@@ -147,7 +151,7 @@ private fun Content(
 
 @Composable
 private fun WorkoutCard(workout: WorkoutModel, navigate: () -> Unit = {},
-                        delete: () -> Unit = {}) {
+                        delete: () -> Unit = {}, edit: () -> Unit = {}) {
     Card(
         shape = RoundedCornerShape(Shapes.ExtraLarge),
         colors = CardDefaults.cardColors(
@@ -169,8 +173,12 @@ private fun WorkoutCard(workout: WorkoutModel, navigate: () -> Unit = {},
                 fontSize = FontSizes.BodyLarge
             )
 
-            IconButton(onClick = delete) { Icon(Icons.Filled.Delete,
-                stringResource(Res.string.delete_action)) }
+            Row {
+                IconButton(onClick = edit){ Icon(Icons.Filled.Edit,
+                    stringResource(Res.string.edit_action)) }
+                IconButton(onClick = delete){ Icon(Icons.Filled.Delete,
+                    stringResource(Res.string.delete_action)) }
+            }
         }
 
     }

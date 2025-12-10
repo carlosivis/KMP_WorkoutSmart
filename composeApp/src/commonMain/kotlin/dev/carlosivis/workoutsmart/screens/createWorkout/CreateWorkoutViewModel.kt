@@ -12,11 +12,18 @@ import kotlinx.coroutines.launch
 
 class CreateWorkoutViewModel(
     private val repository: WorkoutRepository,
-    private val onNavigateBack: () -> Unit
+    private val onNavigateBack: () -> Unit,
+    private val workoutToEdit: WorkoutModel? = null
 ): ViewModel() {
 
     private val _state = MutableStateFlow(CreateWorkoutViewState())
     val state = _state.asStateFlow()
+
+    init {
+        if (workoutToEdit != null) {
+            dispatchAction(CreateWorkoutViewAction.InitializeEditMode(workoutToEdit))
+        }
+    }
 
     fun dispatchAction(action: CreateWorkoutViewAction) {
         when (action) {
@@ -48,6 +55,7 @@ class CreateWorkoutViewModel(
             is CreateWorkoutViewAction.ConfirmCapturedPhoto -> confirmCapturedPhoto()
             is CreateWorkoutViewAction.RetakeCapturedPhoto -> retakeCapturedPhoto()
             is CreateWorkoutViewAction.OnGalleryImageSelected -> onGalleryImageSelected(action.image)
+            is CreateWorkoutViewAction.InitializeEditMode -> initializeEditMode(action.workout)
         }
     }
 
@@ -56,12 +64,24 @@ class CreateWorkoutViewModel(
         viewModelScope.launch {
             setLoading(true)
             try {
-                repository.insertWorkout(_state.value.workout)
+                if (_state.value.isEditMode) {
+                    repository.updateWorkout(_state.value.workout)
+                } else {
+                    repository.insertWorkout(_state.value.workout)
+                }
                 onNavigateBack()
             } finally {
                 setLoading(false)
             }
         }
+    }
+
+    private fun initializeEditMode(workout: WorkoutModel) {
+        _state.update { it.copy(
+            isEditMode = true,
+            workout = workout,
+            originalWorkout = workout
+        ) }
     }
 
     private fun setLoading(isLoading: Boolean) {
