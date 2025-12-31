@@ -42,7 +42,7 @@ jobs:
   android:
     name: Build Android
     runs-on: ubuntu-latest
-    needs: detekt # Opcional: Só tenta buildar se o código estiver "limpo"
+    needs: detekt
     steps:
       - uses: actions/checkout@v4
 
