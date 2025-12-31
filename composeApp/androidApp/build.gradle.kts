@@ -6,7 +6,7 @@ plugins {
 }
 android {
     namespace = "dev.carlosivis.workoutsmart.android"
-    compileSdk = 35
+    compileSdk = 36
     defaultConfig {
         applicationId = "dev.carlosivis.workoutsmart.android"
         minSdk = 24

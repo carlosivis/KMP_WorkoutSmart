@@ -15,18 +15,17 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import dev.carlosivis.workoutsmart.Utils.FontSizes
 
 @Composable
-fun WorkoutsSmartTheme(
+fun WorkoutSmartTheme(
     darkTheme: Boolean = androidx.compose.foundation.isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
     val context = LocalContext.current
 
     val colorScheme = when {
-        Build.VERSION.SDK_INT < 31 -> if (darkTheme) darkColorScheme() else lightColorScheme()
+        Build.VERSION.SDK_INT < Build.VERSION_CODES.S -> if (darkTheme) darkColorScheme() else lightColorScheme()
         darkTheme -> dynamicDarkColorScheme(context)
         else -> dynamicLightColorScheme(context)
     }
