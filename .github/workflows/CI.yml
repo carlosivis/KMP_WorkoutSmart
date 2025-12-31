@@ -22,10 +22,9 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
-          cache: gradle
 
       - name: Setup Gradle
-        uses: gradle/gradle-build-action@v3
+        uses: gradle/actions/setup-gradle@v3
         with:
           cache-read-only: false
 
@@ -33,17 +32,17 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build Android APK
-        run: ./gradlew androidApp:build -x test
+        run: ./gradlew :composeApp:androidApp:assembleDebug -x test
 
       - name: Upload Android Build
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: android-build
-          path: androidApp/build/outputs/apk/
+          path: composeApp/androidApp/build/outputs/apk/debug/
 
   ios:
-    name: Build iOS
+    name: Build Kotlin for iOS
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
@@ -53,30 +52,19 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
-          cache: gradle
-
-      - name: Setup Xcode
-        run: sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
 
       - name: Setup Gradle
-        uses: gradle/gradle-build-action@v3
+        uses: gradle/actions/setup-gradle@v3
         with:
           cache-read-only: false
 
       - name: Make gradlew executable
         run: chmod +x gradlew
 
-      - name: Build iOS (Simulator Arm64)
+      - name: Build iOS Framework (Simulator Arm64)
         env:
           GRADLE_OPTS: -Xmx4096m
-        run: ./gradlew iosSimulatorArm64MainBinaries -x test
-
-      - name: Upload iOS Build
-        if: success()
-        uses: actions/upload-artifact@v4
-        with:
-          name: ios-build
-          path: shared/build/bin/iosSimulatorArm64/
+        run: ./gradlew linkDebugFrameworkIosSimulatorArm64 -x test
 
   lint:
     name: Lint & Quality Checks
@@ -89,13 +77,13 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
-          cache: gradle
 
       - name: Setup Gradle
-        uses: gradle/gradle-build-action@v3
+        uses: gradle/actions/setup-gradle@v3
 
       - name: Make gradlew executable
         run: chmod +x gradlew
 
       - name: Run Lint
-        run: ./gradlew lintDebug || true
+        # Ajustado para rodar o lint no módulo Android correto
+        run: ./gradlew :composeApp:androidApp:lintDebug || true
