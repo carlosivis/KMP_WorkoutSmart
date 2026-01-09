@@ -25,6 +25,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -95,6 +96,7 @@ fun CreateWorkoutScreen(
         }
     )
         Content(
+            modifier = Modifier.padding(horizontal = Dimens.Medium),
             state = state,
             action = action,
             imagePickerLauncher = {
@@ -163,94 +165,99 @@ private fun Content(
         )
     }
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(Dimens.Medium),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Box(
-            modifier = Modifier.fillMaxWidth(),
-            contentAlignment = Alignment.Center
+    Scaffold(modifier = modifier) { paddingValues ->
+
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(paddingValues),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            IconButton(
-                onClick = { action(CreateWorkoutViewAction.AttemptToNavigateBack) },
-                modifier = Modifier.align(Alignment.CenterStart)
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = stringResource(Res.string.action_back)
+                IconButton(
+                    onClick = { action(CreateWorkoutViewAction.AttemptToNavigateBack) },
+                    modifier = Modifier.align(Alignment.CenterStart)
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(Res.string.action_back)
+                    )
+                }
+                Text(
+                    text = if (state.isEditMode) stringResource(Res.string.edit_workout_screen_title) else stringResource(
+                        Res.string.create_workout_screen_title
+                    ),
+                    fontSize = FontSizes.TitleMedium,
+                    textAlign = TextAlign.Center
                 )
             }
-            Text(
-                text = if (state.isEditMode) stringResource(Res.string.edit_workout_screen_title) else stringResource(Res.string.create_workout_screen_title),
-                fontSize = FontSizes.TitleMedium,
-                textAlign = TextAlign.Center
+
+            TextField(
+                value = state.workout.name,
+                onValueChange = { name ->
+                    action(CreateWorkoutViewAction.AddName(name))
+                },
+                label = { Text(stringResource(Res.string.workout_title_label)) },
+                modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences)
             )
-        }
 
-        TextField(
-            value = state.workout.name,
-            onValueChange = { name ->
-                action(CreateWorkoutViewAction.AddName(name))
-            },
-            label = { Text(stringResource(Res.string.workout_title_label)) },
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences)
-        )
+            Spacer(modifier = Modifier.height(Dimens.Medium))
 
-        Spacer(modifier = Modifier.height(Dimens.Medium))
-
-        TextField(
-            value = state.workout.description,
-            onValueChange = { description ->
-                action(CreateWorkoutViewAction.AddDescription(description))
-            },
-            label = { Text(stringResource(Res.string.workout_description_label)) },
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences)
-        )
-
-        Spacer(modifier = Modifier.height(Dimens.Medium))
-
-        if (state.isAddingExercise) {
-            NewExerciseCard(
-                exercise = state.newExercise,
-                onExerciseChange = { action(CreateWorkoutViewAction.UpdateNewExercise(it)) },
-                onConfirm = { action(CreateWorkoutViewAction.ConfirmNewExercise) },
-                onCancel = { action(CreateWorkoutViewAction.CancelAddingExercise) },
-                onAddPhotoClick = { action(CreateWorkoutViewAction.RequestImageSource(null)) }
+            TextField(
+                value = state.workout.description,
+                onValueChange = { description ->
+                    action(CreateWorkoutViewAction.AddDescription(description))
+                },
+                label = { Text(stringResource(Res.string.workout_description_label)) },
+                modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences)
             )
-        } else {
-            Button(onClick = { action(CreateWorkoutViewAction.StartAddingExercise) }) {
-                Text(stringResource(Res.string.add_exercise_button))
-            }
-        }
 
-        Spacer(modifier = Modifier.height(Dimens.Medium))
+            Spacer(modifier = Modifier.height(Dimens.Medium))
 
-        LazyColumn(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(Dimens.Medium)
-        ) {
-            itemsIndexed(state.workout.exercises) { index, exercise ->
-                ExerciseInput(
-                    exercise = exercise,
-                    onExerciseChange = { updatedExercise ->
-                        action(CreateWorkoutViewAction.UpdateExercise(index, updatedExercise))
-                    },
-                    onAddPhotoClick = { action(CreateWorkoutViewAction.RequestImageSource(index)) }
+            if (state.isAddingExercise) {
+                NewExerciseCard(
+                    exercise = state.newExercise,
+                    onExerciseChange = { action(CreateWorkoutViewAction.UpdateNewExercise(it)) },
+                    onConfirm = { action(CreateWorkoutViewAction.ConfirmNewExercise) },
+                    onCancel = { action(CreateWorkoutViewAction.CancelAddingExercise) },
+                    onAddPhotoClick = { action(CreateWorkoutViewAction.RequestImageSource(null)) }
                 )
+            } else {
+                Button(onClick = { action(CreateWorkoutViewAction.StartAddingExercise) }) {
+                    Text(stringResource(Res.string.add_exercise_button))
+                }
             }
-        }
 
-        Spacer(modifier = Modifier.height(Dimens.Medium))
+            Spacer(modifier = Modifier.height(Dimens.Medium))
 
-        Button(
-            onClick = { action(CreateWorkoutViewAction.SaveWorkout) },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(stringResource(Res.string.save_workout_button))
+            LazyColumn(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(Dimens.Medium)
+            ) {
+                itemsIndexed(state.workout.exercises) { index, exercise ->
+                    ExerciseInput(
+                        exercise = exercise,
+                        onExerciseChange = { updatedExercise ->
+                            action(CreateWorkoutViewAction.UpdateExercise(index, updatedExercise))
+                        },
+                        onAddPhotoClick = { action(CreateWorkoutViewAction.RequestImageSource(index)) }
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(Dimens.Medium))
+
+            Button(
+                onClick = { action(CreateWorkoutViewAction.SaveWorkout) },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(stringResource(Res.string.save_workout_button))
+            }
         }
     }
 }
