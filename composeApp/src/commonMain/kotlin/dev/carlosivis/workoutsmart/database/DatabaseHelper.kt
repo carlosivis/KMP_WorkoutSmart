@@ -114,17 +114,19 @@ class DatabaseHelper(
                 HistoryModel(
                     id = history.id,
                     workoutName = history.workoutName,
-                    date = history.date
+                    date = history.date,
+                    duration = history.duration
                 )
             }
         }
         .flowOn(backgroundDispatcher)
 
-    suspend fun insertHistory(workoutName: String, date: Long) {
+    suspend fun insertHistory(workoutName: String, date: Long, duration: Long) {
         dbRef.transactionWithContext(backgroundDispatcher) {
             dbRef.workoutSmartDatabaseQueries.insertHistory(
                 workoutName = workoutName,
-                date = date
+                date = date,
+                duration = duration
             )
         }
     }

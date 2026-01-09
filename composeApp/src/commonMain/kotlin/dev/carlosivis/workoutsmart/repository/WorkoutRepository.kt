@@ -10,6 +10,5 @@ interface WorkoutRepository {
     suspend fun insertWorkout(workout: WorkoutModel)
     suspend fun updateWorkout(workout: WorkoutModel)
     suspend fun deleteWorkout(workoutId: Long)
-    suspend fun insertHistory(workoutName: String, date: Long)
+    suspend fun insertHistory(workoutName: String, timestamp: Long, duration: Long)
 }
-

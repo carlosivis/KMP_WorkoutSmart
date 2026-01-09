@@ -6,5 +6,6 @@ import kotlinx.serialization.Serializable
 data class HistoryModel(
     val id: Long,
     val date: Long,
-    val workoutName: String
+    val workoutName: String,
+    val duration: Long
 )

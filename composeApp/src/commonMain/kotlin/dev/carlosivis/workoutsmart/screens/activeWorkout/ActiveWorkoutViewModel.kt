@@ -122,7 +122,8 @@ class ActiveWorkoutViewModel(
         viewModelScope.launch {
             setLoading(true)
             val timestamp: Long = Clock.System.now().epochSeconds
-            repository.insertHistory(workout.name, timestamp)
+            val duration: Long = _state.value.elapsedTime
+            repository.insertHistory(workout.name, timestamp, duration)
             _state.update { it.copy(showFinishedWorkoutDialog = false, showExitUnfinishedDialog = false) }
             setLoading(false)
             onNavigateBack()

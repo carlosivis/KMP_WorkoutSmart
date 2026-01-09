@@ -36,6 +36,7 @@ import dev.carlosivis.workoutsmart.Utils.Dimens
 import dev.carlosivis.workoutsmart.Utils.FontSizes
 import dev.carlosivis.workoutsmart.Utils.Shapes
 import dev.carlosivis.workoutsmart.Utils.formatDateToString
+import dev.carlosivis.workoutsmart.Utils.formatDuration
 import dev.carlosivis.workoutsmart.composeResources.Res
 import dev.carlosivis.workoutsmart.composeResources.create_workout_fab
 import dev.carlosivis.workoutsmart.composeResources.delete_action
@@ -188,6 +189,7 @@ private fun WorkoutCard(workout: WorkoutModel, navigate: () -> Unit = {},
 @Composable
 private fun HistoryCard(history: HistoryModel) {
     val formattedDate = formatDateToString(history.date)
+    val formattedDuration = formatDuration(history.duration)
     Card(
         shape = RoundedCornerShape(Shapes.ExtraLarge),
         colors = CardDefaults.cardColors(
@@ -198,7 +200,7 @@ private fun HistoryCard(history: HistoryModel) {
             .padding(vertical = Dimens.Small)
     ) {
         Text(
-            text = "${history.workoutName} - $formattedDate",
+            text = "${history.workoutName}\n$formattedDate • Duração: $formattedDuration",
             modifier = Modifier.padding(Dimens.Medium),
             fontSize = FontSizes.BodyLarge
         )

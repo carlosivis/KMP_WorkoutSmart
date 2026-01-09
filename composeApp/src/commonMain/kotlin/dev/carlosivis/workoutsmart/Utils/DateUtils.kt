@@ -18,3 +18,15 @@ fun formatDateToString(date: Long): String{
 fun Int.format(): String {
     return if (this < 10) "0$this" else this.toString()
 }
+
+fun formatDuration(seconds: Long): String {
+    val hours = seconds / 3600
+    val minutes = (seconds % 3600) / 60
+    val remainingSeconds = seconds % 60
+
+    return buildString {
+        if (hours > 0) append("${hours}h ")
+        if (minutes > 0 || hours > 0) append("${minutes}m ")
+        append("${remainingSeconds}s")
+    }
+}
