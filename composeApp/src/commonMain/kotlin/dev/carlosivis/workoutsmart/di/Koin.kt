@@ -1,7 +1,10 @@
 package dev.carlosivis.workoutsmart.di
 
+import com.russhwolf.settings.Settings
 import dev.carlosivis.workoutsmart.database.DatabaseHelper
 import dev.carlosivis.workoutsmart.models.WorkoutModel
+import dev.carlosivis.workoutsmart.repository.SettingsRepository
+import dev.carlosivis.workoutsmart.repository.SettingsRepositoryImpl
 import dev.carlosivis.workoutsmart.repository.WorkoutRepository
 import dev.carlosivis.workoutsmart.repository.WorkoutRepositoryImpl
 import dev.carlosivis.workoutsmart.screens.activeWorkout.ActiveWorkoutViewModel
@@ -38,5 +41,11 @@ val commonModule = module {
 
     single<Clock> {
         Clock.System
+    }
+
+    single<Settings> { Settings() }
+
+    single<SettingsRepository>{
+        SettingsRepositoryImpl(get())
     }
 }

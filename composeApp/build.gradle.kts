@@ -70,6 +70,11 @@ kotlin {
             implementation(libs.peekaboo.image.picker)
             implementation(libs.peekaboo.ui)
 
+            implementation(libs.multiplatform.settings.coroutines)
+            implementation(libs.multiplatform.settings.no.arg)
+            implementation(libs.multiplatform.settings)
+
+
         }
 
         commonTest.dependencies {

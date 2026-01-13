@@ -1,0 +1,29 @@
+package dev.carlosivis.workoutsmart.screens.settings
+
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+
+@Composable
+fun SettingsScreen(
+    viewModel: SettingsViewModel,
+){
+    val state by viewModel.state.collectAsState()
+    val action: (SettingsViewAction) -> Unit = viewModel::dispathAction
+
+    Content(
+        state = state,
+        action = action
+    )
+    LaunchedEffect(Unit){
+        action(SettingsViewAction.GetSettings)
+    }
+}
+
+@Composable
+fun Content(
+    state: SettingsViewState,
+    action: (SettingsViewAction) -> Unit
+){
+
+}
