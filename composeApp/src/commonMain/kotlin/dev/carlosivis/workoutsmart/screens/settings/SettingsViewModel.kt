@@ -15,11 +15,11 @@ class SettingsViewModel(
     private val _state = MutableStateFlow(SettingsViewState())
     val state = _state.asStateFlow()
 
-    fun dispathAction(action: SettingsViewAction) {
+    fun dispatchAction(action: SettingsViewAction) {
         when (action) {
             is SettingsViewAction.GetSettings -> getSettings()
             is SettingsViewAction.SaveSettings -> saveSettings()
-            is SettingsViewAction.UpdateThemeMode -> TODO()
+            is SettingsViewAction.NavigateBack -> onNavigateBack()
         }
     }
 

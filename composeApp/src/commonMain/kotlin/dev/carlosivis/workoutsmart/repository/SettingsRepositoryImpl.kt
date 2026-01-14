@@ -3,38 +3,36 @@ package dev.carlosivis.workoutsmart.repository
 import com.russhwolf.settings.Settings
 import dev.carlosivis.workoutsmart.models.SettingsModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class SettingsRepositoryImpl(private val settings: Settings): SettingsRepository {
-    override var themeMode: ThemeMode
-        get() {
-            val ordinal = settings.getInt(KEY_THEME, ThemeMode.SYSTEM.ordinal)
-            return ThemeMode.entries.toTypedArray().getOrElse(ordinal) { ThemeMode.SYSTEM }
-        }
-        set(value) {
-            settings.putInt(KEY_THEME, value.ordinal)
-        }
 
-    override var defaultRestSeconds: Int
-        get() = settings.getInt(KEY_REST_TIME, 60)
-        set(value) = settings.putInt(KEY_REST_TIME, value)
+    private val _settingsFlow = MutableStateFlow(readFromStorage())
 
-    override var keepScreenOn: Boolean
-        get() = settings.getBoolean(KEY_KEEP_SCREEN_ON, false)
-        set(value) = settings.putBoolean(KEY_KEEP_SCREEN_ON, value)
+    private fun readFromStorage(): SettingsModel {
+        val themeOrdinal = settings.getInt(KEY_THEME, ThemeMode.SYSTEM.ordinal)
+        val theme = ThemeMode.entries.getOrElse(themeOrdinal) { ThemeMode.SYSTEM }
 
-    override var vibrationEnabled: Boolean
-        get() = settings.getBoolean(KEY_VIBRATION, true)
-        set(value) = settings.putBoolean(KEY_VIBRATION, value)
-
-    override suspend fun getSettings(): Flow<SettingsModel> {
-        TODO("Not yet implemented")
+        return SettingsModel(
+            themeMode = theme,
+            defaultRestSeconds = settings.getInt(KEY_REST_TIME, 60),
+            keepScreenOn = settings.getBoolean(KEY_KEEP_SCREEN_ON, false),
+            vibrationEnabled = settings.getBoolean(KEY_VIBRATION, true)
+        )
     }
 
-    override suspend fun saveSettings(settings: SettingsModel) {
-        this.themeMode = settings.themeMode
-        this.defaultRestSeconds = settings.defaultRestSeconds
-        this.keepScreenOn = settings.keepScreenOn
-        this.vibrationEnabled = settings.vibrationEnabled
+    override suspend fun getSettings(): Flow<SettingsModel> =
+        _settingsFlow.asStateFlow()
+
+
+    override suspend fun saveSettings(newSettings: SettingsModel) {
+        settings.putInt(KEY_THEME, newSettings.themeMode.ordinal)
+        settings.putInt(KEY_REST_TIME, newSettings.defaultRestSeconds)
+        settings.putBoolean(KEY_KEEP_SCREEN_ON, newSettings.keepScreenOn)
+        settings.putBoolean(KEY_VIBRATION, newSettings.vibrationEnabled)
+
+        _settingsFlow.value = newSettings
     }
 
 

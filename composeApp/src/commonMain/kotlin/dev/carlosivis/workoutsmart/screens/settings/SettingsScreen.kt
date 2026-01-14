@@ -10,7 +10,7 @@ fun SettingsScreen(
     viewModel: SettingsViewModel,
 ){
     val state by viewModel.state.collectAsState()
-    val action: (SettingsViewAction) -> Unit = viewModel::dispathAction
+    val action: (SettingsViewAction) -> Unit = viewModel::dispatchAction
 
     Content(
         state = state,
