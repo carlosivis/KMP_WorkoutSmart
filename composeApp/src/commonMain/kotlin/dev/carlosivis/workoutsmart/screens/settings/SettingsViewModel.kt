@@ -2,7 +2,6 @@ package dev.carlosivis.workoutsmart.screens.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.carlosivis.workoutsmart.models.SettingsModel
 import dev.carlosivis.workoutsmart.repository.SettingsRepository
 import dev.carlosivis.workoutsmart.repository.ThemeMode
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,10 +19,12 @@ class SettingsViewModel(
     fun dispatchAction(action: SettingsViewAction) {
         when (action) {
             is SettingsViewAction.GetSettings -> getSettings()
-            is SettingsViewAction.UpdateSettings -> updateSettings(action.settings)
             is SettingsViewAction.SaveSettings -> saveSettings()
             is SettingsViewAction.NavigateBack -> onNavigateBack()
             is SettingsViewAction.UpdateThemeMode -> updateThemeMode(action.themeMode)
+            is SettingsViewAction.UpdateDefaultRestTime -> updateDefaultRestTime(action.time)
+            is SettingsViewAction.UpdateKeepScreenOn -> updateKeepScreenOn(action.keepScreenOn)
+            is SettingsViewAction.UpdateVibrationEnabled -> updateVibrationEnabled(action.vibrationEnabled)
         }
     }
 
@@ -47,18 +48,36 @@ class SettingsViewModel(
         saveSettings()
     }
 
-    private fun updateSettings(settings: SettingsModel) {
+    private fun updateDefaultRestTime(time: Int){
         _state.update {
             it.copy(
                 settings = it.settings.copy(
-                    themeMode = settings.themeMode,
-                    defaultRestSeconds = settings.defaultRestSeconds,
-                    keepScreenOn = settings.keepScreenOn,
-                    vibrationEnabled = settings.vibrationEnabled
+                    defaultRestSeconds = time
+                )
+            )
+    }
+    }
+    
+    private fun updateKeepScreenOn(keepScreenOn: Boolean){
+        _state.update{
+            it.copy(
+                settings = it.settings.copy(
+                    keepScreenOn = keepScreenOn
                 )
             )
         }
     }
+
+    private fun updateVibrationEnabled(vibrationEnabled: Boolean) {
+        _state.update {
+            it.copy(
+                settings = it.settings.copy(
+                    vibrationEnabled = vibrationEnabled
+                )
+            )
+        }
+    }
+
 
     private fun saveSettings(){
         viewModelScope.launch {

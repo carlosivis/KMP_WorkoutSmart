@@ -13,6 +13,8 @@ import dev.carlosivis.workoutsmart.screens.settings.SettingsScreen
 
 @Composable
 fun App(root: RootComponent) {
+
+
     WorkoutsSmartTheme {
         Children(
             stack = root.childStack,
