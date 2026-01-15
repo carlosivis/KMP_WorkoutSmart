@@ -9,6 +9,7 @@ import dev.carlosivis.workoutsmart.Utils.WorkoutsSmartTheme
 import dev.carlosivis.workoutsmart.navigation.RootComponent
 import dev.carlosivis.workoutsmart.screens.activeWorkout.ActiveWorkoutScreen
 import dev.carlosivis.workoutsmart.screens.createWorkout.CreateWorkoutScreen
+import dev.carlosivis.workoutsmart.screens.settings.SettingsScreen
 
 @Composable
 fun App(root: RootComponent) {
@@ -22,6 +23,7 @@ fun App(root: RootComponent) {
                 is RootComponent.Child.CreateWorkout -> CreateWorkoutScreen(instance.component.viewModel)
                 is RootComponent.Child.ActiveWorkout -> ActiveWorkoutScreen(instance.component.viewModel)
                 is RootComponent.Child.EditWorkout -> CreateWorkoutScreen(instance.component.viewModel)
+                is RootComponent.Child.Settings -> SettingsScreen(instance.component.viewModel)
             }
         }
     }

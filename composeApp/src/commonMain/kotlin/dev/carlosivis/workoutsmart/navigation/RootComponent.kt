@@ -35,7 +35,8 @@ class RootComponent(
                     componentContext = context,
                     onNavigateToCreateWorkout = { navigation.push(Configuration.CreateWorkout) },
                     onNavigateToWorkout = { workout -> navigation.push(Configuration.ActiveWorkout(workout)) },
-                    onNavigateToEditWorkout = { workout -> navigation.push(Configuration.EditWorkout(workout)) }
+                    onNavigateToEditWorkout = { workout -> navigation.push(Configuration.EditWorkout(workout)) },
+                    onNavigateToSettings = { navigation.push(Configuration.Settings) }
                 )
             )
             is Configuration.CreateWorkout -> Child.CreateWorkout(
@@ -58,6 +59,13 @@ class RootComponent(
                     onNavigateBack = { navigation.pop() }
                 )
             )
+
+            is Configuration.Settings -> Child.Settings(
+                SettingsComponent(
+                    componentContext = context,
+                    onNavigateBack = { navigation.pop() }
+                )
+            )
         }
     }
 
@@ -66,6 +74,7 @@ class RootComponent(
         data class CreateWorkout(val component: CreateWorkoutComponent) : Child()
         data class EditWorkout(val component: CreateWorkoutComponent) : Child()
         data class ActiveWorkout(val component: ActiveWorkoutComponent) : Child()
+        data class Settings(val component: SettingsComponent) : Child()
     }
 }
 
@@ -82,4 +91,7 @@ sealed class Configuration {
 
     @Serializable
     data class ActiveWorkout(val workout: WorkoutModel) : Configuration()
+
+    @Serializable
+    data object Settings : Configuration()
 }

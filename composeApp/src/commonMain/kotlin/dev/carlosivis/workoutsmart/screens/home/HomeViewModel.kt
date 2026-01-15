@@ -13,7 +13,8 @@ class HomeViewModel(
     private val repository: WorkoutRepository,
     private val onNavigateToCreateWorkout: () -> Unit,
     private val onNavigateToWorkout: (WorkoutModel) -> Unit,
-    private val onNavigateToEditWorkout: (WorkoutModel) -> Unit = {}
+    private val onNavigateToEditWorkout: (WorkoutModel) -> Unit = {},
+    private val onNavigateToSettings: () -> Unit = {}
 ): ViewModel() {
     private val _state = MutableStateFlow(HomeViewState())
     val state = _state.asStateFlow()
@@ -30,6 +31,7 @@ class HomeViewModel(
             is HomeViewAction.AttemptDeleteWorkout -> attemptDeleteWorkout(action.workout)
             is HomeViewAction.ConfirmDeleteWorkout -> deleteWorkout()
             is HomeViewAction.CancelDeleteWorkout -> cancelDeleteWorkout()
+            is HomeViewAction.Navigate.Settings -> onNavigateToSettings()
         }
     }
 

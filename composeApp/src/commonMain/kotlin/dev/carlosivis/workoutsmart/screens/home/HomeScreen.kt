@@ -1,6 +1,6 @@
-
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,9 +15,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -32,6 +32,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import dev.carlosivis.workoutsmart.Utils.Dimens
 import dev.carlosivis.workoutsmart.Utils.FontSizes
 import dev.carlosivis.workoutsmart.Utils.Shapes
@@ -95,11 +96,6 @@ private fun Content(
             ) {
                 Icon(Icons.Filled.Add, stringResource(Res.string.create_workout_fab))
             }
-        },
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text(stringResource(Res.string.home_screen_title), fontWeight = FontWeight.Bold) }
-            )
         }
     ) { padding ->
         Column(
@@ -108,6 +104,23 @@ private fun Content(
                 .padding(padding)
                 .padding(Dimens.Medium)
         ) {
+
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    stringResource(Res.string.home_screen_title), fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center, fontSize = FontSizes.TitleMedium
+                )
+
+                IconButton(
+                    onClick = { action(HomeViewAction.Navigate.Settings) },
+                    modifier = Modifier.align(Alignment.CenterEnd)
+                ) {
+                    Icon(Icons.Filled.Settings, stringResource(Res.string.delete_action))
+                }
+            }
             Text(
                 stringResource(Res.string.saved_workouts_section_title),
                 fontSize = FontSizes.TitleMedium,
@@ -151,8 +164,10 @@ private fun Content(
 }
 
 @Composable
-private fun WorkoutCard(workout: WorkoutModel, navigate: () -> Unit = {},
-                        delete: () -> Unit = {}, edit: () -> Unit = {}) {
+private fun WorkoutCard(
+    workout: WorkoutModel, navigate: () -> Unit = {},
+    delete: () -> Unit = {}, edit: () -> Unit = {}
+) {
     Card(
         shape = RoundedCornerShape(Shapes.ExtraLarge),
         colors = CardDefaults.cardColors(
@@ -175,10 +190,18 @@ private fun WorkoutCard(workout: WorkoutModel, navigate: () -> Unit = {},
             )
 
             Row {
-                IconButton(onClick = edit){ Icon(Icons.Filled.Edit,
-                    stringResource(Res.string.edit_action)) }
-                IconButton(onClick = delete){ Icon(Icons.Filled.Delete,
-                    stringResource(Res.string.delete_action)) }
+                IconButton(onClick = edit) {
+                    Icon(
+                        Icons.Filled.Edit,
+                        stringResource(Res.string.edit_action)
+                    )
+                }
+                IconButton(onClick = delete) {
+                    Icon(
+                        Icons.Filled.Delete,
+                        stringResource(Res.string.delete_action)
+                    )
+                }
             }
         }
 
