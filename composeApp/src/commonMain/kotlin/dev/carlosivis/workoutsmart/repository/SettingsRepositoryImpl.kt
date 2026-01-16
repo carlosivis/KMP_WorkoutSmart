@@ -22,7 +22,7 @@ class SettingsRepositoryImpl(private val settings: Settings): SettingsRepository
         )
     }
 
-    override suspend fun getSettings(): Flow<SettingsModel> =
+    override fun getSettings(): Flow<SettingsModel> =
         _settingsFlow.asStateFlow()
 
 

@@ -4,7 +4,7 @@ import dev.carlosivis.workoutsmart.models.SettingsModel
 import kotlinx.coroutines.flow.Flow
 
 interface SettingsRepository {
-    suspend fun getSettings(): Flow<SettingsModel>
+    fun getSettings(): Flow<SettingsModel>
     suspend fun saveSettings(settings: SettingsModel)
 }
 

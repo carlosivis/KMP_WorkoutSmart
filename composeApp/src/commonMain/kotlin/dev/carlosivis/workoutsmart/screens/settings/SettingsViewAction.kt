@@ -8,6 +8,5 @@ sealed class SettingsViewAction {
     data class UpdateDefaultRestTime(val time: Int) : SettingsViewAction()
     data class UpdateKeepScreenOn(val keepScreenOn: Boolean) : SettingsViewAction()
     data class UpdateVibrationEnabled(val vibrationEnabled: Boolean) : SettingsViewAction()
-    object SaveSettings : SettingsViewAction()
     object NavigateBack : SettingsViewAction()
 }

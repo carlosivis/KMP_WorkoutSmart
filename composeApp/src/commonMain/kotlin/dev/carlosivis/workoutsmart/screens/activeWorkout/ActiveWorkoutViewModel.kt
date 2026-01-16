@@ -3,7 +3,9 @@ package dev.carlosivis.workoutsmart.screens.activeWorkout
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.carlosivis.workoutsmart.models.WorkoutModel
+import dev.carlosivis.workoutsmart.repository.SettingsRepository
 import dev.carlosivis.workoutsmart.repository.WorkoutRepository
+import dev.carlosivis.workoutsmart.screens.components.VibratorHelper
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +17,9 @@ import kotlinx.datetime.Clock
 class ActiveWorkoutViewModel(
     val workout: WorkoutModel,
     private val repository: WorkoutRepository,
-    private val onNavigateBack: () -> Unit
+    private val settingsRepository: SettingsRepository,
+    private val onNavigateBack: () -> Unit,
+    private val vibratorHelper: VibratorHelper
 ) : ViewModel() {
     private val _state = MutableStateFlow(ActiveWorkoutViewState())
     val state = _state.asStateFlow()
@@ -39,6 +43,7 @@ class ActiveWorkoutViewModel(
             is ActiveWorkoutViewAction.DismissFinishedWorkoutDialog -> dismissFinishedWorkoutDialog()
             is ActiveWorkoutViewAction.ToggleRestTimer -> toggleRestTimer()
             is ActiveWorkoutViewAction.ExitWithoutSave -> exitWithoutSave()
+            is ActiveWorkoutViewAction.GetSettings -> getSettings()
         }
     }
 
@@ -46,6 +51,15 @@ class ActiveWorkoutViewModel(
         _state.update { it.copy(isLoading = isLoading) }
     }
 
+    private fun getSettings() {
+        viewModelScope.launch {
+            settingsRepository.getSettings()
+                .collect { settings ->
+                    _state.update { it.copy(settings = settings) }
+                }
+        }
+        _state.update { it.copy(restTime = _state.value.settings.defaultRestSeconds) }
+    }
     private fun getWorkout() {
         _state.update {
             it.copy(
@@ -94,10 +108,14 @@ class ActiveWorkoutViewModel(
                 delay(1000)
                 dispatchAction(ActiveWorkoutViewAction.Tick)
             }
+            if(_state.value.settings.vibrationEnabled) vibrate()
             dispatchAction(ActiveWorkoutViewAction.StopTimer)
         }
     }
 
+    private fun vibrate(){
+        vibratorHelper.vibrate()
+    }
     private fun stopTimer() {
         timerJob?.cancel()
         _state.update { it.copy(isRestTimerActive = false) }

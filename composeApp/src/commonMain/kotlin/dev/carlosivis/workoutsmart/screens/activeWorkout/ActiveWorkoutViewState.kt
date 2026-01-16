@@ -1,5 +1,6 @@
 package dev.carlosivis.workoutsmart.screens.activeWorkout
 
+import dev.carlosivis.workoutsmart.models.SettingsModel
 import dev.carlosivis.workoutsmart.models.WorkoutModel
 
 data class ActiveWorkoutViewState(
@@ -17,4 +18,5 @@ data class ActiveWorkoutViewState(
     val showExitUnfinishedDialog: Boolean = false,
     val showRestTimerSelector: Boolean = false,
     val remainingSeries: Map<String, Int> = emptyMap(),
+    val settings: SettingsModel = SettingsModel.default()
 )

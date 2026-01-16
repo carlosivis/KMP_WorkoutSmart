@@ -19,7 +19,6 @@ class SettingsViewModel(
     fun dispatchAction(action: SettingsViewAction) {
         when (action) {
             is SettingsViewAction.GetSettings -> getSettings()
-            is SettingsViewAction.SaveSettings -> saveSettings()
             is SettingsViewAction.NavigateBack -> onNavigateBack()
             is SettingsViewAction.UpdateThemeMode -> updateThemeMode(action.themeMode)
             is SettingsViewAction.UpdateDefaultRestTime -> updateDefaultRestTime(action.time)
@@ -55,7 +54,8 @@ class SettingsViewModel(
                     defaultRestSeconds = time
                 )
             )
-    }
+        }
+        saveSettings()
     }
     
     private fun updateKeepScreenOn(keepScreenOn: Boolean){
@@ -66,6 +66,7 @@ class SettingsViewModel(
                 )
             )
         }
+        saveSettings()
     }
 
     private fun updateVibrationEnabled(vibrationEnabled: Boolean) {
@@ -76,6 +77,7 @@ class SettingsViewModel(
                 )
             )
         }
+        saveSettings()
     }
 
 

@@ -77,5 +77,18 @@
     <string name="action_back">Voltar</string>
     <string name="add_photo_button">Adicionar Foto</string>
 
+    <!-- SettingsScreen.kt -->
+    <string name="settings_screen_title">Configurações</string>
+    <string name="settings_section_theme">Tema</string>
+    <string name="settings_section_default_rest_time">Tempo de Descanso Padrão</string>
+    <string name="settings_section_additional_settings">Configurações Adicionais</string>
+    <string name="settings_theme_option_system">Automático (Sistema)</string>
+    <string name="settings_theme_option_light">Modo Claro</string>
+    <string name="settings_theme_option_dark">Modo Escuro</string>
+    <string name="settings_rest_time_seconds">%1$d segundos</string>
+    <string name="settings_keep_screen_on_label">Manter Tela Ativa</string>
+    <string name="settings_keep_screen_on_description">Mantém a tela ligada durante os treinos</string>
+    <string name="settings_vibration_label">Vibração</string>
+    <string name="settings_vibration_description">Ativar feedback de vibração</string>
 
 </resources>

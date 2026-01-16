@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import dev.carlosivis.workoutsmart.repository.ThemeMode
 
 
 val AppLightColorScheme = lightColorScheme(
@@ -57,9 +58,15 @@ val shapes = Shapes(
 
 @Composable
 fun WorkoutsSmartTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    themeMode: ThemeMode = ThemeMode.SYSTEM,
     content: @Composable () -> Unit
 ) {
+
+    val darkTheme = when (themeMode) {
+        ThemeMode.LIGHT -> false
+        ThemeMode.DARK -> true
+        ThemeMode.SYSTEM -> isSystemInDarkTheme()
+    }
     val colorScheme = if (darkTheme) AppDarkColorScheme else AppLightColorScheme
 
     MaterialTheme(

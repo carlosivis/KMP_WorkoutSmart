@@ -1,5 +1,7 @@
 package dev.carlosivis.workoutsmart.screens.settings
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,13 +13,14 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.BrightnessMedium
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.LightMode
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
@@ -31,21 +34,35 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.carlosivis.workoutsmart.Utils.Dimens
+import dev.carlosivis.workoutsmart.Utils.FontSizes
 import dev.carlosivis.workoutsmart.composeResources.Res
-import dev.carlosivis.workoutsmart.composeResources.action_save
+import dev.carlosivis.workoutsmart.composeResources.action_back
+import dev.carlosivis.workoutsmart.composeResources.settings_keep_screen_on_description
+import dev.carlosivis.workoutsmart.composeResources.settings_keep_screen_on_label
+import dev.carlosivis.workoutsmart.composeResources.settings_rest_time_seconds
+import dev.carlosivis.workoutsmart.composeResources.settings_screen_title
+import dev.carlosivis.workoutsmart.composeResources.settings_section_additional_settings
+import dev.carlosivis.workoutsmart.composeResources.settings_section_default_rest_time
+import dev.carlosivis.workoutsmart.composeResources.settings_section_theme
+import dev.carlosivis.workoutsmart.composeResources.settings_theme_option_dark
+import dev.carlosivis.workoutsmart.composeResources.settings_theme_option_light
+import dev.carlosivis.workoutsmart.composeResources.settings_theme_option_system
+import dev.carlosivis.workoutsmart.composeResources.settings_vibration_description
+import dev.carlosivis.workoutsmart.composeResources.settings_vibration_label
 import dev.carlosivis.workoutsmart.repository.ThemeMode
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun SettingsScreen(
     viewModel: SettingsViewModel,
-){
+) {
     val state by viewModel.state.collectAsState()
     val action: (SettingsViewAction) -> Unit = viewModel::dispatchAction
 
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         action(SettingsViewAction.GetSettings)
     }
 
@@ -59,41 +76,46 @@ fun SettingsScreen(
 fun Content(
     state: SettingsViewState,
     action: (SettingsViewAction) -> Unit
-){
+) {
     Scaffold { paddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState())
-        ){
-            // Theme Section
-            SectionTitle("Tema")
+        ) {
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                IconButton(
+                    onClick = { action(SettingsViewAction.NavigateBack) },
+                    modifier = Modifier.align(Alignment.CenterStart)
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(Res.string.action_back)
+                    )
+                }
+                Text(
+                    text = stringResource(Res.string.settings_screen_title),
+                    fontSize = FontSizes.TitleMedium,
+                    textAlign = TextAlign.Center
+                )
+            }
+
+            SectionTitle(stringResource(Res.string.settings_section_theme))
             ThemeSection(state, action)
 
             Spacer(Modifier.size(Dimens.Large))
 
-            // Rest Time Section
-            SectionTitle("Tempo de Descanso Padrão")
+            SectionTitle(stringResource(Res.string.settings_section_default_rest_time))
             RestTimeSection(state, action)
 
             Spacer(Modifier.size(Dimens.Large))
 
-            // Additional Settings Section
-            SectionTitle("Configurações Adicionais")
+            SectionTitle(stringResource(Res.string.settings_section_additional_settings))
             AdditionalSettingsSection(state, action)
-
-            Spacer(Modifier.size(Dimens.Large))
-
-            // Save Button
-            Button(
-                onClick = { action(SettingsViewAction.SaveSettings) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(Dimens.Medium)
-            ) {
-                Text(stringResource(Res.string.action_save))
-            }
         }
     }
 }
@@ -122,19 +144,19 @@ fun ThemeSection(
     ) {
         Column(Modifier.selectableGroup()) {
             ThemeOption(
-                label = "Automático (Sistema)",
+                label = stringResource(Res.string.settings_theme_option_system),
                 icon = Icons.Default.BrightnessMedium,
                 selected = state.settings.themeMode == ThemeMode.SYSTEM,
                 onClick = { action(SettingsViewAction.UpdateThemeMode(ThemeMode.SYSTEM)) }
             )
             ThemeOption(
-                label = "Modo Claro",
+                label = stringResource(Res.string.settings_theme_option_light),
                 icon = Icons.Default.LightMode,
                 selected = state.settings.themeMode == ThemeMode.LIGHT,
                 onClick = { action(SettingsViewAction.UpdateThemeMode(ThemeMode.LIGHT)) }
             )
             ThemeOption(
-                label = "Modo Escuro",
+                label = stringResource(Res.string.settings_theme_option_dark),
                 icon = Icons.Default.DarkMode,
                 selected = state.settings.themeMode == ThemeMode.DARK,
                 onClick = { action(SettingsViewAction.UpdateThemeMode(ThemeMode.DARK)) }
@@ -164,9 +186,9 @@ fun RestTimeSection(
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text("${state.settings.defaultRestSeconds} segundos")
+                Text(stringResource(Res.string.settings_rest_time_seconds, state.settings.defaultRestSeconds))
             }
             Spacer(Modifier.size(Dimens.Small))
             Slider(
@@ -201,16 +223,16 @@ fun AdditionalSettingsSection(
         ) {
             // Keep Screen On
             SettingOption(
-                label = "Manter Tela Ativa",
-                description = "Mantém a tela ligada durante os treinos",
+                label = stringResource(Res.string.settings_keep_screen_on_label),
+                description = stringResource(Res.string.settings_keep_screen_on_description),
                 checked = state.settings.keepScreenOn,
                 onCheckedChange = { action(SettingsViewAction.UpdateKeepScreenOn(it)) }
             )
             Spacer(Modifier.size(Dimens.Medium))
             // Vibration
             SettingOption(
-                label = "Vibração",
-                description = "Ativar feedback de vibração",
+                label = stringResource(Res.string.settings_vibration_label),
+                description = stringResource(Res.string.settings_vibration_description),
                 checked = state.settings.vibrationEnabled,
                 onCheckedChange = { action(SettingsViewAction.UpdateVibrationEnabled(it)) }
             )
@@ -253,7 +275,7 @@ fun SettingOption(
         modifier = Modifier
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(

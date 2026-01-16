@@ -16,7 +16,9 @@ class ActiveWorkoutComponent(
     val viewModel = ActiveWorkoutViewModel(
         workout = workout,
         repository = get(),
-        onNavigateBack = onNavigateBack
+        onNavigateBack = onNavigateBack,
+        settingsRepository = get(),
+        vibratorHelper = get()
     )
 
     private val backCallback = BackCallback {
