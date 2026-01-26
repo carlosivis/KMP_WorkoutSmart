@@ -3,6 +3,7 @@ package dev.carlosivis.workoutsmart.screens.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.carlosivis.workoutsmart.models.WorkoutModel
+import dev.carlosivis.workoutsmart.navigation.navigator.HomeNavigator
 import dev.carlosivis.workoutsmart.repository.WorkoutRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,10 +12,7 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel(
     private val repository: WorkoutRepository,
-    private val onNavigateToCreateWorkout: () -> Unit,
-    private val onNavigateToWorkout: (WorkoutModel) -> Unit,
-    private val onNavigateToEditWorkout: (WorkoutModel) -> Unit = {},
-    private val onNavigateToSettings: () -> Unit = {}
+    private val navigator: HomeNavigator
 ): ViewModel() {
     private val _state = MutableStateFlow(HomeViewState())
     val state = _state.asStateFlow()
@@ -25,13 +23,13 @@ class HomeViewModel(
             is HomeViewAction.GetWorkouts -> getWorkouts()
             is HomeViewAction.GetHistory -> getHistory()
             is HomeViewAction.Navigate.Details -> TODO()
-            is HomeViewAction.Navigate.CreateWorkout -> onNavigateToCreateWorkout()
-            is HomeViewAction.Navigate.Workout -> onNavigateToWorkout(action.workout)
-            is HomeViewAction.Navigate.Edit -> onNavigateToEditWorkout(action.workout)
+            is HomeViewAction.Navigate.CreateWorkout -> navigator.toCreateWorkout()
+            is HomeViewAction.Navigate.Workout -> navigator.toActiveWorkout(action.workout)
+            is HomeViewAction.Navigate.Edit -> navigator.toEditWorkout(action.workout)
             is HomeViewAction.AttemptDeleteWorkout -> attemptDeleteWorkout(action.workout)
             is HomeViewAction.ConfirmDeleteWorkout -> deleteWorkout()
             is HomeViewAction.CancelDeleteWorkout -> cancelDeleteWorkout()
-            is HomeViewAction.Navigate.Settings -> onNavigateToSettings()
+            is HomeViewAction.Navigate.Settings -> navigator.toSettings()
         }
     }
 

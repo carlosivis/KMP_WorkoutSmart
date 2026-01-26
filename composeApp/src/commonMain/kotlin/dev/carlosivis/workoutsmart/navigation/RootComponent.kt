@@ -7,6 +7,7 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
 import dev.carlosivis.workoutsmart.models.WorkoutModel
+import dev.carlosivis.workoutsmart.navigation.navigator.HomeNavigator
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
 
@@ -33,18 +34,26 @@ class RootComponent(
             is Configuration.Home -> Child.Home(
                 HomeComponent(
                     componentContext = context,
-                    onNavigateToCreateWorkout = { navigation.push(Configuration.CreateWorkout) },
-                    onNavigateToWorkout = { workout -> navigation.push(Configuration.ActiveWorkout(workout)) },
-                    onNavigateToEditWorkout = { workout -> navigation.push(Configuration.EditWorkout(workout)) },
-                    onNavigateToSettings = { navigation.push(Configuration.Settings) }
+                    navigator = HomeNavigator(
+                        toCreateWorkout = { navigation.push(Configuration.CreateWorkout) },
+                        toActiveWorkout = { workout -> navigation.push(
+                            Configuration.ActiveWorkout(workout)
+                            ) },
+                        toEditWorkout = { workout -> navigation.push(
+                                Configuration.EditWorkout(workout)
+                            ) },
+                        toSettings = { navigation.push(Configuration.Settings) }
+                    )
                 )
             )
+
             is Configuration.CreateWorkout -> Child.CreateWorkout(
                 CreateWorkoutComponent(
                     componentContext = context,
                     onNavigateBack = { navigation.pop() }
                 )
             )
+
             is Configuration.EditWorkout -> Child.EditWorkout(
                 CreateWorkoutComponent(
                     componentContext = context,
@@ -52,6 +61,7 @@ class RootComponent(
                     workoutToEdit = config.workout
                 )
             )
+
             is Configuration.ActiveWorkout -> Child.ActiveWorkout(
                 ActiveWorkoutComponent(
                     componentContext = context,

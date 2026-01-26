@@ -3,6 +3,7 @@ package dev.carlosivis.workoutsmart.di
 import com.russhwolf.settings.Settings
 import dev.carlosivis.workoutsmart.database.DatabaseHelper
 import dev.carlosivis.workoutsmart.models.WorkoutModel
+import dev.carlosivis.workoutsmart.navigation.navigator.HomeNavigator
 import dev.carlosivis.workoutsmart.repository.SettingsRepository
 import dev.carlosivis.workoutsmart.repository.SettingsRepositoryImpl
 import dev.carlosivis.workoutsmart.repository.WorkoutRepository
@@ -23,7 +24,8 @@ fun initKoin() = startKoin {
 }
 
 val commonModule = module {
-    viewModel { HomeViewModel(get(), get(), get()) }
+    viewModel { (navigator: HomeNavigator) ->
+        HomeViewModel(get(), navigator) }
     viewModel { (workout: WorkoutModel, onNavigateBack: () -> Unit) ->
         ActiveWorkoutViewModel(workout, get(), get(), onNavigateBack, get())
     }
