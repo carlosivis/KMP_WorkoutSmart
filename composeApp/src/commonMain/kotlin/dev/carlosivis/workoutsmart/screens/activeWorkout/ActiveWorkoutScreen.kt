@@ -56,11 +56,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import dev.carlosivis.workoutsmart.Utils.Dimens
 import dev.carlosivis.workoutsmart.Utils.FontSizes
 import dev.carlosivis.workoutsmart.Utils.WhitePure
+import dev.carlosivis.workoutsmart.Utils.WorkoutsSmartTheme
 import dev.carlosivis.workoutsmart.composeResources.Res
 import dev.carlosivis.workoutsmart.composeResources.action_back
 import dev.carlosivis.workoutsmart.composeResources.action_not_saved
@@ -83,6 +85,7 @@ import dev.carlosivis.workoutsmart.composeResources.mark_as_completed_button
 import dev.carlosivis.workoutsmart.composeResources.skip_button
 import dev.carlosivis.workoutsmart.composeResources.start_rest_button
 import dev.carlosivis.workoutsmart.models.ExerciseModel
+import dev.carlosivis.workoutsmart.repository.ThemeMode
 import dev.carlosivis.workoutsmart.screens.components.CustomDialog
 import dev.carlosivis.workoutsmart.screens.components.KeepScreenOn
 import dev.carlosivis.workoutsmart.screens.components.RestTimerSelectorDialog
@@ -451,5 +454,30 @@ fun ExpandableFABMenu(
                 )
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun ContentPreview() {
+    WorkoutsSmartTheme(ThemeMode.DARK) {
+        Content(
+            state = ActiveWorkoutViewState(),
+            action = {}
+        )
+    }
+
+}
+
+@Preview
+@Composable
+private fun ExerciseCardPreview() {
+    WorkoutsSmartTheme(ThemeMode.DARK) {
+        ExerciseCard(
+            exercise = ExerciseModel.empty(),
+            restTimer = {},
+            onMarkAsCompleted = {},
+            remainingSeries = 1
+        )
     }
 }

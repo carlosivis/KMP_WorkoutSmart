@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
+import kotlin.time.ExperimentalTime
 
 class ActiveWorkoutViewModel(
     val workout: WorkoutModel,
@@ -136,10 +136,11 @@ class ActiveWorkoutViewModel(
         }
     }
 
+    @OptIn(ExperimentalTime::class)
     private fun saveWorkoutHistory() {
         viewModelScope.launch {
             setLoading(true)
-            val timestamp: Long = Clock.System.now().epochSeconds
+            val timestamp: Long = kotlin.time.Clock.System.now().epochSeconds
             val duration: Long = _state.value.elapsedTime
             repository.insertHistory(workout.name, timestamp, duration)
             _state.update { it.copy(showFinishedWorkoutDialog = false, showExitUnfinishedDialog = false) }

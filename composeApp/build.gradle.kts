@@ -45,13 +45,13 @@ kotlin {
     sourceSets {
 
         commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.materialIconsExtended)
-            implementation(compose.ui)
+            implementation(libs.runtime)
+            implementation(libs.foundation)
             implementation(libs.compose.multiplatform.ui)
             implementation(libs.compose.multiplatform.resources)
             implementation(libs.compose.multiplatform.material3)
+            implementation(libs.material.icons.extended)
+            implementation(libs.compose.multiplatform.ui.tooling.preview)
 
             implementation(libs.sqldelight.coroutines)
 
@@ -74,7 +74,6 @@ kotlin {
             implementation(libs.multiplatform.settings.no.arg)
             implementation(libs.multiplatform.settings)
 
-
         }
 
         commonTest.dependencies {
@@ -82,7 +81,8 @@ kotlin {
         }
 
         androidMain.dependencies {
-            implementation(compose.uiTooling)
+            implementation(libs.compose.ui.tooling.preview)
+            implementation(libs.compose.ui.tooling)
             implementation(libs.sqldelight.android)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.decompose)
@@ -100,7 +100,7 @@ kotlin {
 
 android {
     namespace = "dev.carlosivis.workoutsmart"
-    compileSdk = 35
+    compileSdk = 36
     defaultConfig {
         minSdk = 24
     }

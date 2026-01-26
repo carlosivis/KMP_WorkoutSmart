@@ -35,9 +35,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.carlosivis.workoutsmart.Utils.Dimens
 import dev.carlosivis.workoutsmart.Utils.FontSizes
+import dev.carlosivis.workoutsmart.Utils.WorkoutsSmartTheme
 import dev.carlosivis.workoutsmart.composeResources.Res
 import dev.carlosivis.workoutsmart.composeResources.action_back
 import dev.carlosivis.workoutsmart.composeResources.settings_keep_screen_on_description
@@ -52,6 +54,7 @@ import dev.carlosivis.workoutsmart.composeResources.settings_theme_option_light
 import dev.carlosivis.workoutsmart.composeResources.settings_theme_option_system
 import dev.carlosivis.workoutsmart.composeResources.settings_vibration_description
 import dev.carlosivis.workoutsmart.composeResources.settings_vibration_label
+import dev.carlosivis.workoutsmart.models.SettingsModel
 import dev.carlosivis.workoutsmart.repository.ThemeMode
 import org.jetbrains.compose.resources.stringResource
 
@@ -297,4 +300,22 @@ fun SettingOption(
         )
     }
 
+}
+
+@Preview
+@Composable
+private fun ContentPreview() {
+    WorkoutsSmartTheme(ThemeMode.DARK) {
+        Content(
+            state = SettingsViewState(
+                settings = SettingsModel(
+                    themeMode = ThemeMode.SYSTEM,
+                    defaultRestSeconds = 60,
+                    keepScreenOn = true,
+                    vibrationEnabled = true
+                )
+            ),
+            action = {}
+        )
+    }
 }

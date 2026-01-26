@@ -39,6 +39,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import coil3.compose.AsyncImage
 import com.preat.peekaboo.image.picker.SelectionMode
 import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
@@ -46,6 +47,7 @@ import com.preat.peekaboo.ui.camera.rememberPeekabooCameraState
 import dev.carlosivis.workoutsmart.Utils.Dimens
 import dev.carlosivis.workoutsmart.Utils.FontSizes
 import dev.carlosivis.workoutsmart.Utils.Shapes
+import dev.carlosivis.workoutsmart.Utils.WorkoutsSmartTheme
 import dev.carlosivis.workoutsmart.composeResources.Res
 import dev.carlosivis.workoutsmart.composeResources.action_allow
 import dev.carlosivis.workoutsmart.composeResources.action_back
@@ -95,15 +97,15 @@ fun CreateWorkoutScreen(
             }
         }
     )
-        Content(
-            modifier = Modifier.padding(horizontal = Dimens.Medium),
-            state = state,
-            action = action,
-            imagePickerLauncher = {
-                action(CreateWorkoutViewAction.SelectGallery)
-                imagePickerLauncher.launch()
-            }
-        )
+    Content(
+        modifier = Modifier.padding(horizontal = Dimens.Medium),
+        state = state,
+        action = action,
+        imagePickerLauncher = {
+            action(CreateWorkoutViewAction.SelectGallery)
+            imagePickerLauncher.launch()
+        }
+    )
 }
 
 @Composable
@@ -117,7 +119,8 @@ private fun Content(
     if (state.showImageSourceDialog) {
         ImageSourceDialog(
             onSelectCamera = {
-                action(CreateWorkoutViewAction.RequestCameraAccess(state.targetExerciseIndex)) },
+                action(CreateWorkoutViewAction.RequestCameraAccess(state.targetExerciseIndex))
+            },
             onSelectGallery = {
                 imagePickerLauncher()
             },
@@ -436,4 +439,30 @@ private fun CameraPermissionDialog(
             }
         }
     )
+}
+
+@Preview
+@Composable
+private fun ContentPreview() {
+    WorkoutsSmartTheme {
+        Content(
+            state = CreateWorkoutViewState(),
+            action = {},
+            imagePickerLauncher = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun NewExerciseCardPreview() {
+    WorkoutsSmartTheme {
+        NewExerciseCard(
+            exercise = ExerciseModel.empty(),
+            onExerciseChange = {},
+            onConfirm = {},
+            onCancel = {},
+            onAddPhotoClick = {}
+        )
+    }
 }

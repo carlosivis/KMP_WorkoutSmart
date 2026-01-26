@@ -12,10 +12,10 @@ import dev.carlosivis.workoutsmart.screens.activeWorkout.ActiveWorkoutViewModel
 import dev.carlosivis.workoutsmart.screens.createWorkout.CreateWorkoutViewModel
 import dev.carlosivis.workoutsmart.screens.home.HomeViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.datetime.Clock
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
+import kotlin.time.ExperimentalTime
 
 expect fun platformModule(): org.koin.core.module.Module
 
@@ -23,6 +23,7 @@ fun initKoin() = startKoin {
     modules(commonModule, platformModule())
 }
 
+@OptIn(ExperimentalTime::class)
 val commonModule = module {
     viewModel { (navigator: HomeNavigator) ->
         HomeViewModel(get(), navigator) }
@@ -41,8 +42,8 @@ val commonModule = module {
         WorkoutRepositoryImpl(get())
     }
 
-    single<Clock> {
-        Clock.System
+    single<kotlin.time.Clock> {
+        kotlin.time.Clock.System
     }
 
     single<Settings> { Settings() }

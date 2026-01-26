@@ -1,6 +1,5 @@
 package dev.carlosivis.workoutsmart
 
-import HomeScreen
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -13,6 +12,7 @@ import dev.carlosivis.workoutsmart.navigation.RootComponent
 import dev.carlosivis.workoutsmart.repository.SettingsRepository
 import dev.carlosivis.workoutsmart.screens.activeWorkout.ActiveWorkoutScreen
 import dev.carlosivis.workoutsmart.screens.createWorkout.CreateWorkoutScreen
+import dev.carlosivis.workoutsmart.screens.home.HomeScreen
 import dev.carlosivis.workoutsmart.screens.settings.SettingsScreen
 import org.koin.compose.koinInject
 
