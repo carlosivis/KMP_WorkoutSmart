@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.sqldelight)
+    kotlin("native.cocoapods")
 }
 
 kotlin {
@@ -20,7 +21,22 @@ kotlin {
             }
         }
     }
+    cocoapods {
+        version = "1.0"
+        summary = "Módulo compartilhado KMP"
+        homepage = "https://github.com/carlosivis/workoutsmart"
 
+        ios.deploymentTarget = "13.0"
+
+        framework {
+            baseName = "ComposeApp"
+            isStatic = true
+        }
+
+        pod("GoogleSignIn") {
+            version = "7.1.0"
+        }
+    }
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     compilerOptions {
         freeCompilerArgs.add("-Xexpect-actual-classes")
@@ -87,6 +103,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.decompose)
             implementation(libs.decompose.compose)
+            implementation(libs.play.services.auth)
         }
 
         iosMain.dependencies {
@@ -103,10 +120,6 @@ android {
     compileSdk = 36
     defaultConfig {
         minSdk = 24
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
     }
 }
 

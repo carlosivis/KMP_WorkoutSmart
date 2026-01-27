@@ -39,6 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import dev.carlosivis.workoutsmart.Utils.Dimens
 import dev.carlosivis.workoutsmart.Utils.FontSizes
 import dev.carlosivis.workoutsmart.Utils.Shapes
+import dev.carlosivis.workoutsmart.Utils.WorkoutsSmartTheme
 import dev.carlosivis.workoutsmart.Utils.formatDateToString
 import dev.carlosivis.workoutsmart.Utils.formatDuration
 import dev.carlosivis.workoutsmart.composeResources.Res
@@ -52,6 +53,7 @@ import dev.carlosivis.workoutsmart.composeResources.saved_workouts_section_title
 import dev.carlosivis.workoutsmart.composeResources.workout_history_section_title
 import dev.carlosivis.workoutsmart.models.HistoryModel
 import dev.carlosivis.workoutsmart.models.WorkoutModel
+import dev.carlosivis.workoutsmart.repository.ThemeMode
 import dev.carlosivis.workoutsmart.screens.components.CustomDialog
 import org.jetbrains.compose.resources.stringResource
 
@@ -233,37 +235,40 @@ private fun HistoryCard(history: HistoryModel) {
 @Preview
 @Composable
 private fun ContentPreview() {
-    Content(
-        state = HomeViewState(
-            workouts = listOf(
-                WorkoutModel(
-                    id = 1,
-                    name = "Workout A",
-                    description = "Description A",
-                    exercises = emptyList()
+    WorkoutsSmartTheme(ThemeMode.DARK) {
+        Content(
+            state = HomeViewState(
+                workouts = listOf(
+                    WorkoutModel(
+                        id = 1,
+                        name = "Workout A",
+                        description = "Description A",
+                        exercises = emptyList()
+                    ),
+                    WorkoutModel(
+                        id = 2,
+                        name = "Workout B",
+                        description = "Description B",
+                        exercises = emptyList()
+                    )
                 ),
-                WorkoutModel(
-                    id = 2,
-                    name = "Workout B",
-                    description = "Description B",
-                    exercises = emptyList()
+                history = listOf(
+                    HistoryModel(
+                        id = 1,
+                        date = 1678886400000,
+                        workoutName = "Workout A",
+                        duration = 3600
+                    ),
+                    HistoryModel(
+                        id = 2,
+                        date = 1678972800000,
+                        workoutName = "Workout B",
+                        duration = 3600
+                    )
                 )
             ),
-            history = listOf(
-                HistoryModel(
-                    id = 1,
-                    date = 1678886400000,
-                    workoutName = "Workout A",
-                    duration = 3600
-                ),
-                HistoryModel(
-                    id = 2,
-                    date = 1678972800000,
-                    workoutName = "Workout B",
-                    duration = 3600
-                )
-            )
-        ),
-        action = {}
-    )
+            action = {}
+        )
+
+    }
 }
