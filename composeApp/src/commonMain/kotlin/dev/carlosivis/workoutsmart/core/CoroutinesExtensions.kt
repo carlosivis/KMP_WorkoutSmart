@@ -1,4 +1,4 @@
-package dev.carlosivis.workoutsmart.Utils
+package dev.carlosivis.workoutsmart.core
 
 import app.cash.sqldelight.Transacter
 import app.cash.sqldelight.TransactionWithoutReturn

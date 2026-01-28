@@ -3,7 +3,7 @@ package dev.carlosivis.workoutsmart.database
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import app.cash.sqldelight.db.SqlDriver
-import dev.carlosivis.workoutsmart.Utils.transactionWithContext
+import dev.carlosivis.workoutsmart.core.transactionWithContext
 import dev.carlosivis.workoutsmart.models.ExerciseModel
 import dev.carlosivis.workoutsmart.models.HistoryModel
 import dev.carlosivis.workoutsmart.models.WorkoutModel

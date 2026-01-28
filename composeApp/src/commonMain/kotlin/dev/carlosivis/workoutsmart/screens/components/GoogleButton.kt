@@ -23,7 +23,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import dev.carlosivis.workoutsmart.Utils.Dimens
+import dev.carlosivis.workoutsmart.Utils.FontSizes
 import dev.carlosivis.workoutsmart.composeResources.Res
 import dev.carlosivis.workoutsmart.composeResources.ic_google
 import org.jetbrains.compose.resources.painterResource
@@ -38,7 +39,7 @@ fun GoogleButton(
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .height(48.dp)
+            .height(Dimens.ImageSizeSmall)
             .clip(RoundedCornerShape(24.dp))
             .clickable(enabled = enabled, onClick = onClick),
         color = Color.White,
@@ -49,7 +50,7 @@ fun GoogleButton(
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = Dimens.Medium),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
@@ -64,7 +65,7 @@ fun GoogleButton(
             Text(
                 text = text,
                 color = Color(0xFF3C4043),
-                fontSize = 14.sp,
+                fontSize = FontSizes.BodyMedium,
                 fontWeight = FontWeight.Medium
             )
         }

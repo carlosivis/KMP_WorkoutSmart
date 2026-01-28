@@ -33,6 +33,7 @@ kotlin {
             isStatic = true
         }
 
+        pod("FirebaseAuth")
         pod("GoogleSignIn") {
             version = "7.1.0"
         }
@@ -94,6 +95,7 @@ kotlin {
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.ktor.client.logging)
+            implementation(libs.gitlive.firebase.auth)
         }
 
         commonTest.dependencies {
@@ -109,6 +111,10 @@ kotlin {
             implementation(libs.decompose.compose)
             implementation(libs.play.services.auth)
             implementation(libs.ktor.client.cio)
+            implementation(libs.androidx.credentials.manager)
+            implementation(libs.androidx.credentials.play.services.auth)
+            implementation(libs.googleid.v110)
+
         }
 
         iosMain.dependencies {
