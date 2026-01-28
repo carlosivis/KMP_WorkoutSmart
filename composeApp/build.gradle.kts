@@ -90,6 +90,10 @@ kotlin {
             implementation(libs.multiplatform.settings.no.arg)
             implementation(libs.multiplatform.settings)
 
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.ktor.client.logging)
         }
 
         commonTest.dependencies {
@@ -104,12 +108,14 @@ kotlin {
             implementation(libs.decompose)
             implementation(libs.decompose.compose)
             implementation(libs.play.services.auth)
+            implementation(libs.ktor.client.cio)
         }
 
         iosMain.dependencies {
             implementation(libs.sqldelight.native)
             implementation(libs.decompose)
             implementation(libs.decompose.compose)
+            implementation(libs.ktor.client.darwin)
         }
 
     }
@@ -120,6 +126,10 @@ android {
     compileSdk = 36
     defaultConfig {
         minSdk = 24
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 }
 

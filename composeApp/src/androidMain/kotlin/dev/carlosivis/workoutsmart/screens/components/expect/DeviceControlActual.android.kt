@@ -1,4 +1,4 @@
-package dev.carlosivis.workoutsmart.screens.components
+package dev.carlosivis.workoutsmart.screens.components.expect
 
 import android.Manifest
 import android.app.Activity
