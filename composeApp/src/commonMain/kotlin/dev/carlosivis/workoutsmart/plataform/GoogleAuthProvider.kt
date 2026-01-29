@@ -1,9 +1,7 @@
 package dev.carlosivis.workoutsmart.plataform
 
-interface GoogleAuthProvider {
-    suspend fun signIn(): GoogleAuthResult
-}
+import dev.gitlive.firebase.auth.AuthCredential
 
-data class GoogleAuthResult(
-    val idToken: String,
-)
+interface GoogleAuthProvider {
+    suspend fun getCredential(): AuthCredential?
+}

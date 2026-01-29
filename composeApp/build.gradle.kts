@@ -1,6 +1,8 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
+import java.io.FileInputStream
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -132,6 +134,25 @@ android {
     compileSdk = 36
     defaultConfig {
         minSdk = 24
+        val localProperties = Properties()
+        val localPropertiesFile = rootProject.file("local.properties")
+        if (localPropertiesFile.exists()) {
+            FileInputStream(localPropertiesFile).use { stream ->
+                localProperties.load(stream)
+            }
+        }
+
+        val webClientId: String = localProperties.getProperty("WEB_CLIENT_ID")
+            ?: error("WEB_CLIENT_ID not found in local.properties")
+
+        buildConfigField(
+            "String",
+            "WEB_CLIENT_ID",
+            "\"$webClientId\""
+        )
+    }
+    buildFeatures {
+        buildConfig = true
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8

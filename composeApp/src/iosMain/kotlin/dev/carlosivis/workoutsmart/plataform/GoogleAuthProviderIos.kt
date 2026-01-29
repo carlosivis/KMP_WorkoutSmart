@@ -1,46 +1,39 @@
 package dev.carlosivis.workoutsmart.plataform
 
-import cocoapods.FirebaseCore.FIRApp
-import dev.gitlive.firebase.FirebaseApp
+import cocoapods.GoogleSignIn.GIDSignIn
+import dev.gitlive.firebase.auth.AuthCredential
+import dev.gitlive.firebase.auth.GoogleAuthProvider
 import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.coroutines.suspendCancellableCoroutine
 import platform.UIKit.UIApplication
-import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
-class GoogleAuthProviderIOS : GoogleAuthProvider {
+class GoogleAuthProviderIos : dev.carlosivis.workoutsmart.plataform.GoogleAuthProvider {
 
     @OptIn(ExperimentalForeignApi::class)
-    override suspend fun signIn(): GoogleAuthResult =
-        suspendCancellableCoroutine { cont ->
+    override suspend fun getCredential(): AuthCredential? {
+        return suspendCoroutine { continuation ->
+            val rootViewController = UIApplication.sharedApplication.keyWindow?.rootViewController
 
-            val clientId = FIRApp.defaultApp()
-                ?.options
-                ?.clientID
-                ?: error("Firebase clientID not found")
+            if (rootViewController == null) {
+                continuation.resume(null)
+                return@suspendCoroutine
+            }
 
-            val config = GIDConfiguration(clientID = clientId)
-
-            val rootVC = UIApplication.sharedApplication
-                .keyWindow
-                ?.rootViewController
-                ?: error("No rootViewController")
-
-            GIDSignIn.sharedInstance.signInWithConfiguration(
-                configuration = config,
-                presentingViewController = rootVC
-            ) { user, error ->
-
+            GIDSignIn.sharedInstance.signInWithPresentingViewController(rootViewController) { result, error ->
                 if (error != null) {
-                    cont.resumeWithException(error)
-                    return@signInWithConfiguration
+                    continuation.resume(null)
+                } else {
+                    val idToken = result?.user?.idToken?.tokenString
+                    val accessToken = result?.user?.accessToken?.tokenString
+
+                    if (idToken != null && accessToken != null) {
+                        continuation.resume(GoogleAuthProvider.credential(idToken, accessToken))
+                    } else {
+                        continuation.resume(null)
+                    }
                 }
-
-                val idToken = user
-                    ?.authentication
-                    ?.idToken
-                    ?: error("Missing idToken")
-
-                cont.resume(GoogleAuthResult(idToken))
             }
         }
+    }
 }

@@ -2,8 +2,11 @@ package dev.carlosivis.workoutsmart.di
 
 import com.russhwolf.settings.Settings
 import dev.carlosivis.workoutsmart.database.DatabaseHelper
+import dev.carlosivis.workoutsmart.domain.LoginGoogleUseCase
 import dev.carlosivis.workoutsmart.models.WorkoutModel
 import dev.carlosivis.workoutsmart.navigation.navigator.HomeNavigator
+import dev.carlosivis.workoutsmart.repository.AuthRepository
+import dev.carlosivis.workoutsmart.repository.AuthRepositoryImpl
 import dev.carlosivis.workoutsmart.repository.SettingsRepository
 import dev.carlosivis.workoutsmart.repository.SettingsRepositoryImpl
 import dev.carlosivis.workoutsmart.repository.WorkoutRepository
@@ -11,14 +14,19 @@ import dev.carlosivis.workoutsmart.repository.WorkoutRepositoryImpl
 import dev.carlosivis.workoutsmart.screens.activeWorkout.ActiveWorkoutViewModel
 import dev.carlosivis.workoutsmart.screens.createWorkout.CreateWorkoutViewModel
 import dev.carlosivis.workoutsmart.screens.home.HomeViewModel
+import dev.carlosivis.workoutsmart.screens.login.LoginViewModel
+import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.auth.auth
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.logging.DEFAULT
+import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
-import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.serialization.json.Json
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.viewModel
@@ -36,14 +44,18 @@ val networkModule = module {
         HttpClient {
             install(ContentNegotiation) {
                 json(Json {
+                    ignoreUnknownKeys = true
                     prettyPrint = true
                     isLenient = true
-                    ignoreUnknownKeys = true
                 })
             }
             install(Logging) {
-                logger = Logger.DEFAULT
-                level = LogLevel.ALL
+                level = LogLevel.INFO
+            }
+            defaultRequest {
+                // Use 10.0.2.2 to emulator Android, or put your IP local/URL
+                url("http://10.0.2.2:8080/")
+                contentType(ContentType.Application.Json)
             }
         }
     }
@@ -77,4 +89,19 @@ val commonModule = module {
     single<SettingsRepository>{
         SettingsRepositoryImpl(get())
     }
+
+    single { Firebase.auth }
+
+    single<AuthRepository> { AuthRepositoryImpl(get(), get(), get()) }
+
+    single { Dispatchers.IO }
+
+    factory {
+        LoginGoogleUseCase(
+            repository = get(),
+            dispatcher = get()
+        )
+    }
+
+    viewModel { LoginViewModel(get()) }
 }
