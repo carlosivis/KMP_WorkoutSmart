@@ -13,6 +13,7 @@ import dev.carlosivis.workoutsmart.repository.SettingsRepository
 import dev.carlosivis.workoutsmart.screens.activeWorkout.ActiveWorkoutScreen
 import dev.carlosivis.workoutsmart.screens.createWorkout.CreateWorkoutScreen
 import dev.carlosivis.workoutsmart.screens.home.HomeScreen
+import dev.carlosivis.workoutsmart.screens.login.LoginScreen
 import dev.carlosivis.workoutsmart.screens.settings.SettingsScreen
 import org.koin.compose.koinInject
 
@@ -34,6 +35,7 @@ fun App(root: RootComponent) {
                 is RootComponent.Child.ActiveWorkout -> ActiveWorkoutScreen(instance.component.viewModel)
                 is RootComponent.Child.EditWorkout -> CreateWorkoutScreen(instance.component.viewModel)
                 is RootComponent.Child.Settings -> SettingsScreen(instance.component.viewModel)
+                is RootComponent.Child.Login -> LoginScreen(instance.component.viewModel)
             }
         }
     }

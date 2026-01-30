@@ -6,5 +6,6 @@ data class HomeNavigator(
     val toCreateWorkout: () -> Unit,
     val toActiveWorkout: (WorkoutModel) -> Unit,
     val toEditWorkout: (WorkoutModel) -> Unit,
-    val toSettings: () -> Unit
+    val toSettings: () -> Unit,
+    val toLogin: () -> Unit
 )

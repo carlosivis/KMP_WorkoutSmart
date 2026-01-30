@@ -9,7 +9,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
-    private val loginGoogleUseCase: LoginGoogleUseCase
+    private val loginGoogleUseCase: LoginGoogleUseCase,
+    private val onNavigateBack: () -> Unit
 ) : ViewModel() {
     private val _state = MutableStateFlow(LoginViewState())
     val state = _state.asStateFlow()
@@ -17,7 +18,7 @@ class LoginViewModel(
     fun dispatchAction(action: LoginViewAction) {
         when (action) {
             LoginViewAction.GoogleLogin -> onGoogleLoginClick()
-            LoginViewAction.NavigateBack -> TODO()
+            LoginViewAction.NavigateBack -> onNavigateBack()
         }
     }
 

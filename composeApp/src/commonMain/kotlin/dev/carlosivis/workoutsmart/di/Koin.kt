@@ -1,6 +1,8 @@
 package dev.carlosivis.workoutsmart.di
 
 import com.russhwolf.settings.Settings
+import dev.carlosivis.workoutsmart.data.remote.datasource.AuthRemoteDataSource
+import dev.carlosivis.workoutsmart.data.remote.datasource.AuthRemoteDataSourceImpl
 import dev.carlosivis.workoutsmart.database.DatabaseHelper
 import dev.carlosivis.workoutsmart.domain.LoginGoogleUseCase
 import dev.carlosivis.workoutsmart.models.WorkoutModel
@@ -64,7 +66,8 @@ val networkModule = module {
 @OptIn(ExperimentalTime::class)
 val commonModule = module {
     viewModel { (navigator: HomeNavigator) ->
-        HomeViewModel(get(), navigator) }
+        HomeViewModel(get(), navigator)
+    }
     viewModel { (workout: WorkoutModel, onNavigateBack: () -> Unit) ->
         ActiveWorkoutViewModel(workout, get(), get(), onNavigateBack, get())
     }
@@ -86,7 +89,7 @@ val commonModule = module {
 
     single<Settings> { Settings() }
 
-    single<SettingsRepository>{
+    single<SettingsRepository> {
         SettingsRepositoryImpl(get())
     }
 
@@ -103,5 +106,10 @@ val commonModule = module {
         )
     }
 
-    viewModel { LoginViewModel(get()) }
+    viewModel { (onNavigateBack: () -> Unit) ->
+        LoginViewModel(get(), onNavigateBack) }
+
+    single<AuthRemoteDataSource> { AuthRemoteDataSourceImpl(get()) }
+
+    single<AuthRepository> { AuthRepositoryImpl(get(), get(), get()) }
 }

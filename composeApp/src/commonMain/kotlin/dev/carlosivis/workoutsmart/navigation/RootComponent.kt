@@ -42,7 +42,8 @@ class RootComponent(
                         toEditWorkout = { workout -> navigation.push(
                                 Configuration.EditWorkout(workout)
                             ) },
-                        toSettings = { navigation.push(Configuration.Settings) }
+                        toSettings = { navigation.push(Configuration.Settings) },
+                        toLogin = { navigation.push(Configuration.Login) }
                     )
                 )
             )
@@ -76,6 +77,13 @@ class RootComponent(
                     onNavigateBack = { navigation.pop() }
                 )
             )
+
+            is Configuration.Login -> Child.Login(
+                LoginComponent(
+                    componentContext = context,
+                    onNavigateBack = { navigation.pop() }
+                )
+            )
         }
     }
 
@@ -85,6 +93,7 @@ class RootComponent(
         data class EditWorkout(val component: CreateWorkoutComponent) : Child()
         data class ActiveWorkout(val component: ActiveWorkoutComponent) : Child()
         data class Settings(val component: SettingsComponent) : Child()
+        data class Login(val component: LoginComponent) : Child()
     }
 }
 
@@ -104,4 +113,7 @@ sealed class Configuration {
 
     @Serializable
     data object Settings : Configuration()
+
+    @Serializable
+    data object Login : Configuration()
 }
