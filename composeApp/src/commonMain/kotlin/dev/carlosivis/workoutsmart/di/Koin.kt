@@ -1,6 +1,10 @@
 package dev.carlosivis.workoutsmart.di
 
 import com.russhwolf.settings.Settings
+import dev.carlosivis.workoutsmart.data.local.datasource.SettingsLocalDataSource
+import dev.carlosivis.workoutsmart.data.local.datasource.SettingsLocalDataSourceImpl
+import dev.carlosivis.workoutsmart.data.local.datasource.UserLocalDataSource
+import dev.carlosivis.workoutsmart.data.local.datasource.UserLocalDataSourceImpl
 import dev.carlosivis.workoutsmart.data.remote.datasource.AuthRemoteDataSource
 import dev.carlosivis.workoutsmart.data.remote.datasource.AuthRemoteDataSourceImpl
 import dev.carlosivis.workoutsmart.database.DatabaseHelper
@@ -95,8 +99,6 @@ val commonModule = module {
 
     single { Firebase.auth }
 
-    single<AuthRepository> { AuthRepositoryImpl(get(), get(), get()) }
-
     single { Dispatchers.IO }
 
     factory {
@@ -111,5 +113,10 @@ val commonModule = module {
 
     single<AuthRemoteDataSource> { AuthRemoteDataSourceImpl(get()) }
 
-    single<AuthRepository> { AuthRepositoryImpl(get(), get(), get()) }
+    single<AuthRepository> { AuthRepositoryImpl(get(), get(), get(), get()) }
+
+    single<SettingsLocalDataSource> { SettingsLocalDataSourceImpl(get()) }
+
+    single<UserLocalDataSource> { UserLocalDataSourceImpl(get()) }
+
 }
