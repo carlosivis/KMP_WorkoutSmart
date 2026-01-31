@@ -14,9 +14,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Login
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -115,6 +117,10 @@ fun Content(
                     stringResource(Res.string.home_screen_title), fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center, fontSize = FontSizes.TitleMedium
                 )
+
+                ProfileTopBarIcon(Modifier.align(Alignment.CenterStart),
+                    false,
+                    {action(HomeViewAction.Navigate.Login)})
 
                 IconButton(
                     onClick = { action(HomeViewAction.Navigate.Settings) },
@@ -229,6 +235,20 @@ private fun HistoryCard(history: HistoryModel) {
             modifier = Modifier.padding(Dimens.Medium),
             fontSize = FontSizes.BodyLarge
         )
+    }
+}
+
+@Composable
+fun ProfileTopBarIcon(modifier: Modifier,isLoggedIn: Boolean, onIconClick: () -> Unit) {
+    IconButton(modifier = modifier,
+        onClick = onIconClick) {
+        if (isLoggedIn) {
+            // Se logado, mostra foto ou ícone de usuário
+            Icon(Icons.Default.Person, contentDescription = "Meu Perfil")
+        } else {
+            // Se deslogado, mostra ícone de Login evidente
+            Icon(Icons.AutoMirrored.Filled.Login, contentDescription = "Entrar")
+        }
     }
 }
 

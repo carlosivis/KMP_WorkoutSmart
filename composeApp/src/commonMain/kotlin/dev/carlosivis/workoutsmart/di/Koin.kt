@@ -7,6 +7,7 @@ import dev.carlosivis.workoutsmart.data.local.datasource.UserLocalDataSource
 import dev.carlosivis.workoutsmart.data.local.datasource.UserLocalDataSourceImpl
 import dev.carlosivis.workoutsmart.data.remote.datasource.AuthRemoteDataSource
 import dev.carlosivis.workoutsmart.data.remote.datasource.AuthRemoteDataSourceImpl
+import dev.carlosivis.workoutsmart.data.remote.service.AuthService
 import dev.carlosivis.workoutsmart.database.DatabaseHelper
 import dev.carlosivis.workoutsmart.domain.LoginGoogleUseCase
 import dev.carlosivis.workoutsmart.models.WorkoutModel
@@ -119,4 +120,5 @@ val commonModule = module {
 
     single<UserLocalDataSource> { UserLocalDataSourceImpl(get()) }
 
+    single { AuthService(get()) }
 }
