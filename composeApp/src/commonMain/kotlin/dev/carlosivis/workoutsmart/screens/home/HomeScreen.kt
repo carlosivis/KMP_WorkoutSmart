@@ -19,7 +19,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -118,16 +117,10 @@ fun Content(
                     textAlign = TextAlign.Center, fontSize = FontSizes.TitleMedium
                 )
 
-                ProfileTopBarIcon(Modifier.align(Alignment.CenterStart),
+                ProfileTopBarIcon(Modifier.align(Alignment.CenterEnd),
                     false,
                     {action(HomeViewAction.Navigate.Login)})
 
-                IconButton(
-                    onClick = { action(HomeViewAction.Navigate.Settings) },
-                    modifier = Modifier.align(Alignment.CenterEnd)
-                ) {
-                    Icon(Icons.Filled.Settings, stringResource(Res.string.delete_action))
-                }
             }
             Text(
                 stringResource(Res.string.saved_workouts_section_title),

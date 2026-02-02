@@ -12,6 +12,7 @@ import dev.carlosivis.workoutsmart.database.DatabaseHelper
 import dev.carlosivis.workoutsmart.domain.LoginGoogleUseCase
 import dev.carlosivis.workoutsmart.models.WorkoutModel
 import dev.carlosivis.workoutsmart.navigation.navigator.HomeNavigator
+import dev.carlosivis.workoutsmart.navigation.navigator.ProfileNavigator
 import dev.carlosivis.workoutsmart.repository.AuthRepository
 import dev.carlosivis.workoutsmart.repository.AuthRepositoryImpl
 import dev.carlosivis.workoutsmart.repository.SettingsRepository
@@ -109,8 +110,8 @@ val commonModule = module {
         )
     }
 
-    viewModel { (onNavigateBack: () -> Unit) ->
-        LoginViewModel(get(), onNavigateBack) }
+    viewModel { (navigator: ProfileNavigator) ->
+        LoginViewModel(get(), navigator) }
 
     single<AuthRemoteDataSource> { AuthRemoteDataSourceImpl(get()) }
 

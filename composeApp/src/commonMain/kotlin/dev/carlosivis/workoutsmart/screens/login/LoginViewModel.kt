@@ -3,6 +3,7 @@ package dev.carlosivis.workoutsmart.screens.login
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.carlosivis.workoutsmart.domain.LoginGoogleUseCase
+import dev.carlosivis.workoutsmart.navigation.navigator.ProfileNavigator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -10,7 +11,7 @@ import kotlinx.coroutines.launch
 
 class LoginViewModel(
     private val loginGoogleUseCase: LoginGoogleUseCase,
-    private val onNavigateBack: () -> Unit
+    private val navigator: ProfileNavigator
 ) : ViewModel() {
     private val _state = MutableStateFlow(LoginViewState())
     val state = _state.asStateFlow()
@@ -18,7 +19,8 @@ class LoginViewModel(
     fun dispatchAction(action: LoginViewAction) {
         when (action) {
             LoginViewAction.GoogleLogin -> onGoogleLoginClick()
-            LoginViewAction.NavigateBack -> onNavigateBack()
+            LoginViewAction.Navigate.Back -> navigator.back()
+            LoginViewAction.Navigate.Settings -> navigator.toSettings()
         }
     }
 

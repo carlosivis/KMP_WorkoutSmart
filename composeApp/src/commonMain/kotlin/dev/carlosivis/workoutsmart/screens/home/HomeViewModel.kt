@@ -30,7 +30,6 @@ class HomeViewModel(
             is HomeViewAction.AttemptDeleteWorkout -> attemptDeleteWorkout(action.workout)
             is HomeViewAction.ConfirmDeleteWorkout -> deleteWorkout()
             is HomeViewAction.CancelDeleteWorkout -> cancelDeleteWorkout()
-            is HomeViewAction.Navigate.Settings -> navigator.toSettings()
         }
     }
 
