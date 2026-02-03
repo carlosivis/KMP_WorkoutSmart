@@ -1,6 +1,7 @@
 package dev.carlosivis.workoutsmart.di
 
 import com.russhwolf.settings.Settings
+import dev.carlosivis.workoutsmart.BuildConfig
 import dev.carlosivis.workoutsmart.data.local.datasource.SettingsLocalDataSource
 import dev.carlosivis.workoutsmart.data.local.datasource.SettingsLocalDataSourceImpl
 import dev.carlosivis.workoutsmart.data.local.datasource.UserLocalDataSource
@@ -61,8 +62,7 @@ val networkModule = module {
                 level = LogLevel.INFO
             }
             defaultRequest {
-                // Use 10.0.2.2 to emulator Android, or put your IP local/URL
-                url("http://10.0.2.2:8080/")
+                url(BuildConfig.BASE_URL)
                 contentType(ContentType.Application.Json)
             }
         }

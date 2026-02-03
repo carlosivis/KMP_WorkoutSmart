@@ -6,7 +6,7 @@ import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
-import dev.carlosivis.workoutsmart.BuildConfig
+import dev.carlosivis.workoutsmart.AndroidMainBuildConfig
 import dev.gitlive.firebase.auth.AuthCredential
 import dev.gitlive.firebase.auth.GoogleAuthProvider
 
@@ -21,7 +21,7 @@ class GoogleAuthProviderAndroid(
 
             val googleIdOption = GetGoogleIdOption.Builder()
                 .setFilterByAuthorizedAccounts(false)
-                .setServerClientId(BuildConfig.WEB_CLIENT_ID)
+                .setServerClientId(AndroidMainBuildConfig.WEB_CLIENT_ID)
                 .setAutoSelectEnabled(false)
                 .build()
 

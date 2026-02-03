@@ -10,8 +10,24 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.sqldelight)
+    alias(libs.plugins.build.config)
     kotlin("native.cocoapods")
 }
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    FileInputStream(localPropertiesFile).use { stream ->
+        localProperties.load(stream)
+    }
+}
+
+val webClientId: String = localProperties.getProperty("WEB_CLIENT_ID")
+    ?: error("WEB_CLIENT_ID not found in local.properties")
+
+val baseUrl: String = localProperties.getProperty("BASE_URL")
+    ?: error("BASE_URL not found in local.properties")
+
 
 kotlin {
     androidTarget {
@@ -134,29 +150,28 @@ android {
     compileSdk = 36
     defaultConfig {
         minSdk = 24
-        val localProperties = Properties()
-        val localPropertiesFile = rootProject.file("local.properties")
-        if (localPropertiesFile.exists()) {
-            FileInputStream(localPropertiesFile).use { stream ->
-                localProperties.load(stream)
-            }
-        }
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+}
 
-        val webClientId: String = localProperties.getProperty("WEB_CLIENT_ID")
-            ?: error("WEB_CLIENT_ID not found in local.properties")
+buildConfig {
+    packageName = "dev.carlosivis.workoutsmart"
 
+    buildConfigField(
+        "String",
+        "BASE_URL",
+        "\"$baseUrl\""
+    )
+
+    sourceSets.named("androidMain") {
         buildConfigField(
             "String",
             "WEB_CLIENT_ID",
             "\"$webClientId\""
         )
-    }
-    buildFeatures {
-        buildConfig = true
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
     }
 }
 
@@ -167,7 +182,7 @@ sqldelight {
         }
     }
 }
-compose.resources{
+compose.resources {
     packageOfResClass = "dev.carlosivis.workoutsmart.composeResources"
     generateResClass = auto
 }
