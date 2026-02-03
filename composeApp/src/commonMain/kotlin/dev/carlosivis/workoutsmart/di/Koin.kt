@@ -23,7 +23,7 @@ import dev.carlosivis.workoutsmart.repository.WorkoutRepositoryImpl
 import dev.carlosivis.workoutsmart.screens.activeWorkout.ActiveWorkoutViewModel
 import dev.carlosivis.workoutsmart.screens.createWorkout.CreateWorkoutViewModel
 import dev.carlosivis.workoutsmart.screens.home.HomeViewModel
-import dev.carlosivis.workoutsmart.screens.login.LoginViewModel
+import dev.carlosivis.workoutsmart.screens.profile.ProfileViewModel
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
 import io.ktor.client.HttpClient
@@ -111,7 +111,7 @@ val commonModule = module {
     }
 
     viewModel { (navigator: ProfileNavigator) ->
-        LoginViewModel(get(), navigator) }
+        ProfileViewModel(get(), navigator) }
 
     single<AuthRemoteDataSource> { AuthRemoteDataSourceImpl(get()) }
 

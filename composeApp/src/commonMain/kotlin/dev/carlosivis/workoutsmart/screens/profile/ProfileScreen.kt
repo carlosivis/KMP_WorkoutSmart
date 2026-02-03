@@ -1,4 +1,4 @@
-package dev.carlosivis.workoutsmart.screens.login
+package dev.carlosivis.workoutsmart.screens.profile
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,11 +25,11 @@ import dev.carlosivis.workoutsmart.screens.components.GoogleButton
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun LoginScreen(
-    viewModel: LoginViewModel
+fun ProfileScreen(
+    viewModel: ProfileViewModel
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val action: (LoginViewAction) -> Unit = viewModel::dispatchAction
+    val action: (ProfileViewAction) -> Unit = viewModel::dispatchAction
 
     Content(
         state = state,
@@ -40,8 +40,8 @@ fun LoginScreen(
 
 @Composable
 private fun Content(
-    state: LoginViewState,
-    action: (LoginViewAction) -> Unit
+    state: ProfileViewState,
+    action: (ProfileViewAction) -> Unit
 ) {
 
     Scaffold { paddingValues ->
@@ -56,7 +56,7 @@ private fun Content(
                 contentAlignment = Alignment.Center
             ){
                 IconButton(
-                    onClick = { action(LoginViewAction.Navigate.Back) },
+                    onClick = { action(ProfileViewAction.Navigate.Back) },
                     modifier = Modifier.align(Alignment.CenterStart)
                 ) {
                     Icon(
@@ -66,7 +66,7 @@ private fun Content(
                 }
 
                 IconButton(
-                    onClick = { action(LoginViewAction.Navigate.Settings) },
+                    onClick = { action(ProfileViewAction.Navigate.Settings) },
                     modifier = Modifier.align(Alignment.CenterEnd)
                 ) {
                     Icon(Icons.Filled.Settings,
@@ -76,7 +76,7 @@ private fun Content(
             GoogleButton(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 enabled = !state.isLoading,
-                onClick = { action(LoginViewAction.GoogleLogin) }
+                onClick = { action(ProfileViewAction.GoogleLogin) }
             )
         }
     }
@@ -86,7 +86,7 @@ private fun Content(
 @Composable
 private fun ContentPreview() {
     Content(
-        state = LoginViewState(),
+        state = ProfileViewState(),
         action = {}
     )
 }

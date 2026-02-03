@@ -1,4 +1,4 @@
-package dev.carlosivis.workoutsmart.screens.login
+package dev.carlosivis.workoutsmart.screens.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,18 +9,18 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class LoginViewModel(
+class ProfileViewModel(
     private val loginGoogleUseCase: LoginGoogleUseCase,
     private val navigator: ProfileNavigator
 ) : ViewModel() {
-    private val _state = MutableStateFlow(LoginViewState())
+    private val _state = MutableStateFlow(ProfileViewState())
     val state = _state.asStateFlow()
 
-    fun dispatchAction(action: LoginViewAction) {
+    fun dispatchAction(action: ProfileViewAction) {
         when (action) {
-            LoginViewAction.GoogleLogin -> onGoogleLoginClick()
-            LoginViewAction.Navigate.Back -> navigator.back()
-            LoginViewAction.Navigate.Settings -> navigator.toSettings()
+            ProfileViewAction.GoogleLogin -> onGoogleLoginClick()
+            ProfileViewAction.Navigate.Back -> navigator.back()
+            ProfileViewAction.Navigate.Settings -> navigator.toSettings()
         }
     }
 
