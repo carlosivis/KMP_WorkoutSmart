@@ -27,6 +27,7 @@ class AuthRepositoryImpl(
 
             return dataSource.loginWithBackend(firebaseUser).onSuccess {
                 userLocalDataSource.saveUserToken(firebaseToken)
+                userLocalDataSource.saveUser(it)
             }
 
         } catch (e: Exception) {
@@ -34,5 +35,15 @@ class AuthRepositoryImpl(
             e.printStackTrace()
             Result.failure(e)
         }
+    }
+
+    override suspend fun logout(): Result<Unit> {
+        auth.signOut()
+        userLocalDataSource.clearUserData()
+        return Result.success(Unit)
+    }
+
+    override suspend fun getUser(): Result<UserResponse?> {
+        return Result.success(userLocalDataSource.getUser())
     }
 }

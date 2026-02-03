@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class LoginRequest(
     val email: String,
     val displayName: String? = null,
-    //val photoUrl: String? = null
+    val photoUrl: String? = null
 )
 
 @Serializable

@@ -10,6 +10,7 @@ import dev.carlosivis.workoutsmart.data.remote.datasource.AuthRemoteDataSource
 import dev.carlosivis.workoutsmart.data.remote.datasource.AuthRemoteDataSourceImpl
 import dev.carlosivis.workoutsmart.data.remote.service.AuthService
 import dev.carlosivis.workoutsmart.database.DatabaseHelper
+import dev.carlosivis.workoutsmart.domain.GetUserUseCase
 import dev.carlosivis.workoutsmart.domain.LoginGoogleUseCase
 import dev.carlosivis.workoutsmart.models.WorkoutModel
 import dev.carlosivis.workoutsmart.navigation.navigator.HomeNavigator
@@ -109,9 +110,16 @@ val commonModule = module {
             dispatcher = get()
         )
     }
+    factory {
+        GetUserUseCase(
+            repository = get(),
+            dispatcher = get()
+        )
+    }
 
     viewModel { (navigator: ProfileNavigator) ->
-        ProfileViewModel(get(), navigator) }
+        ProfileViewModel(get(), get(), navigator)
+    }
 
     single<AuthRemoteDataSource> { AuthRemoteDataSourceImpl(get()) }
 

@@ -12,6 +12,7 @@ class ProfileComponent(
 ) : ComponentContext by componentContext, KoinComponent {
     val viewModel = ProfileViewModel(
         loginGoogleUseCase = get(),
+        getUserUseCase = get(),
         navigator = navigator
     )
 }

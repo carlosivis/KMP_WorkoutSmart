@@ -26,7 +26,7 @@ class HomeViewModel(
             is HomeViewAction.Navigate.CreateWorkout -> navigator.toCreateWorkout()
             is HomeViewAction.Navigate.Workout -> navigator.toActiveWorkout(action.workout)
             is HomeViewAction.Navigate.Edit -> navigator.toEditWorkout(action.workout)
-            is HomeViewAction.Navigate.Login -> navigator.toProfile()
+            is HomeViewAction.Navigate.Profile -> navigator.toProfile()
             is HomeViewAction.AttemptDeleteWorkout -> attemptDeleteWorkout(action.workout)
             is HomeViewAction.ConfirmDeleteWorkout -> deleteWorkout()
             is HomeViewAction.CancelDeleteWorkout -> cancelDeleteWorkout()

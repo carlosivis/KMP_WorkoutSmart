@@ -119,7 +119,7 @@ fun Content(
 
                 ProfileTopBarIcon(Modifier.align(Alignment.CenterEnd),
                     false,
-                    {action(HomeViewAction.Navigate.Login)})
+                    {action(HomeViewAction.Navigate.Profile)})
 
             }
             Text(

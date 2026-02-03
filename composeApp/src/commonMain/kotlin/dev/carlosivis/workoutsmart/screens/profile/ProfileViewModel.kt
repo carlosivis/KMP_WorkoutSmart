@@ -2,6 +2,7 @@ package dev.carlosivis.workoutsmart.screens.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.carlosivis.workoutsmart.domain.GetUserUseCase
 import dev.carlosivis.workoutsmart.domain.LoginGoogleUseCase
 import dev.carlosivis.workoutsmart.navigation.navigator.ProfileNavigator
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,10 +12,15 @@ import kotlinx.coroutines.launch
 
 class ProfileViewModel(
     private val loginGoogleUseCase: LoginGoogleUseCase,
+    private val getUserUseCase: GetUserUseCase,
     private val navigator: ProfileNavigator
 ) : ViewModel() {
     private val _state = MutableStateFlow(ProfileViewState())
     val state = _state.asStateFlow()
+
+    init {
+        getUser()
+    }
 
     fun dispatchAction(action: ProfileViewAction) {
         when (action) {
@@ -28,17 +34,29 @@ class ProfileViewModel(
         _state.update { it.copy(isLoading = isLoading) }
     }
 
-    fun onGoogleLoginClick() {
+    private fun onGoogleLoginClick() {
         viewModelScope.launch {
             setLoading(true)
             loginGoogleUseCase(Unit)
                 .onSuccess { userResponse ->
-                    _state.update { it.copy(loginMessage = "Bem vindo ${userResponse.displayName}") }
+                    _state.update { it.copy(isLoading = false, user = userResponse) }
                 }
                 .onFailure { error ->
                     _state.update { it.copy(isLoading = false, error = error.message) }
                 }
-            setLoading(false)
+        }
+    }
+
+    private fun getUser() {
+        viewModelScope.launch {
+            setLoading(true)
+            getUserUseCase(Unit)
+                .onSuccess {
+                    _state.update { it.copy(isLoading = false, user = it.user) }
+                }
+                .onFailure { error ->
+                    _state.update { it.copy(isLoading = false, error = error.message) }
+                }
         }
     }
 }

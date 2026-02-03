@@ -16,7 +16,7 @@ class AuthRemoteDataSourceImpl(
             val request = LoginRequest(
                 email = firebaseUser.email ?: "",
                 displayName = firebaseUser.displayName,
-                //photoUrl = firebaseUser.photoURL
+                photoUrl = firebaseUser.photoURL
             )
             val token = firebaseUser.getIdToken(false)
                 ?: return Result.failure(Exception("Não foi possível obter o token de autenticação"))
