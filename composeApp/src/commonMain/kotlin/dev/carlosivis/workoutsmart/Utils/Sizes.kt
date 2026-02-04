@@ -4,7 +4,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 object Dimens {
-    val ExtraSmall = 4.dp
+    val ExtraSmall = 2.dp
     val Small = 8.dp
     val Medium = 16.dp
     val Large = 24.dp

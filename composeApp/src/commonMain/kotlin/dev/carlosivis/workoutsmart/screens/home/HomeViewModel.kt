@@ -2,6 +2,7 @@ package dev.carlosivis.workoutsmart.screens.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.carlosivis.workoutsmart.domain.GetUserUseCase
 import dev.carlosivis.workoutsmart.models.WorkoutModel
 import dev.carlosivis.workoutsmart.navigation.navigator.HomeNavigator
 import dev.carlosivis.workoutsmart.repository.WorkoutRepository
@@ -12,6 +13,7 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel(
     private val repository: WorkoutRepository,
+    private val getUserUseCase: GetUserUseCase,
     private val navigator: HomeNavigator
 ): ViewModel() {
     private val _state = MutableStateFlow(HomeViewState())
@@ -26,10 +28,11 @@ class HomeViewModel(
             is HomeViewAction.Navigate.CreateWorkout -> navigator.toCreateWorkout()
             is HomeViewAction.Navigate.Workout -> navigator.toActiveWorkout(action.workout)
             is HomeViewAction.Navigate.Edit -> navigator.toEditWorkout(action.workout)
+            is HomeViewAction.Navigate.Profile -> navigator.toProfile()
             is HomeViewAction.AttemptDeleteWorkout -> attemptDeleteWorkout(action.workout)
             is HomeViewAction.ConfirmDeleteWorkout -> deleteWorkout()
             is HomeViewAction.CancelDeleteWorkout -> cancelDeleteWorkout()
-            is HomeViewAction.Navigate.Settings -> navigator.toSettings()
+            is HomeViewAction.GetUserProfile -> getUser()
         }
     }
 
@@ -84,6 +87,20 @@ class HomeViewModel(
                     cancelDeleteWorkout()
                 }
             }
+        }
+    }
+
+    private fun getUser(){
+        viewModelScope.launch {
+            setLoading(true)
+            getUserUseCase(Unit)
+                .onSuccess { user ->
+                    _state.update { it.copy(user = user) }
+                 }
+                .onFailure { error ->
+                    _state.update { it.copy(error = error.message) }
+                }
+            setLoading(false)
         }
     }
 }

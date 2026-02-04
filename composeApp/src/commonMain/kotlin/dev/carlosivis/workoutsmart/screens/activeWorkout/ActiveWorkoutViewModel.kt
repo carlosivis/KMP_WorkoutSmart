@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dev.carlosivis.workoutsmart.models.WorkoutModel
 import dev.carlosivis.workoutsmart.repository.SettingsRepository
 import dev.carlosivis.workoutsmart.repository.WorkoutRepository
-import dev.carlosivis.workoutsmart.screens.components.VibratorHelper
+import dev.carlosivis.workoutsmart.screens.components.expect.VibratorHelper
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow

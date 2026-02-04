@@ -1,0 +1,56 @@
+package dev.carlosivis.workoutsmart.repository
+
+import dev.carlosivis.workoutsmart.data.local.datasource.UserLocalDataSource
+import dev.carlosivis.workoutsmart.data.remote.datasource.AuthRemoteDataSource
+import dev.carlosivis.workoutsmart.models.UserResponse
+import dev.carlosivis.workoutsmart.plataform.GoogleAuthProvider
+import dev.gitlive.firebase.auth.FirebaseAuth
+
+class AuthRepositoryImpl(
+    private val auth: FirebaseAuth,
+    private val googleAuth: GoogleAuthProvider,
+    private val dataSource: AuthRemoteDataSource,
+    private val userLocalDataSource: UserLocalDataSource
+) : AuthRepository {
+
+    override suspend fun loginWithGoogle(): Result<UserResponse> {
+        return try {
+            val credential = googleAuth.getCredential()
+                ?: return Result.failure(Exception("Login cancelado pelo usuário"))
+
+            val authResult = auth.signInWithCredential(credential)
+            val firebaseUser = authResult.user
+                ?: return Result.failure(Exception("Falha ao recuperar usuário Firebase"))
+
+            val firebaseToken = firebaseUser.getIdToken(false)
+                ?: return Result.failure(Exception("Falha ao obter token"))
+
+            val result = dataSource.loginWithBackend(firebaseUser)
+
+            result.onSuccess {
+                userLocalDataSource.saveUserToken(firebaseToken)
+                userLocalDataSource.saveUser(it)
+            }.onFailure {
+                it.printStackTrace()
+            }
+
+            return result
+
+        } catch (e: Exception) {
+            auth.signOut()
+            userLocalDataSource.clearUserData()
+            e.printStackTrace()
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun logout(): Result<Unit> {
+        auth.signOut()
+        userLocalDataSource.clearUserData()
+        return Result.success(Unit)
+    }
+
+    override suspend fun getUser(): Result<UserResponse?> {
+        return Result.success(userLocalDataSource.getUser())
+    }
+}

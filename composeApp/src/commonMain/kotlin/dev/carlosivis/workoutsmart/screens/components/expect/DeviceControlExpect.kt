@@ -1,4 +1,4 @@
-package dev.carlosivis.workoutsmart.screens.components
+package dev.carlosivis.workoutsmart.screens.components.expect
 
 import androidx.compose.runtime.Composable
 

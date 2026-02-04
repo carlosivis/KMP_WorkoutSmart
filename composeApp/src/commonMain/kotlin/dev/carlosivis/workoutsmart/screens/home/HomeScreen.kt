@@ -14,10 +14,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Login
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,16 +30,17 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.carlosivis.workoutsmart.Utils.Dimens
 import dev.carlosivis.workoutsmart.Utils.FontSizes
 import dev.carlosivis.workoutsmart.Utils.Shapes
+import dev.carlosivis.workoutsmart.Utils.WorkoutsSmartTheme
 import dev.carlosivis.workoutsmart.Utils.formatDateToString
 import dev.carlosivis.workoutsmart.Utils.formatDuration
 import dev.carlosivis.workoutsmart.composeResources.Res
@@ -52,6 +54,7 @@ import dev.carlosivis.workoutsmart.composeResources.saved_workouts_section_title
 import dev.carlosivis.workoutsmart.composeResources.workout_history_section_title
 import dev.carlosivis.workoutsmart.models.HistoryModel
 import dev.carlosivis.workoutsmart.models.WorkoutModel
+import dev.carlosivis.workoutsmart.repository.ThemeMode
 import dev.carlosivis.workoutsmart.screens.components.CustomDialog
 import org.jetbrains.compose.resources.stringResource
 
@@ -59,7 +62,7 @@ import org.jetbrains.compose.resources.stringResource
 fun HomeScreen(
     viewModel: HomeViewModel,
 ) {
-    val state by viewModel.state.collectAsState()
+    val state by viewModel.state.collectAsStateWithLifecycle()
     val action: (HomeViewAction) -> Unit = viewModel::dispatchAction
     Content(
         state = state,
@@ -68,6 +71,7 @@ fun HomeScreen(
     LaunchedEffect(Unit) {
         action(HomeViewAction.GetWorkouts)
         action(HomeViewAction.GetHistory)
+        action(HomeViewAction.GetUserProfile)
     }
 }
 
@@ -114,12 +118,10 @@ fun Content(
                     textAlign = TextAlign.Center, fontSize = FontSizes.TitleMedium
                 )
 
-                IconButton(
-                    onClick = { action(HomeViewAction.Navigate.Settings) },
-                    modifier = Modifier.align(Alignment.CenterEnd)
-                ) {
-                    Icon(Icons.Filled.Settings, stringResource(Res.string.delete_action))
-                }
+                ProfileTopBarIcon(Modifier.align(Alignment.CenterEnd),
+                    state.user != null,
+                    {action(HomeViewAction.Navigate.Profile)})
+
             }
             Text(
                 stringResource(Res.string.saved_workouts_section_title),
@@ -230,40 +232,55 @@ private fun HistoryCard(history: HistoryModel) {
     }
 }
 
+@Composable
+fun ProfileTopBarIcon(modifier: Modifier,isLoggedIn: Boolean, onIconClick: () -> Unit) {
+    IconButton(modifier = modifier,
+        onClick = onIconClick) {
+        if (isLoggedIn) {
+            Icon(Icons.Default.Person, contentDescription = "Meu Perfil")
+        } else {
+            Icon(Icons.AutoMirrored.Filled.Login, contentDescription = "Entrar")
+        }
+    }
+}
+
 @Preview
 @Composable
 private fun ContentPreview() {
-    Content(
-        state = HomeViewState(
-            workouts = listOf(
-                WorkoutModel(
-                    id = 1,
-                    name = "Workout A",
-                    description = "Description A",
-                    exercises = emptyList()
+    WorkoutsSmartTheme(ThemeMode.DARK) {
+        Content(
+            state = HomeViewState(
+                workouts = listOf(
+                    WorkoutModel(
+                        id = 1,
+                        name = "Workout A",
+                        description = "Description A",
+                        exercises = emptyList()
+                    ),
+                    WorkoutModel(
+                        id = 2,
+                        name = "Workout B",
+                        description = "Description B",
+                        exercises = emptyList()
+                    )
                 ),
-                WorkoutModel(
-                    id = 2,
-                    name = "Workout B",
-                    description = "Description B",
-                    exercises = emptyList()
+                history = listOf(
+                    HistoryModel(
+                        id = 1,
+                        date = 1678886400000,
+                        workoutName = "Workout A",
+                        duration = 3600
+                    ),
+                    HistoryModel(
+                        id = 2,
+                        date = 1678972800000,
+                        workoutName = "Workout B",
+                        duration = 3600
+                    )
                 )
             ),
-            history = listOf(
-                HistoryModel(
-                    id = 1,
-                    date = 1678886400000,
-                    workoutName = "Workout A",
-                    duration = 3600
-                ),
-                HistoryModel(
-                    id = 2,
-                    date = 1678972800000,
-                    workoutName = "Workout B",
-                    duration = 3600
-                )
-            )
-        ),
-        action = {}
-    )
+            action = {}
+        )
+
+    }
 }

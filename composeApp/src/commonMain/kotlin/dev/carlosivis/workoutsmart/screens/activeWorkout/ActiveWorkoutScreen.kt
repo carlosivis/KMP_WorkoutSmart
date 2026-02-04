@@ -87,7 +87,7 @@ import dev.carlosivis.workoutsmart.composeResources.start_rest_button
 import dev.carlosivis.workoutsmart.models.ExerciseModel
 import dev.carlosivis.workoutsmart.repository.ThemeMode
 import dev.carlosivis.workoutsmart.screens.components.CustomDialog
-import dev.carlosivis.workoutsmart.screens.components.KeepScreenOn
+import dev.carlosivis.workoutsmart.screens.components.expect.KeepScreenOn
 import dev.carlosivis.workoutsmart.screens.components.RestTimerSelectorDialog
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource

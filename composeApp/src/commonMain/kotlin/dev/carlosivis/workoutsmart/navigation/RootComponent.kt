@@ -8,6 +8,7 @@ import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
 import dev.carlosivis.workoutsmart.models.WorkoutModel
 import dev.carlosivis.workoutsmart.navigation.navigator.HomeNavigator
+import dev.carlosivis.workoutsmart.navigation.navigator.ProfileNavigator
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
 
@@ -42,7 +43,7 @@ class RootComponent(
                         toEditWorkout = { workout -> navigation.push(
                                 Configuration.EditWorkout(workout)
                             ) },
-                        toSettings = { navigation.push(Configuration.Settings) }
+                        toProfile = { navigation.push(Configuration.Profile) }
                     )
                 )
             )
@@ -76,6 +77,16 @@ class RootComponent(
                     onNavigateBack = { navigation.pop() }
                 )
             )
+
+            is Configuration.Profile -> Child.Login(
+                ProfileComponent(
+                    componentContext = context,
+                    navigator = ProfileNavigator(
+                        back = { navigation.pop() },
+                        toSettings = { navigation.push(Configuration.Settings) }
+                    )
+                )
+            )
         }
     }
 
@@ -85,6 +96,7 @@ class RootComponent(
         data class EditWorkout(val component: CreateWorkoutComponent) : Child()
         data class ActiveWorkout(val component: ActiveWorkoutComponent) : Child()
         data class Settings(val component: SettingsComponent) : Child()
+        data class Login(val component: ProfileComponent) : Child()
     }
 }
 
@@ -104,4 +116,7 @@ sealed class Configuration {
 
     @Serializable
     data object Settings : Configuration()
+
+    @Serializable
+    data object Profile : Configuration()
 }

@@ -12,6 +12,7 @@ class HomeComponent(
 ) : ComponentContext by componentContext, KoinComponent {
     val viewModel = HomeViewModel(
         repository = get(),
+        getUserUseCase = get(),
         navigator = navigator
     )
 }
