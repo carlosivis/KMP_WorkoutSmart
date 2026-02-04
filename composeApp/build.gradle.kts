@@ -6,9 +6,9 @@ import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.sqldelight)
     alias(libs.plugins.build.config)
     alias(libs.plugins.kotlin.serialization)
@@ -148,7 +148,7 @@ kotlin {
 
 android {
     namespace = "dev.carlosivis.workoutsmart"
-    compileSdk = 34
+    compileSdk = 36
     defaultConfig {
         minSdk = 24
     }
@@ -188,3 +188,6 @@ compose.resources {
     generateResClass = auto
 }
 
+tasks.register("testClasses") {
+    println("This is a dummy testClasses task")
+}
