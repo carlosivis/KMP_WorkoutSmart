@@ -94,8 +94,6 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
 
             implementation(libs.koin.core)
-            implementation(libs.koin.view.model)
-            implementation(libs.koin.compose)
 
             implementation(libs.decompose)
             implementation(libs.decompose.compose)
@@ -132,6 +130,8 @@ kotlin {
             implementation(libs.androidx.credentials.manager)
             implementation(libs.androidx.credentials.play.services.auth)
             implementation(libs.googleid.v110)
+            implementation(libs.koin.view.model)
+            implementation(libs.koin.compose)
 
         }
 
