@@ -8,4 +8,5 @@ sealed class ProfileViewAction {
     }
     object CleanError: ProfileViewAction()
     object Logout: ProfileViewAction()
+    object GetUserProfile: ProfileViewAction()
 }

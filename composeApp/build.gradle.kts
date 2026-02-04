@@ -102,6 +102,7 @@ kotlin {
             implementation(libs.decompose)
             implementation(libs.decompose.compose)
             implementation(libs.coil.compose)
+            implementation(libs.coil.network.ktor)
 
             implementation(libs.peekaboo.image.picker)
             implementation(libs.peekaboo.ui)

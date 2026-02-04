@@ -8,6 +8,13 @@ class UserLocalDataSourceImpl(
     private val settings: Settings
 ) : UserLocalDataSource {
 
+    private val jsonSerializer = Json {
+        ignoreUnknownKeys = true
+        encodeDefaults = true
+        isLenient = true
+        coerceInputValues = true
+    }
+
     private companion object {
         const val KEY_USER_TOKEN = "user_token"
         const val KEY_USER_DATA = "user_data"
@@ -27,15 +34,25 @@ class UserLocalDataSourceImpl(
     }
 
     override fun saveUser(user: UserResponse) {
-        val json = Json.encodeToString(user)
-        settings.putString(KEY_USER_DATA, json)
+        try {
+            val jsonString = jsonSerializer.encodeToString(user)
+            settings.putString(KEY_USER_DATA, jsonString)
+        } catch (e: Exception) {
+            println("DEBUG_USER: ERRO FATAL ao salvar user: ${e.message}")
+            e.printStackTrace()
+        }
     }
 
     override fun getUser(): UserResponse? {
-        val json = settings.getStringOrNull(KEY_USER_DATA) ?: return null
+        val jsonString = settings.getStringOrNull(KEY_USER_DATA)
+        if (jsonString.isNullOrBlank()) {
+            return null
+        }
         return try {
-            Json.decodeFromString<UserResponse>(json)
+            val user = jsonSerializer.decodeFromString<UserResponse>(jsonString)
+            user
         } catch (e: Exception) {
+            e.printStackTrace()
             null
         }
     }

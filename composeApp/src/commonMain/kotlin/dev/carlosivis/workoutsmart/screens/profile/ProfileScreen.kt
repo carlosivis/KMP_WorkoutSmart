@@ -1,10 +1,16 @@
 package dev.carlosivis.workoutsmart.screens.profile
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -75,6 +81,9 @@ fun ProfileScreen(
             action(ProfileViewAction.CleanError)
         }
     }
+    LaunchedEffect(Unit) {
+        action(ProfileViewAction.GetUserProfile)
+    }
 
     Content(
         state = state,
@@ -99,66 +108,105 @@ private fun Content(
     ) {
         Box(
             modifier = Modifier.fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.7f)),
+                .background(Color.Black.copy(alpha = 0.7f))
+                .clickable(enabled = false, onClick = {}),
             contentAlignment = Alignment.Center
         ) {
             CircularProgressIndicator()
         }
     }
-    Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(Dimens.Medium),
+    Box(Modifier.fillMaxSize()) {
+
+        Scaffold(
+            snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+        ) { paddingValues ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(Dimens.Medium),
+            ) {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    IconButton(
+                        onClick = { action(ProfileViewAction.Navigate.Back) },
+                        modifier = Modifier.align(Alignment.CenterStart)
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(Res.string.action_back)
+                        )
+                    }
+
+                    IconButton(
+                        onClick = { action(ProfileViewAction.Navigate.Settings) },
+                        modifier = Modifier.align(Alignment.CenterEnd)
+                    ) {
+                        Icon(
+                            Icons.Filled.Settings,
+                            stringResource(Res.string.delete_action)
+                        )
+                    }
+                }
+                AnimatedContent(
+                    // 1. O alvo é o PRÓPRIO objeto User (pode ser null ou preenchido)
+                    targetState = state.user,
+                    transitionSpec = {
+                        // 2. Lógica inteligente de animação:
+                        // Se estiver trocando entre Logado/Deslogado (Login ou Logout), desliza a tela.
+                        if (initialState == null || targetState == null) {
+                            (fadeIn(animationSpec = tween(600)) +
+                                    slideInHorizontally { width -> width / 2 })
+                                .togetherWith(
+                                    fadeOut(animationSpec = tween(600)) +
+                                            slideOutHorizontally { width -> -width / 2 })
+                        } else {
+                            // 3. Se for apenas atualização de dados (ex: mudou foto ou pontos),
+                            // faz apenas um fade suave, sem deslizar a tela.
+                            fadeIn(animationSpec = tween(300)) togetherWith fadeOut(animationSpec = tween(300))
+                        }
+                    },
+                    label = "ProfileTransition"
+                ) { currentUser ->
+
+                    if (currentUser == null) {
+                        LoginSection(
+                            onLoginClick = { action(ProfileViewAction.GoogleLogin) }
+                        )
+                    } else {
+                        ProfileSection(
+                            user = currentUser, // Passa o objeto seguro
+                            logout = { action(ProfileViewAction.Logout) }
+                        )
+                    }
+                }
+            }
+        }
+        AnimatedVisibility(
+            visible = state.isLoading,
+            enter = fadeIn(),
+            exit = fadeOut(),
+            modifier = Modifier.align(Alignment.Center)
         ) {
             Box(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.6f))
+                    .clickable(enabled = false, onClick = {}),
                 contentAlignment = Alignment.Center
             ) {
-                IconButton(
-                    onClick = { action(ProfileViewAction.Navigate.Back) },
-                    modifier = Modifier.align(Alignment.CenterStart)
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(Res.string.action_back)
-                    )
-                }
-
-                IconButton(
-                    onClick = { action(ProfileViewAction.Navigate.Settings) },
-                    modifier = Modifier.align(Alignment.CenterEnd)
-                ) {
-                    Icon(
-                        Icons.Filled.Settings,
-                        stringResource(Res.string.delete_action)
-                    )
-                }
-            }
-
-            AnimatedVisibility(
-                state.user == null,
-            ){
-                LoginSection(
-                    onLoginClick = { action(ProfileViewAction.GoogleLogin) }
+                CircularProgressIndicator(
+                    color = MaterialTheme.colorScheme.primary
                 )
-            }
-
-            AnimatedVisibility(
-                state.user != null
-            ){
-                ProfileSection(user = state.user!!,
-                    logout = { action(ProfileViewAction.Logout) })
             }
         }
     }
 }
 
 @Composable
-private fun ProfileSection(user: UserResponse,logout: () -> Unit = {}) {
+private fun ProfileSection(user: UserResponse, logout: () -> Unit = {}) {
     Column(
         modifier = Modifier.fillMaxSize().padding(Dimens.Medium),
         horizontalAlignment = Alignment.CenterHorizontally

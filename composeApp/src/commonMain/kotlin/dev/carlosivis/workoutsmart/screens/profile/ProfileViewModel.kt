@@ -20,10 +20,6 @@ class ProfileViewModel(
     private val _state = MutableStateFlow(ProfileViewState())
     val state = _state.asStateFlow()
 
-    init {
-        getUser()
-    }
-
     fun dispatchAction(action: ProfileViewAction) {
         when (action) {
             ProfileViewAction.GoogleLogin -> onGoogleLoginClick()
@@ -31,6 +27,7 @@ class ProfileViewModel(
             ProfileViewAction.Navigate.Settings -> navigator.toSettings()
             ProfileViewAction.CleanError -> cleanError()
             ProfileViewAction.Logout -> logout()
+            ProfileViewAction.GetUserProfile -> getUser()
         }
     }
 
@@ -55,8 +52,8 @@ class ProfileViewModel(
         viewModelScope.launch {
             setLoading(true)
             getUserUseCase(Unit)
-                .onSuccess {
-                    _state.update { it.copy(isLoading = false, user = it.user) }
+                .onSuccess {user ->
+                    _state.update { it.copy(isLoading = false, user = user) }
                 }
                 .onFailure { error ->
                     _state.update { it.copy(isLoading = false, error = error.message) }

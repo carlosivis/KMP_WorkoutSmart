@@ -71,6 +71,7 @@ fun HomeScreen(
     LaunchedEffect(Unit) {
         action(HomeViewAction.GetWorkouts)
         action(HomeViewAction.GetHistory)
+        action(HomeViewAction.GetUserProfile)
     }
 }
 
@@ -118,7 +119,7 @@ fun Content(
                 )
 
                 ProfileTopBarIcon(Modifier.align(Alignment.CenterEnd),
-                    false,
+                    state.user != null,
                     {action(HomeViewAction.Navigate.Profile)})
 
             }
@@ -236,10 +237,8 @@ fun ProfileTopBarIcon(modifier: Modifier,isLoggedIn: Boolean, onIconClick: () ->
     IconButton(modifier = modifier,
         onClick = onIconClick) {
         if (isLoggedIn) {
-            // Se logado, mostra foto ou ícone de usuário
             Icon(Icons.Default.Person, contentDescription = "Meu Perfil")
         } else {
-            // Se deslogado, mostra ícone de Login evidente
             Icon(Icons.AutoMirrored.Filled.Login, contentDescription = "Entrar")
         }
     }
