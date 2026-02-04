@@ -94,8 +94,8 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
 
             implementation(libs.koin.core)
+            implementation(libs.koin.core.view.model)
             implementation(libs.koin.compose)
-            implementation(libs.koin.view.model)
 
             implementation(libs.decompose)
             implementation(libs.decompose.compose)
