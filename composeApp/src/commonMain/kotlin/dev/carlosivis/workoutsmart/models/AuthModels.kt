@@ -15,7 +15,8 @@ data class UserResponse(
     val firebaseUid: String,
     val email: String,
     val displayName: String?,
-    val points: Long
+    val points: Long,
+    val photoUrl: String?
 )
 
 //TODO: Create other repository on git to share models with backend and remove this file

@@ -32,6 +32,7 @@ class AuthRepositoryImpl(
 
         } catch (e: Exception) {
             auth.signOut()
+            userLocalDataSource.clearUserData()
             e.printStackTrace()
             Result.failure(e)
         }

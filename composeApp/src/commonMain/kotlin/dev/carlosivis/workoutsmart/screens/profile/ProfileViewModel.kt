@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.carlosivis.workoutsmart.domain.GetUserUseCase
 import dev.carlosivis.workoutsmart.domain.LoginGoogleUseCase
+import dev.carlosivis.workoutsmart.domain.LogoutUseCase
 import dev.carlosivis.workoutsmart.navigation.navigator.ProfileNavigator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,6 +14,7 @@ import kotlinx.coroutines.launch
 class ProfileViewModel(
     private val loginGoogleUseCase: LoginGoogleUseCase,
     private val getUserUseCase: GetUserUseCase,
+    private val logoutUseCase: LogoutUseCase,
     private val navigator: ProfileNavigator
 ) : ViewModel() {
     private val _state = MutableStateFlow(ProfileViewState())
@@ -27,6 +29,8 @@ class ProfileViewModel(
             ProfileViewAction.GoogleLogin -> onGoogleLoginClick()
             ProfileViewAction.Navigate.Back -> navigator.back()
             ProfileViewAction.Navigate.Settings -> navigator.toSettings()
+            ProfileViewAction.CleanError -> cleanError()
+            ProfileViewAction.Logout -> logout()
         }
     }
 
@@ -58,5 +62,24 @@ class ProfileViewModel(
                     _state.update { it.copy(isLoading = false, error = error.message) }
                 }
         }
+    }
+
+    private fun logout() {
+        viewModelScope.launch {
+            setLoading(true)
+            logoutUseCase(Unit)
+                .onSuccess {
+                    _state.update { it.copy(isLoading = false, user = null) }
+                }
+                .onFailure { error ->
+                    _state.update {
+                        it.copy(isLoading = false, error = error.message)
+                    }
+                }
+        }
+    }
+
+    private fun cleanError() {
+        _state.update { it.copy(error = null) }
     }
 }

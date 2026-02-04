@@ -34,14 +34,13 @@ fun GoogleButton(
     modifier: Modifier = Modifier,
     text: String = "Entrar com Google",
     onClick: () -> Unit,
-    enabled: Boolean = true
 ) {
     Surface(
         modifier = modifier
             .fillMaxWidth()
             .height(Dimens.ImageSizeSmall)
             .clip(RoundedCornerShape(24.dp))
-            .clickable(enabled = enabled, onClick = onClick),
+            .clickable(onClick = onClick),
         color = Color.White,
         shadowElevation = 1.dp,
         tonalElevation = 0.dp,

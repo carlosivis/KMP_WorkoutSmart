@@ -13,6 +13,7 @@ class ProfileComponent(
     val viewModel = ProfileViewModel(
         loginGoogleUseCase = get(),
         getUserUseCase = get(),
+        logoutUseCase = get(),
         navigator = navigator
     )
 }
