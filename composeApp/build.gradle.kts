@@ -24,20 +24,19 @@ if (localPropertiesFile.exists()) {
 }
 
 val webClientId: String = localProperties.getProperty("WEB_CLIENT_ID")
-    ?: error("WEB_CLIENT_ID not found in local.properties")
+    ?: System.getenv("WEB_CLIENT_ID")
+    ?: "CI_PLACEHOLDER_ID"
 
 val baseUrl: String = localProperties.getProperty("BASE_URL")
-    ?: error("BASE_URL not found in local.properties")
+    ?: System.getenv("BASE_URL")
+    ?: "CI_PLACEHOLDER_URL"
 
 
 kotlin {
     androidTarget {
-        compilations.all {
-            compileTaskProvider.configure {
-                compilerOptions {
-                    jvmTarget.set(JvmTarget.JVM_1_8)
-                }
-            }
+        @OptIn(ExperimentalKotlinGradlePluginApi::class)
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_1_8)
         }
     }
     cocoapods {
