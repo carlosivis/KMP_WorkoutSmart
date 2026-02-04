@@ -151,20 +151,15 @@ private fun Content(
                     }
                 }
                 AnimatedContent(
-                    // 1. O alvo é o PRÓPRIO objeto User (pode ser null ou preenchido)
                     targetState = state.user,
                     transitionSpec = {
-                        // 2. Lógica inteligente de animação:
-                        // Se estiver trocando entre Logado/Deslogado (Login ou Logout), desliza a tela.
-                        if (initialState == null || targetState == null) {
+                       if (initialState == null || targetState == null) {
                             (fadeIn(animationSpec = tween(600)) +
                                     slideInHorizontally { width -> width / 2 })
                                 .togetherWith(
                                     fadeOut(animationSpec = tween(600)) +
                                             slideOutHorizontally { width -> -width / 2 })
                         } else {
-                            // 3. Se for apenas atualização de dados (ex: mudou foto ou pontos),
-                            // faz apenas um fade suave, sem deslizar a tela.
                             fadeIn(animationSpec = tween(300)) togetherWith fadeOut(animationSpec = tween(300))
                         }
                     },

@@ -1,6 +1,6 @@
+
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 import java.io.FileInputStream
 import java.util.Properties
 
@@ -36,7 +36,10 @@ kotlin {
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
+            optIn.add("kotlin.RequiresOptIn")
             jvmTarget.set(JvmTarget.JVM_1_8)
+            freeCompilerArgs.addAll(listOf("-Xcontext-receivers", "-Xinline-classes"))
+            progressiveMode.set(true)
         }
     }
     cocoapods {
@@ -55,15 +58,6 @@ kotlin {
         pod("GoogleSignIn") {
             version = "7.1.0"
         }
-    }
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-    compilerOptions {
-        freeCompilerArgs.add("-Xexpect-actual-classes")
-    }
-
-    androidTarget {
-        @Suppress("OPT_IN_USAGE")
-        unitTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
     }
     listOf(
         iosX64(),
@@ -152,10 +146,6 @@ android {
     defaultConfig {
         minSdk = 24
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
 }
 
 buildConfig {
@@ -186,8 +176,4 @@ sqldelight {
 compose.resources {
     packageOfResClass = "dev.carlosivis.workoutsmart.composeResources"
     generateResClass = auto
-}
-
-tasks.register("testClasses") {
-    println("This is a dummy testClasses task")
 }

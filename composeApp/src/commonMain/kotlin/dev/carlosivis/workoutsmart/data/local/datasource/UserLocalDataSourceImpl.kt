@@ -38,7 +38,6 @@ class UserLocalDataSourceImpl(
             val jsonString = jsonSerializer.encodeToString(user)
             settings.putString(KEY_USER_DATA, jsonString)
         } catch (e: Exception) {
-            println("DEBUG_USER: ERRO FATAL ao salvar user: ${e.message}")
             e.printStackTrace()
         }
     }
