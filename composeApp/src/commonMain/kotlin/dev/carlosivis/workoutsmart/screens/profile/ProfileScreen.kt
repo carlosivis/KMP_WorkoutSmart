@@ -27,6 +27,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -69,7 +70,7 @@ fun ProfileScreen(
         state.error?.let {
             snackbarHostState.showSnackbar(
                 message = it,
-                duration = SnackbarDuration.Short
+                duration = SnackbarDuration.Long
             )
             action(ProfileViewAction.CleanError)
         }
@@ -77,7 +78,8 @@ fun ProfileScreen(
 
     Content(
         state = state,
-        action = action
+        action = action,
+        snackbarHostState = snackbarHostState
     )
 
 }
@@ -85,7 +87,8 @@ fun ProfileScreen(
 @Composable
 private fun Content(
     state: ProfileViewState,
-    action: (ProfileViewAction) -> Unit
+    action: (ProfileViewAction) -> Unit,
+    snackbarHostState: SnackbarHostState
 ) {
 
     AnimatedVisibility(
@@ -102,7 +105,9 @@ private fun Content(
             CircularProgressIndicator()
         }
     }
-    Scaffold { paddingValues ->
+    Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -134,12 +139,18 @@ private fun Content(
                 }
             }
 
-            if (state.user == null) {
+            AnimatedVisibility(
+                state.user == null,
+            ){
                 LoginSection(
                     onLoginClick = { action(ProfileViewAction.GoogleLogin) }
                 )
-            } else {
-                ProfileSection(user = state.user,
+            }
+
+            AnimatedVisibility(
+                state.user != null
+            ){
+                ProfileSection(user = state.user!!,
                     logout = { action(ProfileViewAction.Logout) })
             }
         }
@@ -250,7 +261,8 @@ private fun ContentPreview() {
     WorkoutsSmartTheme(ThemeMode.DARK) {
         Content(
             state = ProfileViewState(),
-            action = {}
+            action = {},
+            snackbarHostState = remember { SnackbarHostState() }
         )
     }
 

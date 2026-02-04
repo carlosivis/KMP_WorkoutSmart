@@ -25,10 +25,16 @@ class AuthRepositoryImpl(
             val firebaseToken = firebaseUser.getIdToken(false)
                 ?: return Result.failure(Exception("Falha ao obter token"))
 
-            return dataSource.loginWithBackend(firebaseUser).onSuccess {
+            val result = dataSource.loginWithBackend(firebaseUser)
+
+            result.onSuccess {
                 userLocalDataSource.saveUserToken(firebaseToken)
                 userLocalDataSource.saveUser(it)
+            }.onFailure {
+                it.printStackTrace()
             }
+
+            return result
 
         } catch (e: Exception) {
             auth.signOut()

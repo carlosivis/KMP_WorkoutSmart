@@ -11,6 +11,7 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.sqldelight)
     alias(libs.plugins.build.config)
+    alias(libs.plugins.kotlin.serialization)
     kotlin("native.cocoapods")
 }
 
