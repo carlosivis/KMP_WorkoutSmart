@@ -1,4 +1,3 @@
-
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.io.FileInputStream
@@ -36,9 +35,15 @@ kotlin {
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
-            optIn.add("kotlin.RequiresOptIn")
+            @Suppress("OPT_IN_USAGE")
             jvmTarget.set(JvmTarget.JVM_1_8)
-            freeCompilerArgs.addAll(listOf("-Xcontext-receivers", "-Xinline-classes"))
+            freeCompilerArgs.addAll(
+                listOf(
+                    "-Xcontext-receivers",
+                    "-Xinline-classes",
+                    "-Xexpect-actual-classes"
+                )
+            )
             progressiveMode.set(true)
         }
     }
