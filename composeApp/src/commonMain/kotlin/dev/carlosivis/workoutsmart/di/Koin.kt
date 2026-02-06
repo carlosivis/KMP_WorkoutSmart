@@ -2,14 +2,19 @@ package dev.carlosivis.workoutsmart.di
 
 import com.russhwolf.settings.Settings
 import dev.carlosivis.workoutsmart.BuildConfig
+import dev.carlosivis.workoutsmart.core.KtorClient
 import dev.carlosivis.workoutsmart.data.local.datasource.SettingsLocalDataSource
 import dev.carlosivis.workoutsmart.data.local.datasource.SettingsLocalDataSourceImpl
 import dev.carlosivis.workoutsmart.data.local.datasource.UserLocalDataSource
 import dev.carlosivis.workoutsmart.data.local.datasource.UserLocalDataSourceImpl
 import dev.carlosivis.workoutsmart.data.remote.datasource.AuthRemoteDataSource
 import dev.carlosivis.workoutsmart.data.remote.datasource.AuthRemoteDataSourceImpl
+import dev.carlosivis.workoutsmart.data.remote.datasource.SocialRemoteDataSource
+import dev.carlosivis.workoutsmart.data.remote.datasource.SocialRemoteDataSourceImpl
 import dev.carlosivis.workoutsmart.data.remote.service.AuthService
+import dev.carlosivis.workoutsmart.data.remote.service.SocialService
 import dev.carlosivis.workoutsmart.database.DatabaseHelper
+import dev.carlosivis.workoutsmart.domain.GetGroupsUseCase
 import dev.carlosivis.workoutsmart.domain.GetUserUseCase
 import dev.carlosivis.workoutsmart.domain.LoginGoogleUseCase
 import dev.carlosivis.workoutsmart.domain.LogoutUseCase
@@ -20,6 +25,8 @@ import dev.carlosivis.workoutsmart.repository.AuthRepository
 import dev.carlosivis.workoutsmart.repository.AuthRepositoryImpl
 import dev.carlosivis.workoutsmart.repository.SettingsRepository
 import dev.carlosivis.workoutsmart.repository.SettingsRepositoryImpl
+import dev.carlosivis.workoutsmart.repository.SocialRepository
+import dev.carlosivis.workoutsmart.repository.SocialRepositoryImpl
 import dev.carlosivis.workoutsmart.repository.WorkoutRepository
 import dev.carlosivis.workoutsmart.repository.WorkoutRepositoryImpl
 import dev.carlosivis.workoutsmart.screens.activeWorkout.ActiveWorkoutViewModel
@@ -28,53 +35,35 @@ import dev.carlosivis.workoutsmart.screens.home.HomeViewModel
 import dev.carlosivis.workoutsmart.screens.profile.ProfileViewModel
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
-import io.ktor.client.HttpClient
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.defaultRequest
-import io.ktor.client.plugins.logging.LogLevel
-import io.ktor.client.plugins.logging.Logging
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
-import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
-import kotlinx.serialization.json.Json
-import org.koin.core.context.startKoin
+import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
+import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
-expect fun platformModule(): org.koin.core.module.Module
-
-fun initKoin() = startKoin {
-    modules(commonModule, platformModule(), networkModule)
-}
+expect fun platformModule(): Module
 
 val networkModule = module {
+
+    single { Firebase.auth }
+
     single {
-        HttpClient {
-            install(ContentNegotiation) {
-                json(Json {
-                    ignoreUnknownKeys = true
-                    prettyPrint = true
-                    isLenient = true
-                })
-            }
-            install(Logging) {
-                level = LogLevel.INFO
-            }
-            defaultRequest {
-                url(BuildConfig.BASE_URL)
-                contentType(ContentType.Application.Json)
-            }
-        }
+        KtorClient(
+            baseUrl = BuildConfig.BASE_URL,
+            firebaseAuth = get()
+        )
     }
+    single { AuthService(get()) }
+
+    single { SocialService(get()) }
 }
 
 @OptIn(ExperimentalTime::class)
 val commonModule = module {
     viewModel { (navigator: HomeNavigator) ->
-        HomeViewModel(get(),get(), navigator)
+        HomeViewModel(get(), get(), navigator)
     }
     viewModel { (workout: WorkoutModel, onNavigateBack: () -> Unit) ->
         ActiveWorkoutViewModel(workout, get(), get(), onNavigateBack, get())
@@ -91,8 +80,8 @@ val commonModule = module {
         WorkoutRepositoryImpl(get())
     }
 
-    single<kotlin.time.Clock> {
-        kotlin.time.Clock.System
+    single<Clock> {
+        Clock.System
     }
 
     single<Settings> { Settings() }
@@ -100,8 +89,6 @@ val commonModule = module {
     single<SettingsRepository> {
         SettingsRepositoryImpl(get())
     }
-
-    single { Firebase.auth }
 
     single { Dispatchers.IO }
 
@@ -125,6 +112,13 @@ val commonModule = module {
         )
     }
 
+    factory {
+        GetGroupsUseCase(
+            repository = get(),
+            dispatcher = get()
+        )
+    }
+
     viewModel { (navigator: ProfileNavigator) ->
         ProfileViewModel(get(), get(), get(), navigator)
     }
@@ -137,5 +131,8 @@ val commonModule = module {
 
     single<UserLocalDataSource> { UserLocalDataSourceImpl(get()) }
 
-    single { AuthService(get()) }
+    single<SocialRemoteDataSource> { SocialRemoteDataSourceImpl(get()) }
+
+    single<SocialRepository> { SocialRepositoryImpl(get()) }
+
 }

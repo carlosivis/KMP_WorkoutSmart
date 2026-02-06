@@ -1,6 +1,5 @@
 package dev.carlosivis.workoutsmart.data.remote.datasource
 
-import dev.carlosivis.workoutsmart.core.AppNetworkException
 import dev.carlosivis.workoutsmart.core.NetworkWrapper
 import dev.carlosivis.workoutsmart.data.remote.service.AuthService
 import dev.carlosivis.workoutsmart.models.LoginRequest
@@ -27,7 +26,7 @@ class AuthRemoteDataSourceImpl(
 
             Result.success(response)
 
-        } catch (e: AppNetworkException) {
+        } catch (e: NetworkWrapper.AppNetworkException) {
             Result.failure(e)
         } catch (e: Exception) {
             Result.failure(e)

@@ -191,7 +191,12 @@ fun RestTimeSection(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(stringResource(Res.string.settings_rest_time_seconds, state.settings.defaultRestSeconds))
+                Text(
+                    stringResource(
+                        Res.string.settings_rest_time_seconds,
+                        state.settings.defaultRestSeconds
+                    )
+                )
             }
             Spacer(Modifier.size(Dimens.Small))
             Slider(

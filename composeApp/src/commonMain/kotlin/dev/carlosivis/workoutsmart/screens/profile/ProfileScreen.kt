@@ -56,8 +56,12 @@ import dev.carlosivis.workoutsmart.Utils.Dimens
 import dev.carlosivis.workoutsmart.Utils.WorkoutsSmartTheme
 import dev.carlosivis.workoutsmart.composeResources.Res
 import dev.carlosivis.workoutsmart.composeResources.action_back
-import dev.carlosivis.workoutsmart.composeResources.delete_action
 import dev.carlosivis.workoutsmart.composeResources.ic_user_placeholder
+import dev.carlosivis.workoutsmart.composeResources.profile_fallback_display_name
+import dev.carlosivis.workoutsmart.composeResources.profile_login_subtitle
+import dev.carlosivis.workoutsmart.composeResources.profile_login_title
+import dev.carlosivis.workoutsmart.composeResources.profile_logout
+import dev.carlosivis.workoutsmart.composeResources.profile_settings_action
 import dev.carlosivis.workoutsmart.models.UserResponse
 import dev.carlosivis.workoutsmart.repository.ThemeMode
 import dev.carlosivis.workoutsmart.screens.components.GoogleButton
@@ -146,21 +150,25 @@ private fun Content(
                     ) {
                         Icon(
                             Icons.Filled.Settings,
-                            stringResource(Res.string.delete_action)
+                            stringResource(Res.string.profile_settings_action)
                         )
                     }
                 }
                 AnimatedContent(
                     targetState = state.user,
                     transitionSpec = {
-                       if (initialState == null || targetState == null) {
+                        if (initialState == null || targetState == null) {
                             (fadeIn(animationSpec = tween(600)) +
                                     slideInHorizontally { width -> width / 2 })
                                 .togetherWith(
                                     fadeOut(animationSpec = tween(600)) +
                                             slideOutHorizontally { width -> -width / 2 })
                         } else {
-                            fadeIn(animationSpec = tween(300)) togetherWith fadeOut(animationSpec = tween(300))
+                            fadeIn(animationSpec = tween(300)) togetherWith fadeOut(
+                                animationSpec = tween(
+                                    300
+                                )
+                            )
                         }
                     },
                     label = "ProfileTransition"
@@ -172,7 +180,7 @@ private fun Content(
                         )
                     } else {
                         ProfileSection(
-                            user = currentUser, // Passa o objeto seguro
+                            user = currentUser,
                             logout = { action(ProfileViewAction.Logout) }
                         )
                     }
@@ -225,7 +233,7 @@ private fun ProfileSection(user: UserResponse, logout: () -> Unit = {}) {
         Spacer(Modifier.height(Dimens.Medium))
 
         Text(
-            text = user.displayName ?: "Atleta",
+            text = user.displayName ?: stringResource(Res.string.profile_fallback_display_name),
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold
         )
@@ -243,13 +251,13 @@ private fun ProfileSection(user: UserResponse, logout: () -> Unit = {}) {
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ExitToApp,
-                contentDescription = null,
+                contentDescription = stringResource(Res.string.profile_logout),
                 modifier = Modifier.size(Dimens.Medium),
                 tint = MaterialTheme.colorScheme.error
             )
             Spacer(Modifier.width(Dimens.Small))
             Text(
-                text = "Sair da conta",
+                text = stringResource(Res.string.profile_logout),
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.labelLarge
             )
@@ -273,19 +281,19 @@ private fun LoginSection(
         ) {
             Icon(
                 imageVector = Icons.Default.AccountCircle,
-                contentDescription = null,
+                contentDescription = stringResource(Res.string.profile_login_title),
                 modifier = Modifier.padding(Dimens.Medium)
                     .fillMaxSize()
             )
         }
         Spacer(Modifier.height(Dimens.Large))
         Text(
-            text = "Evolua seu Treino",
+            text = stringResource(Res.string.profile_login_title),
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold
         )
         Text(
-            text = "Sincronize seu progresso e pontue seus treinos em qualquer dispositivo.",
+            text = stringResource(Res.string.profile_login_subtitle),
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurfaceVariant

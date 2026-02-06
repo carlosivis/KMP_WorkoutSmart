@@ -10,6 +10,9 @@
     <string name="workout_history_section_title">Histórico de Treinos</string>
     <string name="delete_action">Deletar</string>
     <string name="edit_action">Editar</string>
+    <string name="home_screen_my_profile">Meu Perfil</string>
+    <string name="home_screen_login">Entrar</string>
+    <string name="home_screen_duration">• Duração: %1$s</string>
 
     <!-- ActiveWorkoutScreen.kt -->
     <string name="start_workout_button">Iniciar Treino</string>
@@ -90,5 +93,12 @@
     <string name="settings_keep_screen_on_description">Mantém a tela ligada durante os treinos</string>
     <string name="settings_vibration_label">Vibração</string>
     <string name="settings_vibration_description">Ativar feedback de vibração</string>
+
+    <!-- ProfileScreen.kt -->
+    <string name="profile_fallback_display_name">Atleta</string>
+    <string name="profile_logout">Sair da conta</string>
+    <string name="profile_login_title">Evolua seu Treino</string>
+    <string name="profile_login_subtitle">Sincronize seu progresso e pontue seus treinos em qualquer dispositivo.</string>
+    <string name="profile_settings_action">Configurações</string>
 
 </resources>

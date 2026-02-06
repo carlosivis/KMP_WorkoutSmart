@@ -49,6 +49,9 @@ import dev.carlosivis.workoutsmart.composeResources.delete_action
 import dev.carlosivis.workoutsmart.composeResources.delete_workout_message
 import dev.carlosivis.workoutsmart.composeResources.delete_workout_title
 import dev.carlosivis.workoutsmart.composeResources.edit_action
+import dev.carlosivis.workoutsmart.composeResources.home_screen_duration
+import dev.carlosivis.workoutsmart.composeResources.home_screen_login
+import dev.carlosivis.workoutsmart.composeResources.home_screen_my_profile
 import dev.carlosivis.workoutsmart.composeResources.home_screen_title
 import dev.carlosivis.workoutsmart.composeResources.saved_workouts_section_title
 import dev.carlosivis.workoutsmart.composeResources.workout_history_section_title
@@ -118,9 +121,10 @@ fun Content(
                     textAlign = TextAlign.Center, fontSize = FontSizes.TitleMedium
                 )
 
-                ProfileTopBarIcon(Modifier.align(Alignment.CenterEnd),
+                ProfileTopBarIcon(
+                    Modifier.align(Alignment.CenterEnd),
                     state.user != null,
-                    {action(HomeViewAction.Navigate.Profile)})
+                    { action(HomeViewAction.Navigate.Profile) })
 
             }
             Text(
@@ -225,7 +229,12 @@ private fun HistoryCard(history: HistoryModel) {
             .padding(vertical = Dimens.Small)
     ) {
         Text(
-            text = "${history.workoutName}\n$formattedDate • Duração: $formattedDuration",
+            text = "${history.workoutName}\n$formattedDate ${
+                stringResource(
+                    Res.string.home_screen_duration,
+                    formattedDuration
+                )
+            }",
             modifier = Modifier.padding(Dimens.Medium),
             fontSize = FontSizes.BodyLarge
         )
@@ -233,15 +242,28 @@ private fun HistoryCard(history: HistoryModel) {
 }
 
 @Composable
-fun ProfileTopBarIcon(modifier: Modifier,isLoggedIn: Boolean, onIconClick: () -> Unit) {
-    IconButton(modifier = modifier,
-        onClick = onIconClick) {
+fun ProfileTopBarIcon(modifier: Modifier, isLoggedIn: Boolean, onIconClick: () -> Unit) {
+    IconButton(
+        modifier = modifier,
+        onClick = onIconClick
+    ) {
         if (isLoggedIn) {
-            Icon(Icons.Default.Person, contentDescription = "Meu Perfil")
+            Icon(
+                Icons.Default.Person,
+                contentDescription = stringResource(Res.string.home_screen_my_profile)
+            )
         } else {
-            Icon(Icons.AutoMirrored.Filled.Login, contentDescription = "Entrar")
+            Icon(
+                Icons.AutoMirrored.Filled.Login,
+                contentDescription = stringResource(Res.string.home_screen_login)
+            )
         }
     }
+}
+
+@Composable
+private fun RankingCard() {
+
 }
 
 @Preview

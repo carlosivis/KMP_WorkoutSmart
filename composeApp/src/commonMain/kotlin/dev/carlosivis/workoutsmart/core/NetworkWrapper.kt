@@ -33,13 +33,14 @@ object NetworkWrapper {
             else -> UnknownCodeException()
         }
     }
+
+    open class AppNetworkException(message: String? = null) : Exception(message)
+    class BadRequestException : AppNetworkException()
+    class UnauthorizedException : AppNetworkException()
+    class NotFoundException : AppNetworkException()
+    class TimeOutException : AppNetworkException()
+    class ServerException : AppNetworkException()
+    class UnknownCodeException : AppNetworkException()
+    class UnknownNetworkException(cause: Throwable) : AppNetworkException(cause.message)
 }
 
-open class AppNetworkException(message: String? = null) : Exception(message)
-class BadRequestException : AppNetworkException()
-class UnauthorizedException : AppNetworkException()
-class NotFoundException : AppNetworkException()
-class TimeOutException : AppNetworkException()
-class ServerException : AppNetworkException()
-class UnknownCodeException : AppNetworkException()
-class UnknownNetworkException(cause: Throwable) : AppNetworkException(cause.message)
