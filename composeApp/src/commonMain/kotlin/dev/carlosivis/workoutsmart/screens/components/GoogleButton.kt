@@ -23,8 +23,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.carlosivis.workoutsmart.Utils.Dimens
-import dev.carlosivis.workoutsmart.Utils.FontSizes
+import dev.carlosivis.workoutsmart.utils.Dimens
+import dev.carlosivis.workoutsmart.utils.FontSizes
 import dev.carlosivis.workoutsmart.composeResources.Res
 import dev.carlosivis.workoutsmart.composeResources.ic_google
 import org.jetbrains.compose.resources.painterResource

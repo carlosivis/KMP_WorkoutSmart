@@ -1,4 +1,4 @@
-package dev.carlosivis.workoutsmart.Utils
+package dev.carlosivis.workoutsmart.utils
 
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.number

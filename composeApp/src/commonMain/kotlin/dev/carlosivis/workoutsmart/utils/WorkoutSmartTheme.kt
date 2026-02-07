@@ -1,4 +1,4 @@
-package dev.carlosivis.workoutsmart.Utils
+package dev.carlosivis.workoutsmart.utils
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -51,9 +51,9 @@ val typography = Typography(
     )
 )
 val shapes = Shapes(
-    small = RoundedCornerShape(dev.carlosivis.workoutsmart.Utils.Shapes.Small),
-    medium = RoundedCornerShape(dev.carlosivis.workoutsmart.Utils.Shapes.Medium),
-    large = RoundedCornerShape(dev.carlosivis.workoutsmart.Utils.Shapes.Large)
+    small = RoundedCornerShape(dev.carlosivis.workoutsmart.utils.Shapes.Small),
+    medium = RoundedCornerShape(dev.carlosivis.workoutsmart.utils.Shapes.Medium),
+    large = RoundedCornerShape(dev.carlosivis.workoutsmart.utils.Shapes.Large)
 )
 
 @Composable

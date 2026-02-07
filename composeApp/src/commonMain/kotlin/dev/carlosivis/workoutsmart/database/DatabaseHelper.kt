@@ -47,16 +47,14 @@ class DatabaseHelper(
             dbRef.workoutSmartDatabaseQueries.updateWorkout(
                 name = workout.name,
                 description = workout.description.ifEmpty { "Sem descrição" },
-                id = workout.id.toLong()
+                id = workout.id
             )
 
-            // Remover exercícios antigos
-            dbRef.workoutSmartDatabaseQueries.deleteExercisesFromWorkout(workout.id.toLong())
+            dbRef.workoutSmartDatabaseQueries.deleteExercisesFromWorkout(workout.id)
 
-            // Inserir novos exercícios
             workout.exercises.forEach { exercise ->
                 dbRef.workoutSmartDatabaseQueries.insertExercise(
-                    workoutId = workout.id.toLong(),
+                    workoutId = workout.id,
                     name = exercise.name,
                     notes = exercise.notes,
                     series = exercise.series.toLong(),

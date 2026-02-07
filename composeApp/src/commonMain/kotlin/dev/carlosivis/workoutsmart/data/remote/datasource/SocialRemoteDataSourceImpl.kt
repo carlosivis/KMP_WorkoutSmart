@@ -1,8 +1,8 @@
 package dev.carlosivis.workoutsmart.data.remote.datasource
 
-import dev.carlosivis.features.group.CreateGroupRequest
-import dev.carlosivis.features.group.GroupResponse
-import dev.carlosivis.features.group.JoinGroupRequest
+import dev.carlosivis.workoutsmart.models.CreateGroupRequest
+import dev.carlosivis.workoutsmart.models.GroupResponse
+import dev.carlosivis.workoutsmart.models.JoinGroupRequest
 import dev.carlosivis.workoutsmart.core.NetworkWrapper
 import dev.carlosivis.workoutsmart.data.remote.service.SocialService
 

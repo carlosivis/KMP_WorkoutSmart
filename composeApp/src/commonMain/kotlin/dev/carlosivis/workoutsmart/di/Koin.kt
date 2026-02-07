@@ -63,7 +63,7 @@ val networkModule = module {
 @OptIn(ExperimentalTime::class)
 val commonModule = module {
     viewModel { (navigator: HomeNavigator) ->
-        HomeViewModel(get(), get(), navigator)
+        HomeViewModel(get(), get(), get(),navigator)
     }
     viewModel { (workout: WorkoutModel, onNavigateBack: () -> Unit) ->
         ActiveWorkoutViewModel(workout, get(), get(), onNavigateBack, get())

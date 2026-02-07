@@ -1,8 +1,8 @@
 package dev.carlosivis.workoutsmart.repository
 
-import dev.carlosivis.features.group.CreateGroupRequest
-import dev.carlosivis.features.group.GroupResponse
-import dev.carlosivis.features.group.JoinGroupRequest
+import dev.carlosivis.workoutsmart.models.CreateGroupRequest
+import dev.carlosivis.workoutsmart.models.GroupResponse
+import dev.carlosivis.workoutsmart.models.JoinGroupRequest
 
 interface SocialRepository {
     suspend fun getGroups(): Result<List<GroupResponse>>

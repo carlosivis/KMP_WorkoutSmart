@@ -15,7 +15,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import dev.carlosivis.workoutsmart.Utils.FontSizes
+import dev.carlosivis.workoutsmart.utils.FontSizes
 
 @Composable
 fun WorkoutSmartTheme(

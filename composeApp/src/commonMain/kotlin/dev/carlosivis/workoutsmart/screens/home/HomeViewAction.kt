@@ -6,6 +6,7 @@ sealed class HomeViewAction {
     object GetWorkouts : HomeViewAction()
     object GetHistory : HomeViewAction()
     object GetUserProfile : HomeViewAction()
+    object GetGroups : HomeViewAction()
     data class AttemptDeleteWorkout(val workout: WorkoutModel) : HomeViewAction()
     object ConfirmDeleteWorkout : HomeViewAction()
     object CancelDeleteWorkout : HomeViewAction()

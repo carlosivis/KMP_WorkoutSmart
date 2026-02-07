@@ -1,7 +1,7 @@
 package dev.carlosivis.workoutsmart.data.remote.service
 
-import dev.carlosivis.features.group.CreateGroupRequest
-import dev.carlosivis.features.group.JoinGroupRequest
+import dev.carlosivis.workoutsmart.models.CreateGroupRequest
+import dev.carlosivis.workoutsmart.models.JoinGroupRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.post

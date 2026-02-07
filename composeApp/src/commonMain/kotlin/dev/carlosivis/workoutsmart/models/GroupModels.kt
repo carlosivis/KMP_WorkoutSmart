@@ -1,4 +1,4 @@
-package dev.carlosivis.features.group
+package dev.carlosivis.workoutsmart.models
 
 import kotlinx.serialization.Serializable
 

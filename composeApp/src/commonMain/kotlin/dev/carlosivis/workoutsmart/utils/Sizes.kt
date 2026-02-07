@@ -1,4 +1,4 @@
-package dev.carlosivis.workoutsmart.Utils
+package dev.carlosivis.workoutsmart.utils
 
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp

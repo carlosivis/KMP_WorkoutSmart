@@ -6,7 +6,7 @@ import androidx.compose.runtime.getValue
 import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
-import dev.carlosivis.workoutsmart.Utils.WorkoutsSmartTheme
+import dev.carlosivis.workoutsmart.utils.WorkoutsSmartTheme
 import dev.carlosivis.workoutsmart.models.SettingsModel
 import dev.carlosivis.workoutsmart.navigation.RootComponent
 import dev.carlosivis.workoutsmart.repository.SettingsRepository

@@ -1,6 +1,6 @@
 package dev.carlosivis.workoutsmart.domain
 
-import dev.carlosivis.features.group.GroupResponse
+import dev.carlosivis.workoutsmart.models.GroupResponse
 import dev.carlosivis.workoutsmart.core.UseCase
 import dev.carlosivis.workoutsmart.repository.SocialRepository
 import kotlinx.coroutines.CoroutineDispatcher

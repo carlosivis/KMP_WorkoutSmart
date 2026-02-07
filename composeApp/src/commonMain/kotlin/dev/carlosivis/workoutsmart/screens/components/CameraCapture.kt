@@ -25,7 +25,7 @@ import androidx.compose.ui.layout.ContentScale
 import coil3.compose.AsyncImage
 import com.preat.peekaboo.ui.camera.PeekabooCamera
 import com.preat.peekaboo.ui.camera.PeekabooCameraState
-import dev.carlosivis.workoutsmart.Utils.Dimens
+import dev.carlosivis.workoutsmart.utils.Dimens
 import dev.carlosivis.workoutsmart.composeResources.Res
 import dev.carlosivis.workoutsmart.composeResources.action_confirm
 import dev.carlosivis.workoutsmart.composeResources.camera_capture_capture_photo_description

@@ -1,16 +1,21 @@
 package dev.carlosivis.workoutsmart.screens.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -18,7 +23,10 @@ import androidx.compose.material.icons.automirrored.filled.Login
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.EmojiEvents
+import androidx.compose.material.icons.filled.MilitaryTech
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -33,16 +41,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.carlosivis.workoutsmart.Utils.Dimens
-import dev.carlosivis.workoutsmart.Utils.FontSizes
-import dev.carlosivis.workoutsmart.Utils.Shapes
-import dev.carlosivis.workoutsmart.Utils.WorkoutsSmartTheme
-import dev.carlosivis.workoutsmart.Utils.formatDateToString
-import dev.carlosivis.workoutsmart.Utils.formatDuration
 import dev.carlosivis.workoutsmart.composeResources.Res
 import dev.carlosivis.workoutsmart.composeResources.create_workout_fab
 import dev.carlosivis.workoutsmart.composeResources.delete_action
@@ -55,10 +60,22 @@ import dev.carlosivis.workoutsmart.composeResources.home_screen_my_profile
 import dev.carlosivis.workoutsmart.composeResources.home_screen_title
 import dev.carlosivis.workoutsmart.composeResources.saved_workouts_section_title
 import dev.carlosivis.workoutsmart.composeResources.workout_history_section_title
+import dev.carlosivis.workoutsmart.models.GroupResponse
 import dev.carlosivis.workoutsmart.models.HistoryModel
 import dev.carlosivis.workoutsmart.models.WorkoutModel
 import dev.carlosivis.workoutsmart.repository.ThemeMode
 import dev.carlosivis.workoutsmart.screens.components.CustomDialog
+import dev.carlosivis.workoutsmart.utils.BronzeGradient
+import dev.carlosivis.workoutsmart.utils.DefaultRankColor
+import dev.carlosivis.workoutsmart.utils.Dimens
+import dev.carlosivis.workoutsmart.utils.FontSizes
+import dev.carlosivis.workoutsmart.utils.GoldGradient
+import dev.carlosivis.workoutsmart.utils.Shapes
+import dev.carlosivis.workoutsmart.utils.SilverGradient
+import dev.carlosivis.workoutsmart.utils.WhitePure
+import dev.carlosivis.workoutsmart.utils.WorkoutsSmartTheme
+import dev.carlosivis.workoutsmart.utils.formatDateToString
+import dev.carlosivis.workoutsmart.utils.formatDuration
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -262,8 +279,105 @@ fun ProfileTopBarIcon(modifier: Modifier, isLoggedIn: Boolean, onIconClick: () -
 }
 
 @Composable
-private fun RankingCard() {
+fun RankingCarousel(
+    groups: List<GroupResponse>,
+    modifier: Modifier = Modifier,
+    onCardClick: () -> Unit = {}
+) {
+    Column {
+        if (groups.isNotEmpty()) {
+            Text(
+                text = "Seu Ranking",
+                fontSize = FontSizes.TitleMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Card(
+                modifier = modifier
+                    .clickable(enabled = true, onClick = { onCardClick() }),
+                shape = RoundedCornerShape(Shapes.ExtraLarge),
+                elevation = CardDefaults.cardElevation(defaultElevation = Dimens.Medium),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant
+                ),
+            ) {
 
+                LazyRow(
+                    contentPadding = PaddingValues(horizontal = Dimens.Medium),
+                    horizontalArrangement = Arrangement.spacedBy(Dimens.Medium)
+                ) {
+                    items(groups) { group ->
+                        RankingBadgeCard(group)
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+@Composable
+private fun RankingBadgeCard(group: GroupResponse) {
+    val (backgroundBrush, iconVec) = when (group.userPosition) {
+        1 -> GoldGradient to Icons.Filled.EmojiEvents
+        2 -> SilverGradient to Icons.Filled.MilitaryTech
+        3 -> BronzeGradient to Icons.Filled.MilitaryTech
+        else -> {
+            Brush.verticalGradient(
+                listOf(DefaultRankColor.copy(alpha = 0.7f), DefaultRankColor)
+            ) to Icons.Filled.Star
+        }
+    }
+
+    Card(
+        elevation = CardDefaults.cardElevation(defaultElevation = Dimens.Medium),
+        shape = RoundedCornerShape(Shapes.ExtraLarge),
+        modifier = Modifier
+            .width(108.dp)
+            .height(140.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(backgroundBrush)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(Dimens.Small),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = group.name,
+                    style = MaterialTheme.typography.labelMedium.copy(fontSize = FontSizes.BodySmall),
+                    color = WhitePure,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Icon(
+                        imageVector = iconVec,
+                        contentDescription = null,
+                        tint = WhitePure,
+                        modifier = Modifier.size(Dimens.ExtraLarge)
+                    )
+
+                    Text(
+                        text = "#${group.userPosition}",
+                        style = MaterialTheme.typography.headlineSmall.copy(
+                            fontSize = FontSizes.HeadlineSmall,
+                            fontWeight = FontWeight.ExtraBold
+                        ),
+                        color = WhitePure
+                    )
+                }
+
+            }
+        }
+    }
 }
 
 @Preview
@@ -304,5 +418,21 @@ private fun ContentPreview() {
             action = {}
         )
 
+    }
+}
+
+@Preview
+@Composable
+private fun RankingBadgeCardPreview() {
+    WorkoutsSmartTheme(ThemeMode.DARK) {
+        RankingCarousel(
+            groups = listOf(
+                GroupResponse(1, "Group 1", "abc", 100, 1),
+                GroupResponse(1, "Group 6", "abc", 100, 6),
+                GroupResponse(1, "Group 21", "abc", 100, 2),
+                GroupResponse(1, "Group 1", "abc", 100, 3),
+                GroupResponse(2, "Group 2", "def", 200, 2)
+            )
+        )
     }
 }

@@ -13,6 +13,7 @@ class HomeComponent(
     val viewModel = HomeViewModel(
         repository = get(),
         getUserUseCase = get(),
+        getGroupsUseCase = get(),
         navigator = navigator
     )
 }
