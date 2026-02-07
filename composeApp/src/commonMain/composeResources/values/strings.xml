@@ -101,4 +101,9 @@
     <string name="profile_login_subtitle">Sincronize seu progresso e pontue seus treinos em qualquer dispositivo.</string>
     <string name="profile_settings_action">Configurações</string>
 
+    <!-- RankingCarousel.kt -->
+    <string name="ranking_carousel_title">Seu Ranking</string>
+    <string name="ranking_carousel_empty_title">Nossa... que vazio por aqui 👀</string>
+    <string name="ranking_carousel_empty_subtitle">Que tal entrar em um grupo e subir no ranking?</string>
+
 </resources>

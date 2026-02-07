@@ -43,6 +43,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.carlosivis.workoutsmart.composeResources.Res
+import dev.carlosivis.workoutsmart.composeResources.ranking_carousel_empty_subtitle
+import dev.carlosivis.workoutsmart.composeResources.ranking_carousel_empty_title
+import dev.carlosivis.workoutsmart.composeResources.ranking_carousel_title
 import dev.carlosivis.workoutsmart.models.GroupResponse
 import dev.carlosivis.workoutsmart.repository.ThemeMode
 import dev.carlosivis.workoutsmart.utils.BronzeGradient
@@ -55,6 +59,7 @@ import dev.carlosivis.workoutsmart.utils.Shapes
 import dev.carlosivis.workoutsmart.utils.SilverGradient
 import dev.carlosivis.workoutsmart.utils.WhitePure
 import dev.carlosivis.workoutsmart.utils.WorkoutsSmartTheme
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun RankingCarousel(
@@ -68,7 +73,7 @@ fun RankingCarousel(
     ) {
         if (groups.isNotEmpty()) {
             Text(
-                text = "Seu Ranking",
+                text = stringResource(Res.string.ranking_carousel_title),
                 fontSize = FontSizes.TitleMedium,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.primary
@@ -186,7 +191,7 @@ fun RankingEmptyState() {
             Spacer(Modifier.height(Dimens.Medium))
 
             Text(
-                text = "Nossa... que vazio por aqui 👀",
+                text = stringResource(Res.string.ranking_carousel_empty_title),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
                 color = Color.White,
@@ -196,7 +201,7 @@ fun RankingEmptyState() {
             Spacer(Modifier.height(Dimens.Small))
 
             Text(
-                text = "Que tal entrar em um grupo e subir no ranking?",
+                text = stringResource(Res.string.ranking_carousel_empty_subtitle),
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.White.copy(alpha = 0.7f),
                 textAlign = TextAlign.Center
