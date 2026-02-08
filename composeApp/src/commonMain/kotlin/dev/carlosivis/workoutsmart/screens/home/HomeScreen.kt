@@ -54,7 +54,8 @@ import dev.carlosivis.workoutsmart.models.WorkoutModel
 import dev.carlosivis.workoutsmart.repository.ThemeMode
 import dev.carlosivis.workoutsmart.screens.components.CustomDialog
 import dev.carlosivis.workoutsmart.screens.components.RankingCarousel
-import dev.carlosivis.workoutsmart.screens.components.loadings.RankingCarouselLoading
+import dev.carlosivis.workoutsmart.screens.components.loadings.PlaceholderHighlight
+import dev.carlosivis.workoutsmart.screens.components.loadings.placeholder
 import dev.carlosivis.workoutsmart.utils.Dimens
 import dev.carlosivis.workoutsmart.utils.FontSizes
 import dev.carlosivis.workoutsmart.utils.Shapes
@@ -125,19 +126,19 @@ fun Content(
                 )
 
                 ProfileTopBarIcon(
-                    Modifier.align(Alignment.CenterEnd),
+                    Modifier.align(Alignment.CenterEnd)
+                        .placeholder(state.isLoading, PlaceholderHighlight.shimmer()),
                     state.user != null,
                     { action(HomeViewAction.Navigate.Profile) })
 
             }
 
-            if (state.isLoading) {
-                RankingCarouselLoading()
-            } else {
-                RankingCarousel(
-                    state.groups,
-                    onCardClick = { action(HomeViewAction.GetGroups) })
-            }
+            RankingCarousel(
+                modifier = Modifier.placeholder(state.isLoading, PlaceholderHighlight.shimmer()),
+                groups = state.groups,
+                onCardClick = { action(HomeViewAction.GetGroups) })
+
+            Spacer(Modifier.height(Dimens.Small))
 
             Text(
                 stringResource(Res.string.saved_workouts_section_title),
@@ -153,6 +154,9 @@ fun Content(
             ) {
                 items(state.workouts) { workout ->
                     WorkoutCard(
+                        modifier = Modifier
+                            .padding(vertical = Dimens.Small)
+                            .placeholder(state.isLoading, PlaceholderHighlight.shimmer()),
                         workout = workout,
                         navigate = { action(HomeViewAction.Navigate.Workout(workout)) },
                         delete = { action(HomeViewAction.AttemptDeleteWorkout(workout)) },
@@ -174,7 +178,11 @@ fun Content(
                     .fillMaxWidth()
             ) {
                 items(state.history) { history ->
-                    HistoryCard(history = history)
+                    HistoryCard(
+                        modifier = Modifier
+                            .padding(vertical = Dimens.Small)
+                            .placeholder(state.isLoading, PlaceholderHighlight.shimmer()),
+                        history = history)
                 }
             }
         }
@@ -183,6 +191,7 @@ fun Content(
 
 @Composable
 private fun WorkoutCard(
+    modifier: Modifier = Modifier,
     workout: WorkoutModel, navigate: () -> Unit = {},
     delete: () -> Unit = {}, edit: () -> Unit = {}
 ) {
@@ -191,9 +200,8 @@ private fun WorkoutCard(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant
         ),
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = Dimens.Small)
             .clickable { navigate() }
     ) {
         Row(
@@ -228,7 +236,9 @@ private fun WorkoutCard(
 }
 
 @Composable
-private fun HistoryCard(history: HistoryModel) {
+private fun HistoryCard(
+    modifier: Modifier = Modifier,
+    history: HistoryModel) {
     val formattedDate = formatDateToString(history.date)
     val formattedDuration = formatDuration(history.duration)
     Card(
@@ -236,9 +246,8 @@ private fun HistoryCard(history: HistoryModel) {
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant
         ),
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = Dimens.Small)
     ) {
         Text(
             text = "${history.workoutName}\n$formattedDate ${
