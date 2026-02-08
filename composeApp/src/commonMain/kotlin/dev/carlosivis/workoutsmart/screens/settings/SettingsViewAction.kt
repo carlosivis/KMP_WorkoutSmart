@@ -9,4 +9,5 @@ sealed class SettingsViewAction {
     data class UpdateKeepScreenOn(val keepScreenOn: Boolean) : SettingsViewAction()
     data class UpdateVibrationEnabled(val vibrationEnabled: Boolean) : SettingsViewAction()
     object NavigateBack : SettingsViewAction()
+    object CleanError : SettingsViewAction()
 }

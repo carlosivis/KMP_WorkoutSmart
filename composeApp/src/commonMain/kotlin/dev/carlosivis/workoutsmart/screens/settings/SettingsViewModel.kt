@@ -24,6 +24,7 @@ class SettingsViewModel(
             is SettingsViewAction.UpdateDefaultRestTime -> updateDefaultRestTime(action.time)
             is SettingsViewAction.UpdateKeepScreenOn -> updateKeepScreenOn(action.keepScreenOn)
             is SettingsViewAction.UpdateVibrationEnabled -> updateVibrationEnabled(action.vibrationEnabled)
+            is SettingsViewAction.CleanError -> cleanError()
         }
     }
 
@@ -85,6 +86,11 @@ class SettingsViewModel(
         viewModelScope.launch {
             repository.saveSettings(_state.value.settings)
         }
+    }
+
+    private fun cleanError(){
+        _state.update { it.copy(error = null) }
+
     }
 
 }

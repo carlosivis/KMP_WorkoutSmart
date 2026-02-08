@@ -32,16 +32,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -65,6 +61,7 @@ import dev.carlosivis.workoutsmart.repository.ThemeMode
 import dev.carlosivis.workoutsmart.screens.components.GoogleButton
 import dev.carlosivis.workoutsmart.utils.Dimens
 import dev.carlosivis.workoutsmart.utils.WorkoutsSmartTheme
+import dev.carlosivis.workoutsmart.utils.errorSnackbar
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -74,25 +71,10 @@ fun ProfileScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val action: (ProfileViewAction) -> Unit = viewModel::dispatchAction
-    val snackbarHostState = remember { SnackbarHostState() }
-
-    LaunchedEffect(state.error) {
-        state.error?.let {
-            snackbarHostState.showSnackbar(
-                message = it,
-                duration = SnackbarDuration.Long
-            )
-            action(ProfileViewAction.CleanError)
-        }
-    }
-    LaunchedEffect(Unit) {
-        action(ProfileViewAction.GetUserProfile)
-    }
 
     Content(
         state = state,
         action = action,
-        snackbarHostState = snackbarHostState
     )
 
 }
@@ -101,7 +83,6 @@ fun ProfileScreen(
 private fun Content(
     state: ProfileViewState,
     action: (ProfileViewAction) -> Unit,
-    snackbarHostState: SnackbarHostState
 ) {
 
     AnimatedVisibility(
@@ -120,9 +101,13 @@ private fun Content(
         }
     }
     Box(Modifier.fillMaxSize()) {
+        val errorHandler = errorSnackbar(
+            error = state.error,
+            action = { action(ProfileViewAction.CleanError) },
+        )
 
         Scaffold(
-            snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+            snackbarHost = { SnackbarHost(hostState = errorHandler) }
         ) { paddingValues ->
             Column(
                 modifier = Modifier
@@ -313,7 +298,6 @@ private fun ContentPreview() {
         Content(
             state = ProfileViewState(),
             action = {},
-            snackbarHostState = remember { SnackbarHostState() }
         )
     }
 

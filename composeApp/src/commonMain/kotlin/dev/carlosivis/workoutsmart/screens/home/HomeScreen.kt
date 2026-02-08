@@ -27,6 +27,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -60,6 +61,7 @@ import dev.carlosivis.workoutsmart.utils.Dimens
 import dev.carlosivis.workoutsmart.utils.FontSizes
 import dev.carlosivis.workoutsmart.utils.Shapes
 import dev.carlosivis.workoutsmart.utils.WorkoutsSmartTheme
+import dev.carlosivis.workoutsmart.utils.errorSnackbar
 import dev.carlosivis.workoutsmart.utils.formatDateToString
 import dev.carlosivis.workoutsmart.utils.formatDuration
 import org.jetbrains.compose.resources.stringResource
@@ -97,7 +99,13 @@ fun Content(
         )
     }
 
+    val errorHandler = errorSnackbar(
+        error = state.error,
+        action = { action(HomeViewAction.CleanError) }
+    )
+
     Scaffold(
+        snackbarHost = { SnackbarHost(hostState = errorHandler) },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { action(HomeViewAction.Navigate.CreateWorkout) },

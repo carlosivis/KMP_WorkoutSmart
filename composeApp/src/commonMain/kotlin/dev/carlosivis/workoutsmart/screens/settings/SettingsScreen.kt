@@ -24,6 +24,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,9 +38,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.carlosivis.workoutsmart.utils.Dimens
-import dev.carlosivis.workoutsmart.utils.FontSizes
-import dev.carlosivis.workoutsmart.utils.WorkoutsSmartTheme
 import dev.carlosivis.workoutsmart.composeResources.Res
 import dev.carlosivis.workoutsmart.composeResources.action_back
 import dev.carlosivis.workoutsmart.composeResources.settings_keep_screen_on_description
@@ -56,6 +54,10 @@ import dev.carlosivis.workoutsmart.composeResources.settings_vibration_descripti
 import dev.carlosivis.workoutsmart.composeResources.settings_vibration_label
 import dev.carlosivis.workoutsmart.models.SettingsModel
 import dev.carlosivis.workoutsmart.repository.ThemeMode
+import dev.carlosivis.workoutsmart.utils.Dimens
+import dev.carlosivis.workoutsmart.utils.FontSizes
+import dev.carlosivis.workoutsmart.utils.WorkoutsSmartTheme
+import dev.carlosivis.workoutsmart.utils.errorSnackbar
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -80,7 +82,14 @@ fun Content(
     state: SettingsViewState,
     action: (SettingsViewAction) -> Unit
 ) {
-    Scaffold { paddingValues ->
+    val errorHandler = errorSnackbar(
+        error = state.error,
+        action = { action(SettingsViewAction.CleanError) }
+    )
+
+    Scaffold(
+        snackbarHost = { SnackbarHost(hostState = errorHandler) }
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues)
@@ -229,7 +238,6 @@ fun AdditionalSettingsSection(
                 .fillMaxWidth()
                 .padding(Dimens.Medium)
         ) {
-            // Keep Screen On
             SettingOption(
                 label = stringResource(Res.string.settings_keep_screen_on_label),
                 description = stringResource(Res.string.settings_keep_screen_on_description),
@@ -237,7 +245,6 @@ fun AdditionalSettingsSection(
                 onCheckedChange = { action(SettingsViewAction.UpdateKeepScreenOn(it)) }
             )
             Spacer(Modifier.size(Dimens.Medium))
-            // Vibration
             SettingOption(
                 label = stringResource(Res.string.settings_vibration_label),
                 description = stringResource(Res.string.settings_vibration_description),

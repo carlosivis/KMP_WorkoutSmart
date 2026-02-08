@@ -36,6 +36,7 @@ class HomeViewModel(
             is HomeViewAction.CancelDeleteWorkout -> cancelDeleteWorkout()
             is HomeViewAction.GetUserProfile -> getUser()
             is HomeViewAction.GetGroups -> getGroups()
+            is HomeViewAction.CleanError -> cleanError()
         }
     }
 
@@ -119,5 +120,9 @@ class HomeViewModel(
                 }
             setLoading(false)
         }
+    }
+
+    private fun cleanError(){
+        _state.update { it.copy(error = null) }
     }
 }
