@@ -1,5 +1,12 @@
 package dev.carlosivis.workoutsmart.screens.home
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -55,6 +62,7 @@ import dev.carlosivis.workoutsmart.models.WorkoutModel
 import dev.carlosivis.workoutsmart.repository.ThemeMode
 import dev.carlosivis.workoutsmart.screens.components.CustomDialog
 import dev.carlosivis.workoutsmart.screens.components.RankingCarousel
+import dev.carlosivis.workoutsmart.screens.components.RankingLoginRequiredCard
 import dev.carlosivis.workoutsmart.screens.components.loadings.PlaceholderHighlight
 import dev.carlosivis.workoutsmart.screens.components.loadings.placeholder
 import dev.carlosivis.workoutsmart.utils.Dimens
@@ -141,10 +149,39 @@ fun Content(
 
             }
 
-            RankingCarousel(
-                modifier = Modifier.placeholder(state.isLoading, PlaceholderHighlight.shimmer()),
-                groups = state.groups,
-                onCardClick = { action(HomeViewAction.GetGroups) })
+            AnimatedContent(
+                targetState = state.user,
+                transitionSpec = {
+                    if (initialState == null || targetState == null) {
+                        (fadeIn(animationSpec = tween(600)) +
+                                slideInHorizontally { width -> width / 2 })
+                            .togetherWith(
+                                fadeOut(animationSpec = tween(600)) +
+                                        slideOutHorizontally { width -> -width / 2 })
+                    } else {
+                        fadeIn(animationSpec = tween(1200)) togetherWith fadeOut(
+                            animationSpec = tween(
+                                300
+                            )
+                        )
+                    }
+                },
+            ) {user->
+                if (user == null) {
+                    RankingLoginRequiredCard(
+                        modifier = Modifier.placeholder(
+                            state.isLoading,
+                            PlaceholderHighlight.shimmer()
+                        ),
+                        onLoginClick = { action(HomeViewAction.Navigate.Profile) })
+                } else {
+                    RankingCarousel(
+                        modifier = Modifier.placeholder(state.isLoading, PlaceholderHighlight.shimmer()),
+                        groups = state.groups,
+                        onCardClick = { action(HomeViewAction.GetGroups) })
+                }
+            }
+
 
             Spacer(Modifier.height(Dimens.Small))
 
@@ -190,7 +227,8 @@ fun Content(
                         modifier = Modifier
                             .padding(vertical = Dimens.Small)
                             .placeholder(state.isLoading, PlaceholderHighlight.shimmer()),
-                        history = history)
+                        history = history
+                    )
                 }
             }
         }
@@ -246,7 +284,8 @@ private fun WorkoutCard(
 @Composable
 private fun HistoryCard(
     modifier: Modifier = Modifier,
-    history: HistoryModel) {
+    history: HistoryModel
+) {
     val formattedDate = formatDateToString(history.date)
     val formattedDuration = formatDuration(history.duration)
     Card(

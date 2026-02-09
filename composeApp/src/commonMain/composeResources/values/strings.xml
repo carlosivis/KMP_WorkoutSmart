@@ -105,5 +105,7 @@
     <string name="ranking_carousel_title">Seu Ranking</string>
     <string name="ranking_carousel_empty_title">Nossa... que vazio por aqui 👀</string>
     <string name="ranking_carousel_empty_subtitle">Que tal entrar em um grupo e subir no ranking?</string>
+    <string name="ranking_login_required_title">Entre para ver seu ranking</string>
+    <string name="ranking_login_required_subtitle">Faça login para acompanhar sua posição, competir e evoluir nos treinos, clique aqui.</string>
 
 </resources>

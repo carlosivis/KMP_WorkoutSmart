@@ -26,6 +26,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.MilitaryTech
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -47,6 +48,8 @@ import dev.carlosivis.workoutsmart.composeResources.Res
 import dev.carlosivis.workoutsmart.composeResources.ranking_carousel_empty_subtitle
 import dev.carlosivis.workoutsmart.composeResources.ranking_carousel_empty_title
 import dev.carlosivis.workoutsmart.composeResources.ranking_carousel_title
+import dev.carlosivis.workoutsmart.composeResources.ranking_login_required_subtitle
+import dev.carlosivis.workoutsmart.composeResources.ranking_login_required_title
 import dev.carlosivis.workoutsmart.models.GroupResponse
 import dev.carlosivis.workoutsmart.repository.ThemeMode
 import dev.carlosivis.workoutsmart.utils.BronzeGradient
@@ -236,9 +239,77 @@ fun AnimatedTrophyIcon() {
     )
 }
 
+@Composable
+fun RankingLoginRequiredCard(
+    onLoginClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(220.dp)
+            .clickable { onLoginClick() },
+        shape = RoundedCornerShape(Shapes.ExtraLarge),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        )
+    ){
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(Dimens.Medium),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.Lock,
+                contentDescription = null,
+                modifier = Modifier.size(36.dp)
+            )
+
+            Spacer(Modifier.height(12.dp))
+
+            Text(
+                text = stringResource(Res.string.ranking_login_required_title),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold
+            )
+
+            Spacer(Modifier.height(6.dp))
+
+            Text(
+                text = stringResource(Res.string.ranking_login_required_subtitle),
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(Modifier.height(16.dp))
+
+
+        }
+    }
+}
+
 @Preview
 @Composable
-fun RankingBadgeCardPreview() {
+fun RankingLoginRequiredCardPreview() {
+    WorkoutsSmartTheme(ThemeMode.DARK) {
+        RankingLoginRequiredCard(onLoginClick = {})
+    }
+}
+
+@Preview
+@Composable
+fun RankingCarouselEmptyPreview(){
+    WorkoutsSmartTheme(ThemeMode.DARK){
+        RankingCarousel(groups = emptyList())
+    }
+}
+
+
+@Preview
+@Composable
+fun RankingCarouselPreview() {
     WorkoutsSmartTheme(ThemeMode.DARK) {
         RankingCarousel(
             groups = listOf(
