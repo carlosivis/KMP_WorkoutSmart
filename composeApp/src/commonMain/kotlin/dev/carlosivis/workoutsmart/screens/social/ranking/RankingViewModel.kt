@@ -2,12 +2,14 @@ package dev.carlosivis.workoutsmart.screens.social.ranking
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.carlosivis.workoutsmart.navigation.navigator.RankingNavigator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class RankingViewModel(
-
+    //private val GetRankingUseCase: GetRankingUseCase,
+    private val navigator: RankingNavigator
 ): ViewModel() {
 
     private val _state = MutableStateFlow(RankingViewState())

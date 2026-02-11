@@ -6,5 +6,6 @@ sealed class GroupsViewAction {
 
     object Navigate {
         object Back : GroupsViewAction()
+        class Ranking(val id: Int): GroupsViewAction()
     }
 }

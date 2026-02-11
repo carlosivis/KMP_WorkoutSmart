@@ -36,6 +36,8 @@ fun App(root: RootComponent) {
                 is RootComponent.Child.EditWorkout -> CreateWorkoutScreen(instance.component.viewModel)
                 is RootComponent.Child.Settings -> SettingsScreen(instance.component.viewModel)
                 is RootComponent.Child.Login -> ProfileScreen(instance.component.viewModel)
+                is RootComponent.Child.Groups -> TODO()
+                is RootComponent.Child.Ranking -> TODO()
             }
         }
     }

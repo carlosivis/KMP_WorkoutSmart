@@ -10,10 +10,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -25,14 +30,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.carlosivis.workoutsmart.composeResources.Res
+import dev.carlosivis.workoutsmart.composeResources.action_back
 import dev.carlosivis.workoutsmart.models.GroupResponse
 import dev.carlosivis.workoutsmart.repository.ThemeMode
+import dev.carlosivis.workoutsmart.screens.components.loadings.PlaceholderHighlight
+import dev.carlosivis.workoutsmart.screens.components.loadings.placeholder
 import dev.carlosivis.workoutsmart.utils.Dimens
 import dev.carlosivis.workoutsmart.utils.FontSizes
 import dev.carlosivis.workoutsmart.utils.Shapes
 import dev.carlosivis.workoutsmart.utils.WorkoutsSmartTheme
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun GroupsScreen(
@@ -55,16 +66,34 @@ fun Content(
         Column(
             modifier = Modifier.padding(paddingValues)
         ) {
+
+            Box(modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ){
+                IconButton(
+                    onClick = { action(GroupsViewAction.Navigate.Back) },
+                    modifier = Modifier.align(Alignment.CenterStart)
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(Res.string.action_back)
+                    )
+                }
+                Text(text = "Grupos",
+                    textAlign = TextAlign.Center, fontSize = FontSizes.TitleMedium
+                )
+            }
             LazyRow (
                 modifier = Modifier
                     .weight(1f)
+                    .placeholder(state.isLoading, PlaceholderHighlight.shimmer())
                     .fillMaxWidth()
             ) {
-//                items(
-//                    items = state.groups,
-//                ){
-//                    GroupCard(group = it, onClick = {})
-//                }
+                items(
+                    items = state.groups!!,
+                ){group ->
+                    GroupCard(group = group, onClick = {})
+                }
             }
         }
     }
@@ -73,7 +102,7 @@ fun Content(
 @Composable
 fun GroupCard(group: GroupResponse, modifier: Modifier = Modifier, onClick: () -> Unit) {
     Card(
-        modifier = modifier,
+        modifier = modifier.padding(Dimens.Small),
         onClick = { onClick() },
         shape = RoundedCornerShape(Shapes.ExtraLarge),
         colors = CardDefaults.cardColors(
@@ -145,6 +174,25 @@ fun GroupCardPreview() {
                 userPosition = 1
             ),
             onClick = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+fun ContentPreview() {
+    WorkoutsSmartTheme(ThemeMode.DARK) {
+        Content(
+            state = GroupsViewState(
+                groups = listOf(
+                    GroupResponse(1, "Group 1", "abc", 100, 1),
+                    GroupResponse(1, "Group 6", "abc", 100, 6),
+                    GroupResponse(1, "Group 21", "abc", 100, 2),
+                    GroupResponse(1, "Group 1", "abc", 100, 3),
+                    GroupResponse(2, "Group 2", "def", 200, 2),
+                    )
+            ),
+            action = {}
         )
     }
 }
