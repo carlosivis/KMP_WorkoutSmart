@@ -13,36 +13,60 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import dev.carlosivis.workoutsmart.repository.ThemeMode
 
-
 val AppLightColorScheme = lightColorScheme(
-    primary = BluePrimary,
-    onPrimary = WhitePure,
-    primaryContainer = BluePrimary,
-    onPrimaryContainer = WhitePure,
-    secondary = OrangeAccent,
-    onSecondary = WhitePure,
-    background = BackgroundLight,
-    onBackground = TextPrimaryLight,
-    surface = SurfaceLight,
-    onSurface = TextPrimaryLight,
+    primary = BrandBlue,
+    onPrimary = BlackPure,
+    primaryContainer = BrandBlueContainerLight,
+    onPrimaryContainer = BrandBlueContainerDark,
+
+    secondary = BrandOrange,
+    onSecondary = BlackPure,
+    secondaryContainer = BrandOrangeContainerLight,
+    onSecondaryContainer = BrandOrangeContainerDark,
+
+    tertiary = BrandPurple,
+    onTertiary = BlackPure,
+
+    background = Neutral50,
+    onBackground = Neutral900,
+
+    surface = WhitePure,
+    onSurface = BlackPure,
+    surfaceVariant = Neutral100,
+    onSurfaceVariant = BlackPure,
+
+    outline = Neutral200,
     error = ErrorRed,
     onError = WhitePure
 )
 
 val AppDarkColorScheme = darkColorScheme(
-    primary = BluePrimary,
+    primary = BrandBlue,
     onPrimary = WhitePure,
-    primaryContainer = BluePrimary,
-    onPrimaryContainer = WhitePure,
-    secondary = OrangeAccent,
+    primaryContainer = BrandBlueContainerDark,
+    onPrimaryContainer = BrandBlueContainerLight,
+
+    secondary = BrandOrange,
     onSecondary = WhitePure,
-    background = BackgroundDark,
-    onBackground = TextPrimaryDark,
-    surface = SurfaceDark,
-    onSurface = TextPrimaryDark,
+    secondaryContainer = BrandOrangeContainerDark,
+    onSecondaryContainer = BrandOrangeContainerLight,
+
+    tertiary = BrandPurple,
+    onTertiary = WhitePure,
+
+    background = NeutralDark900,
+    onBackground = WhitePure,
+
+    surface = NeutralDark800,
+    onSurface = WhitePure,
+    surfaceVariant = NeutralDark700,
+    onSurfaceVariant = WhitePure,
+
+    outline = NeutralDark700,
     error = ErrorRed,
-    onError = WhitePure
+    onError = BlackPure
 )
+
 val typography = Typography(
     bodyMedium = TextStyle(
         fontFamily = FontFamily.Default,
@@ -50,10 +74,12 @@ val typography = Typography(
         fontSize = FontSizes.BodyMedium
     )
 )
+
 val shapes = Shapes(
     small = RoundedCornerShape(dev.carlosivis.workoutsmart.utils.Shapes.Small),
     medium = RoundedCornerShape(dev.carlosivis.workoutsmart.utils.Shapes.Medium),
-    large = RoundedCornerShape(dev.carlosivis.workoutsmart.utils.Shapes.Large)
+    large = RoundedCornerShape(dev.carlosivis.workoutsmart.utils.Shapes.Large),
+    extraLarge = RoundedCornerShape(dev.carlosivis.workoutsmart.utils.Shapes.ExtraLarge)
 )
 
 @Composable
@@ -61,12 +87,12 @@ fun WorkoutsSmartTheme(
     themeMode: ThemeMode = ThemeMode.SYSTEM,
     content: @Composable () -> Unit
 ) {
-
     val darkTheme = when (themeMode) {
         ThemeMode.LIGHT -> false
         ThemeMode.DARK -> true
         ThemeMode.SYSTEM -> isSystemInDarkTheme()
     }
+
     val colorScheme = if (darkTheme) AppDarkColorScheme else AppLightColorScheme
 
     MaterialTheme(

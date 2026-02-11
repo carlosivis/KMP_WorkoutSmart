@@ -37,7 +37,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -60,7 +59,6 @@ import dev.carlosivis.workoutsmart.utils.GoldColor
 import dev.carlosivis.workoutsmart.utils.GoldGradient
 import dev.carlosivis.workoutsmart.utils.Shapes
 import dev.carlosivis.workoutsmart.utils.SilverGradient
-import dev.carlosivis.workoutsmart.utils.WhitePure
 import dev.carlosivis.workoutsmart.utils.WorkoutsSmartTheme
 import org.jetbrains.compose.resources.stringResource
 
@@ -141,7 +139,7 @@ private fun RankingBadgeCard(group: GroupResponse) {
                 Text(
                     text = group.name,
                     style = MaterialTheme.typography.labelMedium.copy(fontSize = FontSizes.BodySmall),
-                    color = WhitePure,
+                    color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     fontWeight = FontWeight.Bold
@@ -151,7 +149,7 @@ private fun RankingBadgeCard(group: GroupResponse) {
                     Icon(
                         imageVector = iconVec,
                         contentDescription = null,
-                        tint = WhitePure,
+                        tint = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.size(Dimens.ExtraLarge)
                     )
 
@@ -161,10 +159,9 @@ private fun RankingBadgeCard(group: GroupResponse) {
                             fontSize = FontSizes.HeadlineSmall,
                             fontWeight = FontWeight.ExtraBold
                         ),
-                        color = WhitePure
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
-
             }
         }
     }
@@ -197,7 +194,7 @@ fun RankingEmptyState() {
                 text = stringResource(Res.string.ranking_carousel_empty_title),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.Center
             )
 
@@ -206,7 +203,7 @@ fun RankingEmptyState() {
             Text(
                 text = stringResource(Res.string.ranking_carousel_empty_subtitle),
                 style = MaterialTheme.typography.bodyMedium,
-                color = Color.White.copy(alpha = 0.7f),
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                 textAlign = TextAlign.Center
             )
 
@@ -264,10 +261,10 @@ fun RankingLoginRequiredCard(
             Icon(
                 imageVector = Icons.Outlined.Lock,
                 contentDescription = null,
-                modifier = Modifier.size(36.dp)
+                modifier = Modifier.size(Dimens.ImageSizeSmall)
             )
 
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(Dimens.Small))
 
             Text(
                 text = stringResource(Res.string.ranking_login_required_title),
@@ -275,17 +272,13 @@ fun RankingLoginRequiredCard(
                 fontWeight = FontWeight.SemiBold
             )
 
-            Spacer(Modifier.height(6.dp))
+            Spacer(Modifier.height(Dimens.Small))
 
             Text(
                 text = stringResource(Res.string.ranking_login_required_subtitle),
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center
             )
-
-            Spacer(Modifier.height(16.dp))
-
-
         }
     }
 }
