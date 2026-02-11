@@ -1,8 +1,13 @@
 package dev.carlosivis.workoutsmart.screens.social.groups
 
+import dev.carlosivis.workoutsmart.models.CreateGroupRequest
+import dev.carlosivis.workoutsmart.models.JoinGroupRequest
+
 sealed class GroupsViewAction {
     object GetGroups : GroupsViewAction()
     object CleanError : GroupsViewAction()
+    data class CreateGroup(val create: CreateGroupRequest) : GroupsViewAction()
+    data class JoinGroup(val join: JoinGroupRequest) : GroupsViewAction()
 
     object Navigate {
         object Back : GroupsViewAction()

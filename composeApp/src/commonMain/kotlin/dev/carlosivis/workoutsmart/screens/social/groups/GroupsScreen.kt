@@ -21,6 +21,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,12 +38,14 @@ import dev.carlosivis.workoutsmart.composeResources.Res
 import dev.carlosivis.workoutsmart.composeResources.action_back
 import dev.carlosivis.workoutsmart.models.GroupResponse
 import dev.carlosivis.workoutsmart.repository.ThemeMode
+import dev.carlosivis.workoutsmart.screens.components.RankingEmptyState
 import dev.carlosivis.workoutsmart.screens.components.loadings.PlaceholderHighlight
 import dev.carlosivis.workoutsmart.screens.components.loadings.placeholder
 import dev.carlosivis.workoutsmart.utils.Dimens
 import dev.carlosivis.workoutsmart.utils.FontSizes
 import dev.carlosivis.workoutsmart.utils.Shapes
 import dev.carlosivis.workoutsmart.utils.WorkoutsSmartTheme
+import dev.carlosivis.workoutsmart.utils.errorSnackbar
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -61,7 +64,15 @@ fun Content(
     state: GroupsViewState,
     action: (GroupsViewAction) -> Unit,
 ) {
-    Scaffold() { paddingValues ->
+
+    val errorHandler = errorSnackbar(
+        error = state.error,
+        action = { action(GroupsViewAction.CleanError) }
+    )
+
+    Scaffold(
+        snackbarHost = { SnackbarHost(hostState = errorHandler) }
+    ) { paddingValues ->
 
         Column(
             modifier = Modifier.padding(paddingValues)
@@ -83,16 +94,22 @@ fun Content(
                     textAlign = TextAlign.Center, fontSize = FontSizes.TitleMedium
                 )
             }
-            LazyRow (
-                modifier = Modifier
-                    .weight(1f)
-                    .placeholder(state.isLoading, PlaceholderHighlight.shimmer())
-                    .fillMaxWidth()
-            ) {
-                items(
-                    items = state.groups!!,
-                ){group ->
-                    GroupCard(group = group, onClick = {})
+            if (state.groups.isNullOrEmpty()) {
+                RankingEmptyState()
+            }else{
+                LazyRow (
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                ) {
+                    items(
+                        items = state.groups,
+                    ){group ->
+                        GroupCard(modifier = Modifier.padding(Dimens.Small)
+                            .placeholder(state.isLoading, PlaceholderHighlight.shimmer()),
+                            group = group,
+                            onClick = { action(GroupsViewAction.Navigate.Ranking(group.id)) })
+                    }
                 }
             }
         }
@@ -102,7 +119,7 @@ fun Content(
 @Composable
 fun GroupCard(group: GroupResponse, modifier: Modifier = Modifier, onClick: () -> Unit) {
     Card(
-        modifier = modifier.padding(Dimens.Small),
+        modifier = modifier,
         onClick = { onClick() },
         shape = RoundedCornerShape(Shapes.ExtraLarge),
         colors = CardDefaults.cardColors(

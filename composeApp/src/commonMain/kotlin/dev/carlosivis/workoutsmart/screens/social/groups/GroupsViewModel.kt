@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import dev.carlosivis.workoutsmart.domain.CreateGroupUseCase
 import dev.carlosivis.workoutsmart.domain.GetGroupsUseCase
 import dev.carlosivis.workoutsmart.domain.JoinGroupUseCase
+import dev.carlosivis.workoutsmart.models.CreateGroupRequest
 import dev.carlosivis.workoutsmart.models.GroupResponse
+import dev.carlosivis.workoutsmart.models.JoinGroupRequest
 import dev.carlosivis.workoutsmart.navigation.navigator.GroupsNavigator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,7 +19,7 @@ class GroupsViewModel(
     private val CreateGroupUseCase: CreateGroupUseCase,
     private val JoinGroupUseCase: JoinGroupUseCase,
     private val navigator: GroupsNavigator
-): ViewModel() {
+) : ViewModel() {
     val _state = MutableStateFlow(GroupsViewState())
     val state = _state.asStateFlow()
 
@@ -28,6 +30,8 @@ class GroupsViewModel(
             GroupsViewAction.CleanError -> cleanError()
             GroupsViewAction.Navigate.Back -> navigator.back()
             is GroupsViewAction.Navigate.Ranking -> navigator.toRanking(action.id)
+            is GroupsViewAction.CreateGroup -> createGroup(action.create)
+            is GroupsViewAction.JoinGroup -> joinGroup(action.join)
         }
     }
 
@@ -53,7 +57,37 @@ class GroupsViewModel(
         }
     }
 
-    private fun cleanError(){
+    private fun createGroup(params: CreateGroupRequest) {
+        setLoading(true)
+        viewModelScope.launch {
+            CreateGroupUseCase(params)
+                .onSuccess { group ->
+                    _state.value = _state.value.copy(
+                        groups = _state.value.groups?.plus(group))
+                    navigator.toRanking(group.id)
+                }
+                .onFailure { error ->
+                    _state.value = _state.value.copy(error = error.message)
+                }
+        }
+        setLoading(false)
+    }
+
+    private fun joinGroup(params: JoinGroupRequest) {
+        setLoading(true)
+        viewModelScope.launch {
+            JoinGroupUseCase(params)
+                .onSuccess { group ->
+                    navigator.toRanking(group.id)
+                }
+                .onFailure { error ->
+                    _state.value = _state.value.copy(error = error.message)
+                }
+        }
+        setLoading(false)
+    }
+
+    private fun cleanError() {
         _state.value = _state.value.copy(error = null)
     }
 }
