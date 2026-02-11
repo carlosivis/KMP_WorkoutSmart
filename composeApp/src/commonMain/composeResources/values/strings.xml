@@ -73,6 +73,14 @@
     <string name="camera_button">Câmera</string>
     <string name="gallery_button">Galeria</string>
     <string name="camera_permission_denied_message">A permissão para acessar a câmera foi negada. Por favor, habilite-a nas configurações do aplicativo para continuar.</string>
+    <string name="join_group_dialog_title">Entrar em um Grupo</string>
+    <string name="join_group_dialog_invite_code_label">Código do Convite</string>
+    <string name="join_group_dialog_join_button">Entrar</string>
+    <string name="create_group_dialog_title">Criar Novo Grupo</string>
+    <string name="create_group_dialog_name_label">Nome do Grupo</string>
+    <string name="create_group_dialog_description_label">Descrição (Opcional)</string>
+    <string name="create_group_dialog_create_button">Criar Grupo</string>
+
 
     <!-- Common / Strings.kt -->
     <string name="action_save">Salvar</string>
@@ -107,5 +115,10 @@
     <string name="ranking_carousel_empty_subtitle">Que tal entrar em um grupo e subir no ranking?</string>
     <string name="ranking_login_required_title">Entre para ver seu ranking</string>
     <string name="ranking_login_required_subtitle">Faça login para acompanhar sua posição, competir e evoluir nos treinos, clique aqui.</string>
+    <!-- GroupsScreen.kt -->
+    <string name="groups_screen_title">Grupos</string>
+    <string name="groups_screen_create_group_button">Criar Grupo</string>
+    <string name="groups_screen_join_group_button">Entrar em Grupo</string>
+    <string name="groups_screen_user_rank">Rank: #%1$d</string>
 
 </resources>

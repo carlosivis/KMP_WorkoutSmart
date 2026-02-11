@@ -5,5 +5,7 @@ import dev.carlosivis.workoutsmart.models.GroupResponse
 data class GroupsViewState(
     val isLoading: Boolean = false,
     val groups: List<GroupResponse>? = emptyList(),
-    val error: String? = null
+    val error: String? = null,
+    val showAddGroup: Boolean = false,
+    val showAddInvite: Boolean = false,
 )

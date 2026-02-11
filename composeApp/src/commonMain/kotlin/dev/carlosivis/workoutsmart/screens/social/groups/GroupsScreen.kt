@@ -1,8 +1,12 @@
 package dev.carlosivis.workoutsmart.screens.social.groups
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +19,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.automirrored.filled.Login
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -30,14 +38,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.carlosivis.workoutsmart.composeResources.Res
 import dev.carlosivis.workoutsmart.composeResources.action_back
+import dev.carlosivis.workoutsmart.composeResources.groups_screen_create_group_button
+import dev.carlosivis.workoutsmart.composeResources.groups_screen_join_group_button
+import dev.carlosivis.workoutsmart.composeResources.groups_screen_title
+import dev.carlosivis.workoutsmart.composeResources.groups_screen_user_rank
 import dev.carlosivis.workoutsmart.models.GroupResponse
 import dev.carlosivis.workoutsmart.repository.ThemeMode
+import dev.carlosivis.workoutsmart.screens.components.CustomCreateGroupDialog
+import dev.carlosivis.workoutsmart.screens.components.CustomJoinGroupDialog
 import dev.carlosivis.workoutsmart.screens.components.RankingEmptyState
 import dev.carlosivis.workoutsmart.screens.components.loadings.PlaceholderHighlight
 import dev.carlosivis.workoutsmart.screens.components.loadings.placeholder
@@ -74,13 +89,32 @@ fun Content(
         snackbarHost = { SnackbarHost(hostState = errorHandler) }
     ) { paddingValues ->
 
+        AnimatedVisibility(
+            visible = state.showAddGroup,
+        ) {
+            CustomCreateGroupDialog(
+                onDismiss = { action(GroupsViewAction.ShowAddGroup) },
+                onConfirm = { action(GroupsViewAction.CreateGroup(it)) },
+                onCancel = { action(GroupsViewAction.ShowAddGroup) }
+            )
+        }
+        AnimatedVisibility(
+            visible = state.showAddInvite,
+        ) {
+            CustomJoinGroupDialog(
+                onDismiss = { action(GroupsViewAction.ShowAddInvite) },
+                onConfirm = { action(GroupsViewAction.JoinGroup(it)) },
+                onCancel = { action(GroupsViewAction.ShowAddInvite) }
+            )
+        }
         Column(
             modifier = Modifier.padding(paddingValues)
         ) {
 
-            Box(modifier = Modifier.fillMaxWidth(),
+            Box(
+                modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.Center
-            ){
+            ) {
                 IconButton(
                     onClick = { action(GroupsViewAction.Navigate.Back) },
                     modifier = Modifier.align(Alignment.CenterStart)
@@ -90,28 +124,45 @@ fun Content(
                         contentDescription = stringResource(Res.string.action_back)
                     )
                 }
-                Text(text = "Grupos",
+                Text(
+                    text = stringResource(Res.string.groups_screen_title),
                     textAlign = TextAlign.Center, fontSize = FontSizes.TitleMedium
                 )
             }
             if (state.groups.isNullOrEmpty()) {
                 RankingEmptyState()
-            }else{
-                LazyRow (
+            } else {
+                LazyRow(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxWidth()
                 ) {
                     items(
                         items = state.groups,
-                    ){group ->
-                        GroupCard(modifier = Modifier.padding(Dimens.Small)
-                            .placeholder(state.isLoading, PlaceholderHighlight.shimmer()),
+                    ) { group ->
+                        GroupCard(
+                            modifier = Modifier.padding(Dimens.Small)
+                                .placeholder(state.isLoading, PlaceholderHighlight.shimmer()),
                             group = group,
                             onClick = { action(GroupsViewAction.Navigate.Ranking(group.id)) })
                     }
                 }
             }
+
+            CustomActionButton(
+                modifier = Modifier.padding(Dimens.Medium),
+                title = stringResource(Res.string.groups_screen_create_group_button),
+                icon = Icons.Default.Add,
+                onClick = { action(GroupsViewAction.ShowAddGroup) }
+            )
+            Spacer(Modifier.height(Dimens.Medium))
+
+            CustomActionButton(
+                modifier = Modifier.padding(Dimens.Medium),
+                title = stringResource(Res.string.groups_screen_join_group_button),
+                icon = Icons.AutoMirrored.Filled.Login,
+                onClick = { action(GroupsViewAction.ShowAddInvite) }
+            )
         }
     }
 }
@@ -123,7 +174,8 @@ fun GroupCard(group: GroupResponse, modifier: Modifier = Modifier, onClick: () -
         onClick = { onClick() },
         shape = RoundedCornerShape(Shapes.ExtraLarge),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant)
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        )
     ) {
 
         val initials = remember(group.name) {
@@ -139,7 +191,7 @@ fun GroupCard(group: GroupResponse, modifier: Modifier = Modifier, onClick: () -
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Surface(
-                modifier = Modifier.size(Dimens.ImageSizeLarge),
+                modifier = Modifier.size(Dimens.ImageSizeMedium),
                 shape = CircleShape,
                 shadowElevation = Dimens.Medium,
                 color = MaterialTheme.colorScheme.primaryContainer
@@ -166,17 +218,83 @@ fun GroupCard(group: GroupResponse, modifier: Modifier = Modifier, onClick: () -
                 }
             }
             Spacer(modifier = Modifier.height(Dimens.Small))
-            Text(text = group.name,
+            Text(
+                text = group.name,
                 style = MaterialTheme.typography.titleLarge,
-                )
+            )
             Spacer(modifier = Modifier.height(Dimens.Small))
-            Text(text = "Rank: #${group.userPosition}",
+            Text(
+                text = stringResource(Res.string.groups_screen_user_rank, group.userPosition),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant)
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 
 }
+
+@Composable
+fun CustomActionButton(
+    modifier: Modifier = Modifier,
+    title: String,
+    icon: ImageVector,
+    onClick: () -> Unit
+) {
+    Card(
+        onClick = onClick,
+        modifier = modifier
+            .fillMaxWidth(),
+        shape = MaterialTheme.shapes.extraLarge,
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+            contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+        ),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(Dimens.Medium)
+                .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Row(
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(Dimens.Medium)
+            ) {
+                Surface(
+                    shape = CircleShape,
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    modifier = Modifier.size(Dimens.ImageSizeSmall)
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(Dimens.Large)
+                        )
+                    }
+                }
+
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+            )
+        }
+    }
+}
+
 
 @Preview
 @Composable
@@ -197,6 +315,19 @@ fun GroupCardPreview() {
 
 @Preview
 @Composable
+fun CustomActionButtonPreview() {
+    WorkoutsSmartTheme(ThemeMode.DARK) {
+        CustomActionButton(
+            modifier = Modifier.padding(Dimens.Medium),
+            title = "Teste",
+            icon = Icons.AutoMirrored.Filled.List,
+            onClick = {}
+        )
+    }
+}
+
+@Preview
+@Composable
 fun ContentPreview() {
     WorkoutsSmartTheme(ThemeMode.DARK) {
         Content(
@@ -207,7 +338,7 @@ fun ContentPreview() {
                     GroupResponse(1, "Group 21", "abc", 100, 2),
                     GroupResponse(1, "Group 1", "abc", 100, 3),
                     GroupResponse(2, "Group 2", "def", 200, 2),
-                    )
+                )
             ),
             action = {}
         )
