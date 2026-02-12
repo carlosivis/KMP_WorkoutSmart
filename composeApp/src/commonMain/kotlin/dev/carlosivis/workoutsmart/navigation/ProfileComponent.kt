@@ -5,15 +5,11 @@ import dev.carlosivis.workoutsmart.navigation.navigator.ProfileNavigator
 import dev.carlosivis.workoutsmart.screens.profile.ProfileViewModel
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
+import org.koin.core.parameter.parametersOf
 
 class ProfileComponent(
     componentContext: ComponentContext,
     val navigator: ProfileNavigator,
 ) : ComponentContext by componentContext, KoinComponent {
-    val viewModel = ProfileViewModel(
-        loginGoogleUseCase = get(),
-        getUserUseCase = get(),
-        logoutUseCase = get(),
-        navigator = navigator
-    )
+    val viewModel: ProfileViewModel = get { parametersOf(navigator) }
 }

@@ -1,5 +1,6 @@
 package dev.carlosivis.workoutsmart.screens.home
 
+import dev.carlosivis.workoutsmart.models.GroupResponse
 import dev.carlosivis.workoutsmart.models.WorkoutModel
 
 sealed class HomeViewAction {
@@ -18,5 +19,7 @@ sealed class HomeViewAction {
         data class Workout(val workout: WorkoutModel) : HomeViewAction()
         data class Edit(val workout: WorkoutModel) : HomeViewAction()
         object Profile : HomeViewAction()
+        object Groups : HomeViewAction()
+        data class Ranking(val group: GroupResponse) : HomeViewAction()
     }
 }

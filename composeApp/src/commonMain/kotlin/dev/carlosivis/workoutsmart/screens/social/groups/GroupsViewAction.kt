@@ -1,6 +1,7 @@
 package dev.carlosivis.workoutsmart.screens.social.groups
 
 import dev.carlosivis.workoutsmart.models.CreateGroupRequest
+import dev.carlosivis.workoutsmart.models.GroupResponse
 import dev.carlosivis.workoutsmart.models.JoinGroupRequest
 
 sealed class GroupsViewAction {
@@ -14,6 +15,6 @@ sealed class GroupsViewAction {
 
     object Navigate {
         object Back : GroupsViewAction()
-        class Ranking(val id: Int): GroupsViewAction()
+        class Ranking(val group: GroupResponse): GroupsViewAction()
     }
 }

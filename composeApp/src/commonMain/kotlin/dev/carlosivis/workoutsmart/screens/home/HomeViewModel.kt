@@ -37,6 +37,8 @@ class HomeViewModel(
             is HomeViewAction.GetUserProfile -> getUser()
             is HomeViewAction.GetGroups -> getGroups()
             is HomeViewAction.CleanError -> cleanError()
+            is HomeViewAction.Navigate.Groups -> navigator.toGroups(_state.value.groups)
+            is HomeViewAction.Navigate.Ranking -> navigator.toRanking(action.group)
         }
     }
 

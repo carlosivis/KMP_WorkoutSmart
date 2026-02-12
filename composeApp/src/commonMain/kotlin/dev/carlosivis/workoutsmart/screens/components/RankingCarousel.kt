@@ -66,11 +66,12 @@ import org.jetbrains.compose.resources.stringResource
 fun RankingCarousel(
     groups: List<GroupResponse>,
     modifier: Modifier = Modifier,
-    onCardClick: () -> Unit = {}
+    onCardClick: () -> Unit = {},
+    onGroupClick: (GroupResponse) -> Unit = {}
 ) {
-    Column(
-        modifier = modifier
-            .clickable(enabled = true, onClick = { onCardClick() })
+    Card(
+        modifier = modifier,
+        onClick = { onCardClick() },
     ) {
         if (groups.isNotEmpty()) {
             Text(
@@ -93,7 +94,7 @@ fun RankingCarousel(
                     horizontalArrangement = Arrangement.spacedBy(Dimens.Medium)
                 ) {
                     items(groups) { group ->
-                        RankingBadgeCard(group)
+                        RankingBadgeCard(group, { onGroupClick(group) })
                     }
                 }
             }
@@ -105,7 +106,7 @@ fun RankingCarousel(
 }
 
 @Composable
-private fun RankingBadgeCard(group: GroupResponse) {
+private fun RankingBadgeCard(group: GroupResponse, onGroupClick: (GroupResponse) -> Unit = {}) {
     val (backgroundBrush, iconVec) = when (group.userPosition) {
         1 -> GoldGradient to Icons.Filled.EmojiEvents
         2 -> SilverGradient to Icons.Filled.MilitaryTech
@@ -122,7 +123,8 @@ private fun RankingBadgeCard(group: GroupResponse) {
         shape = RoundedCornerShape(Shapes.ExtraLarge),
         modifier = Modifier
             .width(100.dp)
-            .height(140.dp)
+            .height(140.dp),
+        onClick = { onGroupClick(group) }
     ) {
         Box(
             modifier = Modifier

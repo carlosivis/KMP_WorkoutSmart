@@ -20,6 +20,7 @@ import dev.carlosivis.workoutsmart.domain.GetUserUseCase
 import dev.carlosivis.workoutsmart.domain.JoinGroupUseCase
 import dev.carlosivis.workoutsmart.domain.LoginGoogleUseCase
 import dev.carlosivis.workoutsmart.domain.LogoutUseCase
+import dev.carlosivis.workoutsmart.models.GroupResponse
 import dev.carlosivis.workoutsmart.models.WorkoutModel
 import dev.carlosivis.workoutsmart.navigation.navigator.GroupsNavigator
 import dev.carlosivis.workoutsmart.navigation.navigator.HomeNavigator
@@ -36,6 +37,7 @@ import dev.carlosivis.workoutsmart.screens.activeWorkout.ActiveWorkoutViewModel
 import dev.carlosivis.workoutsmart.screens.createWorkout.CreateWorkoutViewModel
 import dev.carlosivis.workoutsmart.screens.home.HomeViewModel
 import dev.carlosivis.workoutsmart.screens.profile.ProfileViewModel
+import dev.carlosivis.workoutsmart.screens.settings.SettingsViewModel
 import dev.carlosivis.workoutsmart.screens.social.groups.GroupsViewModel
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
@@ -76,10 +78,14 @@ val commonModule = module {
         CreateWorkoutViewModel(get(), onNavigateBack)
     }
 
-    viewModel { (navigator: GroupsNavigator) ->
+    viewModel { (navigator: GroupsNavigator, groups: List<GroupResponse>?) ->
         GroupsViewModel(
-            get(), get(), get(), get(), navigator
+           groups, get(), get(), get(), navigator
         )
+    }
+
+    viewModel {(onNavigateBack: () -> Unit) ->
+        SettingsViewModel(get(), onNavigateBack)
     }
 
     single {

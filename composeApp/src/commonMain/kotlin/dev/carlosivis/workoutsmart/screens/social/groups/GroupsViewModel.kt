@@ -30,7 +30,7 @@ class GroupsViewModel(
             GroupsViewAction.GetGroups -> getGroups()
             GroupsViewAction.CleanError -> cleanError()
             GroupsViewAction.Navigate.Back -> navigator.back()
-            is GroupsViewAction.Navigate.Ranking -> navigator.toRanking(action.id)
+            is GroupsViewAction.Navigate.Ranking -> navigator.toRanking(action.group)
             is GroupsViewAction.CreateGroup -> createGroup(action.create)
             is GroupsViewAction.JoinGroup -> joinGroup(action.join)
             GroupsViewAction.ShowAddGroup -> showAddGroup()
@@ -68,7 +68,7 @@ class GroupsViewModel(
                     _state.update {  _state.value.copy(
                         groups = _state.value.groups?.plus(group)
                     )}
-                    navigator.toRanking(group.id)
+                    navigator.toRanking(group)
                 }
                 .onFailure { error ->
                     _state.update { it.copy(error = error.message)}
@@ -87,7 +87,7 @@ class GroupsViewModel(
                             groups = it.groups?.plus(group)
                         )
                     }
-                    navigator.toRanking(group.id)
+                    navigator.toRanking(group)
                 }
                 .onFailure { error ->
                     _state.update {  it.copy(error = error.message)}

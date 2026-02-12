@@ -6,6 +6,7 @@ import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
+import dev.carlosivis.workoutsmart.models.GroupResponse
 import dev.carlosivis.workoutsmart.models.WorkoutModel
 import dev.carlosivis.workoutsmart.navigation.navigator.GroupsNavigator
 import dev.carlosivis.workoutsmart.navigation.navigator.HomeNavigator
@@ -49,7 +50,9 @@ class RootComponent(
                                 Configuration.EditWorkout(workout)
                             )
                         },
-                        toProfile = { navigation.push(Configuration.Profile) }
+                        toProfile = { navigation.push(Configuration.Profile) },
+                        toGroups = { groups -> navigation.push(Configuration.Groups(groups)) },
+                        toRanking = { group -> navigation.push(Configuration.Ranking(group)) }
                     )
                 )
             )
@@ -98,7 +101,7 @@ class RootComponent(
                 GroupsComponent(
                     componentContext = context,
                     navigator = GroupsNavigator(
-                        toRanking = { id -> navigation.push(Configuration.Ranking(id)) },
+                        toRanking = { group -> navigation.push(Configuration.Ranking(group)) },
                         back = { navigation.pop() }
                     )
                 )
@@ -149,8 +152,8 @@ sealed class Configuration {
     data object Profile : Configuration()
 
     @Serializable
-    data object Groups : Configuration()
+    data class Groups(val groups: List<GroupResponse>?) : Configuration()
 
     @Serializable
-    data class Ranking(val id: Int) : Configuration()
+    data class Ranking(val group: GroupResponse) : Configuration()
 }

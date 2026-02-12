@@ -5,15 +5,11 @@ import dev.carlosivis.workoutsmart.navigation.navigator.HomeNavigator
 import dev.carlosivis.workoutsmart.screens.home.HomeViewModel
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
+import org.koin.core.parameter.parametersOf
 
 class HomeComponent(
     componentContext: ComponentContext,
     val navigator: HomeNavigator
 ) : ComponentContext by componentContext, KoinComponent {
-    val viewModel = HomeViewModel(
-        repository = get(),
-        getUserUseCase = get(),
-        getGroupsUseCase = get(),
-        navigator = navigator
-    )
+    val viewModel: HomeViewModel = get { parametersOf(navigator) }
 }

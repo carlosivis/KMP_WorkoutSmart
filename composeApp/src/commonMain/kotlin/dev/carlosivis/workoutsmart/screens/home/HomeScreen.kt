@@ -178,7 +178,9 @@ fun Content(
                     RankingCarousel(
                         modifier = Modifier.placeholder(state.isLoading, PlaceholderHighlight.shimmer()),
                         groups = state.groups,
-                        onCardClick = { action(HomeViewAction.GetGroups) })
+                        onCardClick = { action(HomeViewAction.Navigate.Groups) },
+                        onGroupClick = { action(HomeViewAction.Navigate.Ranking(it)) }
+                    )
                 }
             }
 

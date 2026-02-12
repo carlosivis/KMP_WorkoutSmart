@@ -109,6 +109,7 @@ fun Content(
         }
         Column(
             modifier = Modifier.padding(paddingValues)
+                .padding(Dimens.Medium)
         ) {
 
             Box(
@@ -144,7 +145,7 @@ fun Content(
                             modifier = Modifier.padding(Dimens.Small)
                                 .placeholder(state.isLoading, PlaceholderHighlight.shimmer()),
                             group = group,
-                            onClick = { action(GroupsViewAction.Navigate.Ranking(group.id)) })
+                            onClick = { action(GroupsViewAction.Navigate.Ranking(group)) })
                     }
                 }
             }
