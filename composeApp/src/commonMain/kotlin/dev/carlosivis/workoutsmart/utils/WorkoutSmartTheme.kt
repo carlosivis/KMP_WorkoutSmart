@@ -31,11 +31,13 @@ val AppLightColorScheme = lightColorScheme(
     onBackground = Neutral900,
 
     surface = WhitePure,
-    onSurface = BlackPure,
+    onSurface = Neutral900,
+
     surfaceVariant = Neutral100,
-    onSurfaceVariant = BlackPure,
+    onSurfaceVariant = Neutral900.copy(alpha = 0.8f),
 
     outline = Neutral200,
+
     error = ErrorRed,
     onError = WhitePure
 )
@@ -59,10 +61,11 @@ val AppDarkColorScheme = darkColorScheme(
 
     surface = NeutralDark800,
     onSurface = WhitePure,
-    surfaceVariant = NeutralDark700,
-    onSurfaceVariant = WhitePure,
 
+    surfaceVariant = NeutralDark700,
+    onSurfaceVariant = NeutralDarkGray,
     outline = NeutralDark700,
+
     error = ErrorRed,
     onError = BlackPure
 )
