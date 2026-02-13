@@ -1,10 +1,11 @@
 package dev.carlosivis.workoutsmart.data.remote.datasource
 
+import dev.carlosivis.workoutsmart.core.NetworkWrapper
+import dev.carlosivis.workoutsmart.data.remote.service.SocialService
 import dev.carlosivis.workoutsmart.models.CreateGroupRequest
 import dev.carlosivis.workoutsmart.models.GroupResponse
 import dev.carlosivis.workoutsmart.models.JoinGroupRequest
-import dev.carlosivis.workoutsmart.core.NetworkWrapper
-import dev.carlosivis.workoutsmart.data.remote.service.SocialService
+import dev.carlosivis.workoutsmart.models.RankingMember
 
 class SocialRemoteDataSourceImpl(
     private val service: SocialService
@@ -50,4 +51,20 @@ class SocialRemoteDataSourceImpl(
             Result.failure(e)
         }
     }
+
+    override suspend fun getRankingMembers(groupId: Int): Result<List<RankingMember>> {
+        return try {
+            val response = NetworkWrapper.safeCall<List<RankingMember>> {
+                service.getRankingMembers(groupId)
+            }
+            Result.success(response)
+
+        } catch (e: NetworkWrapper.AppNetworkException) {
+            Result.failure(e)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+
 }

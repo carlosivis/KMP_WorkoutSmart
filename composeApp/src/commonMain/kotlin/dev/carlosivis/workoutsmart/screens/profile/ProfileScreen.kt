@@ -23,13 +23,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -50,7 +48,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import dev.carlosivis.workoutsmart.composeResources.Res
-import dev.carlosivis.workoutsmart.composeResources.action_back
 import dev.carlosivis.workoutsmart.composeResources.ic_user_placeholder
 import dev.carlosivis.workoutsmart.composeResources.profile_fallback_display_name
 import dev.carlosivis.workoutsmart.composeResources.profile_login_subtitle
@@ -59,6 +56,7 @@ import dev.carlosivis.workoutsmart.composeResources.profile_logout
 import dev.carlosivis.workoutsmart.composeResources.profile_settings_action
 import dev.carlosivis.workoutsmart.models.UserResponse
 import dev.carlosivis.workoutsmart.repository.ThemeMode
+import dev.carlosivis.workoutsmart.screens.components.CustomTopBar
 import dev.carlosivis.workoutsmart.screens.components.GoogleButton
 import dev.carlosivis.workoutsmart.utils.Dimens
 import dev.carlosivis.workoutsmart.utils.WorkoutsSmartTheme
@@ -120,30 +118,13 @@ private fun Content(
                     .padding(paddingValues)
                     .padding(Dimens.Medium),
             ) {
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    IconButton(
-                        onClick = { action(ProfileViewAction.Navigate.Back) },
-                        modifier = Modifier.align(Alignment.CenterStart)
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(Res.string.action_back)
-                        )
-                    }
+                CustomTopBar(
+                    onNavBackClick = { action(ProfileViewAction.Navigate.Back) },
+                    onRightIconClick = { action(ProfileViewAction.Navigate.Settings) },
+                    rightIcon = Icons.Filled.Settings,
+                    rightIconDescription = Res.string.profile_settings_action
+                )
 
-                    IconButton(
-                        onClick = { action(ProfileViewAction.Navigate.Settings) },
-                        modifier = Modifier.align(Alignment.CenterEnd)
-                    ) {
-                        Icon(
-                            Icons.Filled.Settings,
-                            stringResource(Res.string.profile_settings_action)
-                        )
-                    }
-                }
                 AnimatedContent(
                     targetState = state.user,
                     transitionSpec = {

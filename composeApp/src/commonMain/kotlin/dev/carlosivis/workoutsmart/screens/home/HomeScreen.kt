@@ -9,7 +9,6 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -42,7 +41,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.carlosivis.workoutsmart.composeResources.Res
@@ -61,6 +59,7 @@ import dev.carlosivis.workoutsmart.models.HistoryModel
 import dev.carlosivis.workoutsmart.models.WorkoutModel
 import dev.carlosivis.workoutsmart.repository.ThemeMode
 import dev.carlosivis.workoutsmart.screens.components.CustomDialog
+import dev.carlosivis.workoutsmart.screens.components.CustomTopBar
 import dev.carlosivis.workoutsmart.screens.components.RankingCarousel
 import dev.carlosivis.workoutsmart.screens.components.RankingLoginRequiredCard
 import dev.carlosivis.workoutsmart.screens.components.loadings.PlaceholderHighlight
@@ -94,7 +93,7 @@ fun HomeScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Content(
+private fun Content(
     state: HomeViewState,
     action: (HomeViewAction) -> Unit
 ) {
@@ -132,22 +131,13 @@ fun Content(
                 .padding(Dimens.Medium)
         ) {
 
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    stringResource(Res.string.home_screen_title), fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center, fontSize = FontSizes.TitleMedium
-                )
-
-                ProfileTopBarIcon(
-                    Modifier.align(Alignment.CenterEnd)
-                        .placeholder(state.isLoading, PlaceholderHighlight.shimmer()),
-                    state.user != null,
-                    { action(HomeViewAction.Navigate.Profile) })
-
-            }
+            CustomTopBar(
+                iconNavBack = null,
+                title = stringResource(Res.string.home_screen_title),
+                rightIcon = if (state.user != null) Icons.Default.Person else Icons.AutoMirrored.Filled.Login,
+                rightIconDescription = if (state.user != null) Res.string.home_screen_my_profile else Res.string.home_screen_login,
+                onRightIconClick = { action(HomeViewAction.Navigate.Profile) }
+            )
 
             AnimatedContent(
                 targetState = state.user,
@@ -166,7 +156,7 @@ fun Content(
                         )
                     }
                 },
-            ) {user->
+            ) { user ->
                 if (user == null) {
                     RankingLoginRequiredCard(
                         modifier = Modifier.placeholder(
@@ -176,7 +166,10 @@ fun Content(
                         onLoginClick = { action(HomeViewAction.Navigate.Profile) })
                 } else {
                     RankingCarousel(
-                        modifier = Modifier.placeholder(state.isLoading, PlaceholderHighlight.shimmer()),
+                        modifier = Modifier.placeholder(
+                            state.isLoading,
+                            PlaceholderHighlight.shimmer()
+                        ),
                         groups = state.groups,
                         onCardClick = { action(HomeViewAction.Navigate.Groups) },
                         onGroupClick = { action(HomeViewAction.Navigate.Ranking(it)) }
@@ -308,26 +301,6 @@ private fun HistoryCard(
             modifier = Modifier.padding(Dimens.Medium),
             fontSize = FontSizes.BodyLarge
         )
-    }
-}
-
-@Composable
-fun ProfileTopBarIcon(modifier: Modifier, isLoggedIn: Boolean, onIconClick: () -> Unit) {
-    IconButton(
-        modifier = modifier,
-        onClick = onIconClick
-    ) {
-        if (isLoggedIn) {
-            Icon(
-                Icons.Default.Person,
-                contentDescription = stringResource(Res.string.home_screen_my_profile)
-            )
-        } else {
-            Icon(
-                Icons.AutoMirrored.Filled.Login,
-                contentDescription = stringResource(Res.string.home_screen_login)
-            )
-        }
     }
 }
 

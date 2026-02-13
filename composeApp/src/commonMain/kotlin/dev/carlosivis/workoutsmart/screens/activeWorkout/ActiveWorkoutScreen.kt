@@ -28,7 +28,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Engineering
@@ -39,7 +38,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -59,12 +57,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import dev.carlosivis.workoutsmart.utils.Dimens
-import dev.carlosivis.workoutsmart.utils.FontSizes
-import dev.carlosivis.workoutsmart.utils.WhitePure
-import dev.carlosivis.workoutsmart.utils.WorkoutsSmartTheme
 import dev.carlosivis.workoutsmart.composeResources.Res
-import dev.carlosivis.workoutsmart.composeResources.action_back
 import dev.carlosivis.workoutsmart.composeResources.action_not_saved
 import dev.carlosivis.workoutsmart.composeResources.action_save
 import dev.carlosivis.workoutsmart.composeResources.active_workout_change_rest_timer
@@ -87,8 +80,13 @@ import dev.carlosivis.workoutsmart.composeResources.start_rest_button
 import dev.carlosivis.workoutsmart.models.ExerciseModel
 import dev.carlosivis.workoutsmart.repository.ThemeMode
 import dev.carlosivis.workoutsmart.screens.components.CustomDialog
-import dev.carlosivis.workoutsmart.screens.components.expect.KeepScreenOn
+import dev.carlosivis.workoutsmart.screens.components.CustomTopBar
 import dev.carlosivis.workoutsmart.screens.components.RestTimerSelectorDialog
+import dev.carlosivis.workoutsmart.screens.components.expect.KeepScreenOn
+import dev.carlosivis.workoutsmart.utils.Dimens
+import dev.carlosivis.workoutsmart.utils.FontSizes
+import dev.carlosivis.workoutsmart.utils.WhitePure
+import dev.carlosivis.workoutsmart.utils.WorkoutsSmartTheme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -128,129 +126,114 @@ private fun Content(
         },
         floatingActionButtonPosition = FabPosition.Center
     ) { paddingValues ->
-        Box(
-            modifier = Modifier.fillMaxSize().padding(paddingValues),
-            contentAlignment = Alignment.Center
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(Dimens.Medium)
         ) {
-            Column {
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    IconButton(
-                        onClick = { action(ActiveWorkoutViewAction.AttemptToNavigateBack) },
-                        modifier = Modifier.align(Alignment.CenterStart)
+            CustomTopBar(
+                onNavBackClick = { action(ActiveWorkoutViewAction.AttemptToNavigateBack) },
+                title = state.workout.name
+            )
+
+            Text(
+                text = stringResource(
+                    Res.string.elapsed_time_label,
+                    state.elapsedTime
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = Dimens.Medium),
+                fontSize = FontSizes.BodyLarge,
+            )
+
+
+            val lazyListState = rememberLazyListState()
+            LazyRow(
+                modifier = Modifier.fillMaxSize(),
+                state = lazyListState,
+                flingBehavior = rememberSnapFlingBehavior(lazyListState = lazyListState),
+                contentPadding = PaddingValues(horizontal = Dimens.Medium),
+                horizontalArrangement = Arrangement.spacedBy(Dimens.Small)
+            ) {
+                items(state.workout.exercises) { exercise ->
+                    AnimatedVisibility(
+                        visible = !state.completedExercises.contains(exercise.name),
+                        modifier = Modifier.fillParentMaxWidth(0.9f)
                     ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(Res.string.action_back)
+                        ExerciseCard(
+                            exercise = exercise,
+                            restTimer = { action(ActiveWorkoutViewAction.StartTimer(exercise.name)) },
+                            onMarkAsCompleted = {
+                                action(
+                                    ActiveWorkoutViewAction.MarkExerciseAsCompleted(
+                                        exercise.name
+                                    )
+                                )
+                            },
+                            remainingSeries = state.remainingSeries[exercise.name] ?: 0
                         )
                     }
-                    Text(
-                        text = state.workout.name,
-                        fontSize = FontSizes.TitleMedium,
-                        textAlign = TextAlign.Center
-                    )
                 }
-
-
-                Text(
-                    text = stringResource(
-                        Res.string.elapsed_time_label,
-                        state.elapsedTime
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = Dimens.Medium),
-                    fontSize = FontSizes.BodyLarge,
-                )
-
-
-                val lazyListState = rememberLazyListState()
-                LazyRow(
-                    modifier = Modifier.fillMaxSize(),
-                    state = lazyListState,
-                    flingBehavior = rememberSnapFlingBehavior(lazyListState = lazyListState),
-                    contentPadding = PaddingValues(horizontal = Dimens.Medium),
-                    horizontalArrangement = Arrangement.spacedBy(Dimens.Small)
-                ) {
-                    items(state.workout.exercises) { exercise ->
-                        AnimatedVisibility(
-                            visible = !state.completedExercises.contains(exercise.name),
-                            modifier = Modifier.fillParentMaxWidth(0.9f)
-                        ) {
-                            ExerciseCard(
-                                exercise = exercise,
-                                restTimer = { action(ActiveWorkoutViewAction.StartTimer(exercise.name)) },
-                                onMarkAsCompleted = {
-                                    action(
-                                        ActiveWorkoutViewAction.MarkExerciseAsCompleted(
-                                            exercise.name
-                                        )
-                                    )
-                                },
-                                remainingSeries = state.remainingSeries[exercise.name] ?: 0
-                            )
-                        }
-                    }
-                }
-            }
-            AnimatedVisibility(
-                state.isRestTimerActive,
-                enter = fadeIn(),
-                exit = fadeOut()
-            ) {
-                RestTimerCard(
-                    time = state.restTimerValue,
-                    onStop = { action(ActiveWorkoutViewAction.StopTimer) }
-                )
-            }
-
-
-            AnimatedVisibility(
-                state.showRestTimerSelector,
-                enter = scaleIn(),
-                exit = shrinkOut()
-            ) {
-                RestTimerSelectorDialog(
-                    currentTime = state.restTime,
-                    onTimeSelected = {
-                        action(ActiveWorkoutViewAction.UpdateRestTime(it))
-                    },
-                    onDismiss = { action(ActiveWorkoutViewAction.ToggleRestTimer) }
-                )
             }
         }
-
-        if (state.showExitConfirmationDialog) {
-            CustomDialog(
-                title = stringResource(Res.string.exit_without_saving_title),
-                message = stringResource(Res.string.exit_active_workout_confirmation_message),
-                onConfirm = { action(ActiveWorkoutViewAction.NavigateBack) },
-                onCancel = { action(ActiveWorkoutViewAction.CancelNavigateBack) }
+        AnimatedVisibility(
+            state.isRestTimerActive,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            RestTimerCard(
+                time = state.restTimerValue,
+                onStop = { action(ActiveWorkoutViewAction.StopTimer) }
             )
         }
 
-        if (state.showExitUnfinishedDialog) {
-            CustomDialog(
-                title = stringResource(Res.string.exit_without_saving_title),
-                message = stringResource(Res.string.exit_confirmation_save_or_cancel),
-                onConfirm = { action(ActiveWorkoutViewAction.SaveWorkoutHistory) },
-                onCancel = { action(ActiveWorkoutViewAction.ExitWithoutSave) },
-                confirmButtonText = stringResource(Res.string.action_save),
-                cancelButtonText = stringResource(Res.string.action_not_saved)
-            )
-        }
-        if (state.showFinishedWorkoutDialog) {
-            CustomDialog(
-                title = stringResource(Res.string.finished_workout_tittle),
-                message = stringResource(Res.string.finished_workout_message),
-                onConfirm = { action(ActiveWorkoutViewAction.SaveWorkoutHistory) },
-                onCancel = { action(ActiveWorkoutViewAction.DismissFinishedWorkoutDialog) }
+
+        AnimatedVisibility(
+            state.showRestTimerSelector,
+            enter = scaleIn(),
+            exit = shrinkOut()
+        ) {
+            RestTimerSelectorDialog(
+                currentTime = state.restTime,
+                onTimeSelected = {
+                    action(ActiveWorkoutViewAction.UpdateRestTime(it))
+                },
+                onDismiss = { action(ActiveWorkoutViewAction.ToggleRestTimer) }
             )
         }
     }
+
+    if (state.showExitConfirmationDialog) {
+        CustomDialog(
+            title = stringResource(Res.string.exit_without_saving_title),
+            message = stringResource(Res.string.exit_active_workout_confirmation_message),
+            onConfirm = { action(ActiveWorkoutViewAction.NavigateBack) },
+            onCancel = { action(ActiveWorkoutViewAction.CancelNavigateBack) }
+        )
+    }
+
+    if (state.showExitUnfinishedDialog) {
+        CustomDialog(
+            title = stringResource(Res.string.exit_without_saving_title),
+            message = stringResource(Res.string.exit_confirmation_save_or_cancel),
+            onConfirm = { action(ActiveWorkoutViewAction.SaveWorkoutHistory) },
+            onCancel = { action(ActiveWorkoutViewAction.ExitWithoutSave) },
+            confirmButtonText = stringResource(Res.string.action_save),
+            cancelButtonText = stringResource(Res.string.action_not_saved)
+        )
+    }
+    if (state.showFinishedWorkoutDialog) {
+        CustomDialog(
+            title = stringResource(Res.string.finished_workout_tittle),
+            message = stringResource(Res.string.finished_workout_message),
+            onConfirm = { action(ActiveWorkoutViewAction.SaveWorkoutHistory) },
+            onCancel = { action(ActiveWorkoutViewAction.DismissFinishedWorkoutDialog) }
+        )
+    }
 }
+
 
 @Composable
 private fun ExerciseCard(

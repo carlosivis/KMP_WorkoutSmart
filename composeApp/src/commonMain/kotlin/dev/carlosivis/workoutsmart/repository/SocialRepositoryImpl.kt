@@ -1,9 +1,10 @@
 package dev.carlosivis.workoutsmart.repository
 
+import dev.carlosivis.workoutsmart.data.remote.datasource.SocialRemoteDataSource
 import dev.carlosivis.workoutsmart.models.CreateGroupRequest
 import dev.carlosivis.workoutsmart.models.GroupResponse
 import dev.carlosivis.workoutsmart.models.JoinGroupRequest
-import dev.carlosivis.workoutsmart.data.remote.datasource.SocialRemoteDataSource
+import dev.carlosivis.workoutsmart.models.RankingMember
 
 class SocialRepositoryImpl(
     private val remoteDataSource: SocialRemoteDataSource
@@ -18,5 +19,9 @@ class SocialRepositoryImpl(
 
     override suspend fun joinGroup(request: JoinGroupRequest): Result<GroupResponse> {
         return remoteDataSource.joinGroup(request)
+    }
+
+    override suspend fun getRankingMembers(groupId: Int): Result<List<RankingMember>> {
+        return remoteDataSource.getRankingMembers(groupId)
     }
 }

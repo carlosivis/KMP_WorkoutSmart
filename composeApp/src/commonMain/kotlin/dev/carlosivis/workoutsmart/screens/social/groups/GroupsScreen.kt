@@ -1,7 +1,6 @@
 package dev.carlosivis.workoutsmart.screens.social.groups
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,7 +17,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.automirrored.filled.Login
@@ -26,7 +24,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -40,11 +37,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.carlosivis.workoutsmart.composeResources.Res
-import dev.carlosivis.workoutsmart.composeResources.action_back
 import dev.carlosivis.workoutsmart.composeResources.groups_screen_create_group_button
 import dev.carlosivis.workoutsmart.composeResources.groups_screen_join_group_button
 import dev.carlosivis.workoutsmart.composeResources.groups_screen_title
@@ -53,6 +48,7 @@ import dev.carlosivis.workoutsmart.models.GroupResponse
 import dev.carlosivis.workoutsmart.repository.ThemeMode
 import dev.carlosivis.workoutsmart.screens.components.CustomCreateGroupDialog
 import dev.carlosivis.workoutsmart.screens.components.CustomJoinGroupDialog
+import dev.carlosivis.workoutsmart.screens.components.CustomTopBar
 import dev.carlosivis.workoutsmart.screens.components.RankingEmptyState
 import dev.carlosivis.workoutsmart.screens.components.loadings.PlaceholderHighlight
 import dev.carlosivis.workoutsmart.screens.components.loadings.placeholder
@@ -75,7 +71,7 @@ fun GroupsScreen(
 }
 
 @Composable
-fun Content(
+private fun Content(
     state: GroupsViewState,
     action: (GroupsViewAction) -> Unit,
 ) {
@@ -112,24 +108,11 @@ fun Content(
                 .padding(Dimens.Medium)
         ) {
 
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                IconButton(
-                    onClick = { action(GroupsViewAction.Navigate.Back) },
-                    modifier = Modifier.align(Alignment.CenterStart)
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(Res.string.action_back)
-                    )
-                }
-                Text(
-                    text = stringResource(Res.string.groups_screen_title),
-                    textAlign = TextAlign.Center, fontSize = FontSizes.TitleMedium
-                )
-            }
+            CustomTopBar(
+                onNavBackClick = { action(GroupsViewAction.Navigate.Back) },
+                title = stringResource(Res.string.groups_screen_title)
+            )
+
             if (state.groups.isNullOrEmpty()) {
                 RankingEmptyState()
             } else {
@@ -149,21 +132,23 @@ fun Content(
                     }
                 }
             }
+            Column(verticalArrangement = Arrangement.Bottom) {
+                CustomActionButton(
+                    modifier = Modifier.padding(Dimens.Medium),
+                    title = stringResource(Res.string.groups_screen_create_group_button),
+                    icon = Icons.Default.Add,
+                    onClick = { action(GroupsViewAction.ShowAddGroup) }
+                )
+                Spacer(Modifier.height(Dimens.Medium))
 
-            CustomActionButton(
-                modifier = Modifier.padding(Dimens.Medium),
-                title = stringResource(Res.string.groups_screen_create_group_button),
-                icon = Icons.Default.Add,
-                onClick = { action(GroupsViewAction.ShowAddGroup) }
-            )
-            Spacer(Modifier.height(Dimens.Medium))
+                CustomActionButton(
+                    modifier = Modifier.padding(Dimens.Medium),
+                    title = stringResource(Res.string.groups_screen_join_group_button),
+                    icon = Icons.AutoMirrored.Filled.Login,
+                    onClick = { action(GroupsViewAction.ShowAddInvite) }
+                )
+            }
 
-            CustomActionButton(
-                modifier = Modifier.padding(Dimens.Medium),
-                title = stringResource(Res.string.groups_screen_join_group_button),
-                icon = Icons.AutoMirrored.Filled.Login,
-                onClick = { action(GroupsViewAction.ShowAddInvite) }
-            )
         }
     }
 }
@@ -254,14 +239,11 @@ fun CustomActionButton(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(Dimens.Medium)
-                .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)),
+                .padding(Dimens.Medium),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Row(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(Dimens.Medium)
             ) {

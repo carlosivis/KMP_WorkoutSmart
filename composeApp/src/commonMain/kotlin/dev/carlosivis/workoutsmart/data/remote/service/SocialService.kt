@@ -26,4 +26,8 @@ class SocialService(private val client: HttpClient) {
         return client.get("/groups"){
         }
     }
+    suspend fun getRankingMembers(groupId: Int): HttpResponse {
+        return client.get("/groups/$groupId/ranking") {
+        }
+    }
 }
