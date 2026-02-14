@@ -11,7 +11,7 @@ import org.koin.core.parameter.parametersOf
 class GroupsComponent (
     componentContext: ComponentContext,
     val navigator: GroupsNavigator,
-    val groups: List<GroupResponse>? = null
+    val groups: List<GroupResponse>?
 ) : ComponentContext by componentContext, KoinComponent {
     val viewModel: GroupsViewModel = get { parametersOf(navigator, groups) }
 }

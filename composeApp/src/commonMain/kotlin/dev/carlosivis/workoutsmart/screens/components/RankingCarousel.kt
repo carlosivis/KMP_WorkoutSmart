@@ -46,7 +46,6 @@ import androidx.compose.ui.unit.dp
 import dev.carlosivis.workoutsmart.composeResources.Res
 import dev.carlosivis.workoutsmart.composeResources.ranking_carousel_empty_subtitle
 import dev.carlosivis.workoutsmart.composeResources.ranking_carousel_empty_title
-import dev.carlosivis.workoutsmart.composeResources.ranking_carousel_title
 import dev.carlosivis.workoutsmart.composeResources.ranking_login_required_subtitle
 import dev.carlosivis.workoutsmart.composeResources.ranking_login_required_title
 import dev.carlosivis.workoutsmart.models.GroupResponse
@@ -70,17 +69,12 @@ fun RankingCarousel(
     onGroupClick: (GroupResponse) -> Unit = {}
 ) {
     Card(
-        modifier = modifier,
+        modifier = modifier.height(220.dp),
+        shape = RoundedCornerShape(Shapes.ExtraLarge),
         onClick = { onCardClick() },
+
     ) {
         if (groups.isNotEmpty()) {
-            Text(
-                text = stringResource(Res.string.ranking_carousel_title),
-                fontSize = FontSizes.TitleMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.primary
-            )
-            Spacer(Modifier.height(Dimens.Medium))
             Card(
                 shape = RoundedCornerShape(Shapes.ExtraLarge),
                 elevation = CardDefaults.cardElevation(defaultElevation = Dimens.Medium),
@@ -88,13 +82,20 @@ fun RankingCarousel(
                     containerColor = MaterialTheme.colorScheme.surfaceVariant
                 ),
             ) {
-
-                LazyRow(
-                    contentPadding = PaddingValues(horizontal = Dimens.Medium),
-                    horizontalArrangement = Arrangement.spacedBy(Dimens.Medium)
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(Dimens.Medium),
+                    verticalArrangement = Arrangement.Center
                 ) {
-                    items(groups) { group ->
-                        RankingBadgeCard(group, { onGroupClick(group) })
+
+                    LazyRow(
+                        contentPadding = PaddingValues(horizontal = Dimens.Medium),
+                        horizontalArrangement = Arrangement.spacedBy(Dimens.Medium)
+                    ) {
+                        items(groups) { group ->
+                            RankingBadgeCard(group, { onGroupClick(group) })
+                        }
                     }
                 }
             }

@@ -87,7 +87,7 @@ class RootComponent(
                 )
             )
 
-            is Configuration.Profile -> Child.Login(
+            is Configuration.Profile -> Child.Profile(
                 ProfileComponent(
                     componentContext = context,
                     navigator = ProfileNavigator(
@@ -100,6 +100,7 @@ class RootComponent(
             is Configuration.Groups -> Child.Groups(
                 GroupsComponent(
                     componentContext = context,
+                    groups = config.groups,
                     navigator = GroupsNavigator(
                         toRanking = { group -> navigation.push(Configuration.Ranking(group)) },
                         back = { navigation.pop() }
@@ -110,6 +111,7 @@ class RootComponent(
             is Configuration.Ranking -> Child.Ranking(
                 RankingComponent(
                     componentContext = context,
+                    group = config.group,
                     navigator = RankingNavigator(
                         back = { navigation.pop() }
                     )
@@ -125,7 +127,7 @@ class RootComponent(
         data class EditWorkout(val component: CreateWorkoutComponent) : Child()
         data class ActiveWorkout(val component: ActiveWorkoutComponent) : Child()
         data class Settings(val component: SettingsComponent) : Child()
-        data class Login(val component: ProfileComponent) : Child()
+        data class Profile(val component: ProfileComponent) : Child()
         data class Groups(val component: GroupsComponent) : Child()
         data class Ranking(val component: RankingComponent) : Child()
     }

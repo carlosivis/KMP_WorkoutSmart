@@ -16,6 +16,7 @@ import dev.carlosivis.workoutsmart.data.remote.service.SocialService
 import dev.carlosivis.workoutsmart.database.DatabaseHelper
 import dev.carlosivis.workoutsmart.domain.CreateGroupUseCase
 import dev.carlosivis.workoutsmart.domain.GetGroupsUseCase
+import dev.carlosivis.workoutsmart.domain.GetRankingMembersUseCase
 import dev.carlosivis.workoutsmart.domain.GetUserUseCase
 import dev.carlosivis.workoutsmart.domain.JoinGroupUseCase
 import dev.carlosivis.workoutsmart.domain.LoginGoogleUseCase
@@ -25,6 +26,7 @@ import dev.carlosivis.workoutsmart.models.WorkoutModel
 import dev.carlosivis.workoutsmart.navigation.navigator.GroupsNavigator
 import dev.carlosivis.workoutsmart.navigation.navigator.HomeNavigator
 import dev.carlosivis.workoutsmart.navigation.navigator.ProfileNavigator
+import dev.carlosivis.workoutsmart.navigation.navigator.RankingNavigator
 import dev.carlosivis.workoutsmart.repository.AuthRepository
 import dev.carlosivis.workoutsmart.repository.AuthRepositoryImpl
 import dev.carlosivis.workoutsmart.repository.SettingsRepository
@@ -39,6 +41,7 @@ import dev.carlosivis.workoutsmart.screens.home.HomeViewModel
 import dev.carlosivis.workoutsmart.screens.profile.ProfileViewModel
 import dev.carlosivis.workoutsmart.screens.settings.SettingsViewModel
 import dev.carlosivis.workoutsmart.screens.social.groups.GroupsViewModel
+import dev.carlosivis.workoutsmart.screens.social.ranking.RankingViewModel
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
 import kotlinx.coroutines.Dispatchers
@@ -86,6 +89,10 @@ val commonModule = module {
 
     viewModel {(onNavigateBack: () -> Unit) ->
         SettingsViewModel(get(), onNavigateBack)
+    }
+
+    viewModel { (navigator: RankingNavigator, group: GroupResponse?) ->
+        RankingViewModel(group, get(), navigator)
     }
 
     single {
@@ -144,6 +151,13 @@ val commonModule = module {
 
     factory {
         CreateGroupUseCase(
+            repository = get(),
+            dispatcher = get()
+        )
+    }
+
+    factory {
+        GetRankingMembersUseCase(
             repository = get(),
             dispatcher = get()
         )

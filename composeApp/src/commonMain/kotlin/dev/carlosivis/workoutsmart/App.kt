@@ -15,6 +15,7 @@ import dev.carlosivis.workoutsmart.screens.home.HomeScreen
 import dev.carlosivis.workoutsmart.screens.profile.ProfileScreen
 import dev.carlosivis.workoutsmart.screens.settings.SettingsScreen
 import dev.carlosivis.workoutsmart.screens.social.groups.GroupsScreen
+import dev.carlosivis.workoutsmart.screens.social.ranking.RankingScreen
 import dev.carlosivis.workoutsmart.utils.WorkoutsSmartTheme
 import org.koin.compose.koinInject
 
@@ -36,9 +37,9 @@ fun App(root: RootComponent) {
                 is RootComponent.Child.ActiveWorkout -> ActiveWorkoutScreen(instance.component.viewModel)
                 is RootComponent.Child.EditWorkout -> CreateWorkoutScreen(instance.component.viewModel)
                 is RootComponent.Child.Settings -> SettingsScreen(instance.component.viewModel)
-                is RootComponent.Child.Login -> ProfileScreen(instance.component.viewModel)
+                is RootComponent.Child.Profile -> ProfileScreen(instance.component.viewModel)
                 is RootComponent.Child.Groups -> GroupsScreen(instance.component.viewModel)
-                is RootComponent.Child.Ranking -> TODO()
+                is RootComponent.Child.Ranking -> RankingScreen(instance.component.viewModel)
             }
         }
     }

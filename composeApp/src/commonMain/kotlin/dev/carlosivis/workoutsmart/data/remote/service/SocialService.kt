@@ -11,7 +11,7 @@ import io.ktor.client.statement.HttpResponse
 class SocialService(private val client: HttpClient) {
 
     suspend fun createGroup(request: CreateGroupRequest): HttpResponse {
-        return client.post("/groups") {
+        return client.post("/groups/") {
             setBody(request)
         }
     }

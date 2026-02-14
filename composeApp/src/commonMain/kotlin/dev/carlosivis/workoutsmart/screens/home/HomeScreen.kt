@@ -53,6 +53,7 @@ import dev.carlosivis.workoutsmart.composeResources.home_screen_duration
 import dev.carlosivis.workoutsmart.composeResources.home_screen_login
 import dev.carlosivis.workoutsmart.composeResources.home_screen_my_profile
 import dev.carlosivis.workoutsmart.composeResources.home_screen_title
+import dev.carlosivis.workoutsmart.composeResources.ranking_carousel_title
 import dev.carlosivis.workoutsmart.composeResources.saved_workouts_section_title
 import dev.carlosivis.workoutsmart.composeResources.workout_history_section_title
 import dev.carlosivis.workoutsmart.models.HistoryModel
@@ -139,6 +140,16 @@ private fun Content(
                 onRightIconClick = { action(HomeViewAction.Navigate.Profile) }
             )
 
+            Spacer(Modifier.height(Dimens.Medium))
+
+            Text(
+                text = stringResource(Res.string.ranking_carousel_title),
+                fontSize = FontSizes.TitleMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Spacer(Modifier.height(Dimens.Medium))
+
             AnimatedContent(
                 targetState = state.user,
                 transitionSpec = {
@@ -166,7 +177,9 @@ private fun Content(
                         onLoginClick = { action(HomeViewAction.Navigate.Profile) })
                 } else {
                     RankingCarousel(
-                        modifier = Modifier.placeholder(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .placeholder(
                             state.isLoading,
                             PlaceholderHighlight.shimmer()
                         ),
@@ -176,7 +189,6 @@ private fun Content(
                     )
                 }
             }
-
 
             Spacer(Modifier.height(Dimens.Small))
 

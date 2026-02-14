@@ -1,7 +1,11 @@
 package dev.carlosivis.workoutsmart.screens.social.ranking
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,12 +23,22 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.PersonAdd
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -39,6 +53,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import dev.carlosivis.workoutsmart.composeResources.Res
@@ -77,16 +92,67 @@ private fun Content(
     state: RankingViewState,
     action: (RankingViewAction) -> Unit,
 ) {
+    AnimatedVisibility(
+        visible = state.isLoading,
+        modifier = Modifier.fillMaxSize(),
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
+        Box(
+            modifier = Modifier.fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.7f))
+                .clickable(enabled = false, onClick = {}),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
+    }
+    AnimatedVisibility(
+        visible = state.showInviteCode,
+        modifier = Modifier.fillMaxSize(),
+    ) {
+        InviteCodeBottomSheet(
+            inviteCode = state.group!!.inviteCode,
+            onCopy = { },
+            onShare = { },
+            onDismiss = { action(RankingViewAction.ShowInviteCode) }
+        )
+    }
+
     val errorHandler = errorSnackbar(
         error = state.error,
         action = { action(RankingViewAction.CleanError) }
     )
     Scaffold(
-        snackbarHost = { SnackbarHost(hostState = errorHandler) }
+        snackbarHost = { SnackbarHost(hostState = errorHandler) },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { action(RankingViewAction.ShowInviteCode) },
+                containerColor = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(Dimens.Medium),
+                shape = RoundedCornerShape(Shapes.ExtraLarge)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primary)
+                        .padding(horizontal = Dimens.Small),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Row {
+                        Icon(Icons.Filled.PersonAdd, contentDescription = null)
+                        Spacer(Modifier.width(Dimens.Small))
+                        Text("Convidar amigos")
+                    }
+                }
+            }
+        },
+        floatingActionButtonPosition = androidx.compose.material3.FabPosition.Center
     ) { paddingValues ->
         Column(
             modifier = Modifier.padding(paddingValues)
                 .padding(Dimens.Medium)
+                .fillMaxSize()
         ) {
             CustomTopBar(
                 onNavBackClick = { action(RankingViewAction.Navigate.Back) },
@@ -297,6 +363,126 @@ fun RankingRowCard(
         }
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun InviteCodeBottomSheet(
+    inviteCode: String,
+    onCopy: () -> Unit,
+    onShare: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
+
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        dragHandle = { BottomSheetDefaults.DragHandle() }
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(Dimens.Large),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            Text(
+                text = "Convide seus amigos",
+                style = MaterialTheme.typography.titleMedium
+            )
+
+            Spacer(Modifier.height(Dimens.Small))
+
+            Text(
+                text = "Compartilhe este código:",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
+            Spacer(Modifier.height(Dimens.Medium))
+
+            InviteCodeCard(
+                inviteCode = inviteCode,
+                onCopy = onCopy
+            )
+
+            Spacer(Modifier.height(Dimens.Large))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(Dimens.Medium)
+            ) {
+                ActionButton(
+                    label = "Copiar",
+                    onClick = onCopy
+                )
+
+                ActionButton(
+                    label = "Compartilhar",
+                    onClick = onShare
+                )
+            }
+
+            Spacer(Modifier.height(Dimens.Large))
+        }
+    }
+}
+
+@Composable
+fun InviteCodeCard(
+    inviteCode: String,
+    onCopy: () -> Unit
+) {
+    Card(
+        shape = RoundedCornerShape(Shapes.Large),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onCopy() },
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    horizontal = Dimens.Large,
+                    vertical = Dimens.Medium
+                ),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = inviteCode,
+                style = MaterialTheme.typography.headlineSmall,
+                letterSpacing = 2.sp
+            )
+
+            Icon(
+                imageVector = Icons.Default.ContentCopy,
+                contentDescription = "Copiar código"
+            )
+        }
+    }
+}
+
+
+@Composable
+private fun ActionButton(label: String, onClick: () -> Unit) {
+    Surface(
+        shape = RoundedCornerShape(50),
+        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+        modifier = Modifier.clickable { onClick() }
+    ) {
+        Text(
+            text = label,
+            modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.labelLarge
+        )
+    }
+}
+
 
 
 enum class PodiumStyle(

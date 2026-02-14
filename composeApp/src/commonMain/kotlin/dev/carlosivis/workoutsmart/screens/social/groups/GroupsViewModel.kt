@@ -56,12 +56,13 @@ class GroupsViewModel(
                         _state.update { it.copy(error = error.message)}
                     }
             }
-            setLoading(false)
         }
+        setLoading(false)
     }
 
     private fun createGroup(params: CreateGroupRequest) {
         setLoading(true)
+        showAddGroup()
         viewModelScope.launch {
             CreateGroupUseCase(params)
                 .onSuccess { group ->
@@ -79,6 +80,7 @@ class GroupsViewModel(
 
     private fun joinGroup(params: JoinGroupRequest) {
         setLoading(true)
+        showAddInvite()
         viewModelScope.launch {
             JoinGroupUseCase(params)
                 .onSuccess { group ->
