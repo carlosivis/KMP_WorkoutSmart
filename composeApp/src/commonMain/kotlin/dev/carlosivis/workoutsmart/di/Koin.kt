@@ -91,7 +91,7 @@ val commonModule = module {
         SettingsViewModel(get(), onNavigateBack)
     }
 
-    viewModel { (navigator: RankingNavigator, group: GroupResponse?) ->
+    viewModel { (navigator: RankingNavigator, group: GroupResponse) ->
         RankingViewModel(group, get(), navigator)
     }
 

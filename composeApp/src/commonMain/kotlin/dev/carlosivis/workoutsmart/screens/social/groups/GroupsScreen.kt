@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -38,7 +39,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.carlosivis.workoutsmart.composeResources.Res
 import dev.carlosivis.workoutsmart.composeResources.groups_screen_create_group_button
@@ -161,7 +165,9 @@ private fun Content(
 @Composable
 fun GroupCard(group: GroupResponse, modifier: Modifier = Modifier, onClick: () -> Unit) {
     Card(
-        modifier = modifier,
+        modifier = modifier
+            .width(160.dp)
+            .height(200.dp),
         onClick = { onClick() },
         shape = RoundedCornerShape(Shapes.ExtraLarge),
         colors = CardDefaults.cardColors(
@@ -178,8 +184,11 @@ fun GroupCard(group: GroupResponse, modifier: Modifier = Modifier, onClick: () -
                 .ifEmpty { "?" }
         }
         Column(
-            modifier = Modifier.padding(Dimens.Large),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(Dimens.Medium),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
             Surface(
                 modifier = Modifier.size(Dimens.ImageSizeMedium),
@@ -208,20 +217,26 @@ fun GroupCard(group: GroupResponse, modifier: Modifier = Modifier, onClick: () -
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(Dimens.Small))
+            Spacer(modifier = Modifier.height(Dimens.Medium))
             Text(
                 text = group.name,
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleMedium,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(Dimens.Small))
             Text(
                 text = stringResource(Res.string.groups_screen_user_rank, group.userPosition),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
             )
         }
     }
-
 }
 
 @Composable
