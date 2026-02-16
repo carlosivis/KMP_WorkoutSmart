@@ -28,9 +28,11 @@ object NetworkWrapper {
             if (response.status.isSuccess()) {
                 response.body()
             } else {
-                val errorBody = runCatching {
+                val errorBody = try {
                     response.body<String>()
-                }.getOrNull()
+                } catch (e: Exception) {
+                    response.status.description
+                }
 
                 throw mapHttpException(
                     code = response.status.value,

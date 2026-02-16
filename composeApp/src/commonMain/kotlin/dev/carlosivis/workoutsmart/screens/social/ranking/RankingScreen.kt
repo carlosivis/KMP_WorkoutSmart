@@ -1,8 +1,6 @@
 package dev.carlosivis.workoutsmart.screens.social.ranking
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,7 +26,6 @@ import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -41,7 +38,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -62,6 +58,8 @@ import dev.carlosivis.workoutsmart.models.GroupResponse
 import dev.carlosivis.workoutsmart.models.RankingMember
 import dev.carlosivis.workoutsmart.repository.ThemeMode
 import dev.carlosivis.workoutsmart.screens.components.CustomTopBar
+import dev.carlosivis.workoutsmart.screens.components.loadings.PlaceholderHighlight
+import dev.carlosivis.workoutsmart.screens.components.loadings.placeholder
 import dev.carlosivis.workoutsmart.utils.BronzeColor
 import dev.carlosivis.workoutsmart.utils.BronzeGradient
 import dev.carlosivis.workoutsmart.utils.BronzeGradientLinear
@@ -92,21 +90,6 @@ private fun Content(
     state: RankingViewState,
     action: (RankingViewAction) -> Unit,
 ) {
-    AnimatedVisibility(
-        visible = state.isLoading,
-        modifier = Modifier.fillMaxSize(),
-        enter = fadeIn(),
-        exit = fadeOut()
-    ) {
-        Box(
-            modifier = Modifier.fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.7f))
-                .clickable(enabled = false, onClick = {}),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator()
-        }
-    }
     AnimatedVisibility(
         visible = state.showInviteCode,
         modifier = Modifier.fillMaxSize(),
@@ -159,47 +142,47 @@ private fun Content(
                 title = state.group?.name
             )
 
-            val rankingSorted = remember(state.ranking) {
-                state.ranking.sortedBy { it.position }
-            }
+            RankingPodiumCard(
+                state.podium,
+                modifier = Modifier.placeholder(
+                    state.isLoading, PlaceholderHighlight.shimmer()
+                )
+            )
 
-            val top3 = rankingSorted.take(3)
-            val others = rankingSorted.drop(3)
-
-            if (rankingSorted.isNotEmpty()) {
-                RankingPodiumCard(top3)
-            }
-
-            if (others.isEmpty() && rankingSorted.size < 4) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                        .padding(horizontal = Dimens.Medium),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "Nossa, que vazio aqui",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        textAlign = TextAlign.Center
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .padding(vertical = Dimens.Medium)
+                    .placeholder(
+                        state.isLoading, PlaceholderHighlight.shimmer()
+                    ),
+                verticalArrangement = Arrangement.spacedBy(Dimens.Small)
+            ) {
+                items(
+                    items = state.others
+                ) { member ->
+                    RankingRowCard(
+                        member
                     )
                 }
-            } else {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                        .padding(horizontal = Dimens.Medium),
-                    verticalArrangement = Arrangement.spacedBy(Dimens.Small)
-                ) {
-                    items(
-                        items = others,
-                        key = { it.position }
-                    ) { member ->
-                        RankingRowCard(
-                            member
-                        )
+                item{
+                    if (state.others.isEmpty() && !state.isLoading){
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight()
+                                .padding(horizontal = Dimens.Medium)
+                            ,
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "Nossa, que vazio aqui",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                textAlign = TextAlign.Center
+                            )
+                        }
                     }
                 }
             }
@@ -208,9 +191,12 @@ private fun Content(
 }
 
 @Composable
-fun RankingPodiumCard(top3: List<RankingMember>) {
+fun RankingPodiumCard(
+    top3: List<RankingMember>,
+    modifier: Modifier = Modifier
+) {
     Card(
-        modifier = Modifier.padding(Dimens.Medium)
+        modifier = modifier.padding(Dimens.Medium)
             .fillMaxHeight(if (top3.size < 3) 0.35f else 0.5f)
             .fillMaxWidth()
 
@@ -326,7 +312,7 @@ fun PodiumItem(
 
 @Composable
 fun RankingRowCard(
-    member: RankingMember
+    member: RankingMember,
 ) {
     Card(
         modifier = Modifier
@@ -508,7 +494,6 @@ private fun ActionButton(label: String, onClick: () -> Unit) {
 }
 
 
-
 enum class PodiumStyle(
     val heightFraction: Float,
     val baseColor: Color,
@@ -587,7 +572,7 @@ private fun ContentPreview() {
                     userScore = 1000,
                     userPosition = 1
                 ),
-                ranking = listOf(
+                podium = listOf(
                     RankingMember(
                         position = 1,
                         displayName = "User 1",
@@ -605,7 +590,9 @@ private fun ContentPreview() {
                         displayName = "User 3",
                         photoUrl = "",
                         score = 600
-                    ), RankingMember(
+                    )),
+                others = listOf(
+                    RankingMember(
                         position = 4,
                         displayName = "User 12",
                         photoUrl = "",
@@ -642,7 +629,7 @@ private fun ContentPreviewWithFewMembers() {
                     userScore = 1000,
                     userPosition = 1
                 ),
-                ranking = listOf(
+                podium = listOf(
                     RankingMember(
                         position = 1,
                         displayName = "User 1",
@@ -675,7 +662,7 @@ private fun ContentPreviewOneUser() {
                     userScore = 1000,
                     userPosition = 1
                 ),
-                ranking = listOf(
+                podium = listOf(
                     RankingMember(
                         position = 1,
                         displayName = "User 1",
