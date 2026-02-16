@@ -21,12 +21,16 @@ class HomeViewModel(
     private val _state = MutableStateFlow(HomeViewState())
     val state = _state.asStateFlow()
 
-
+    init {
+        getWorkouts()
+        getHistory()
+        getUser()
+        getGroups()
+    }
     fun dispatchAction(action: HomeViewAction) {
         when (action) {
             is HomeViewAction.GetWorkouts -> getWorkouts()
             is HomeViewAction.GetHistory -> getHistory()
-            is HomeViewAction.Navigate.Details -> TODO()
             is HomeViewAction.Navigate.CreateWorkout -> navigator.toCreateWorkout()
             is HomeViewAction.Navigate.Workout -> navigator.toActiveWorkout(action.workout)
             is HomeViewAction.Navigate.Edit -> navigator.toEditWorkout(action.workout)

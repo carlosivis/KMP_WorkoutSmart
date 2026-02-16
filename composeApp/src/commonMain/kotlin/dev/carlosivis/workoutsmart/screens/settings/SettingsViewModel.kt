@@ -16,6 +16,10 @@ class SettingsViewModel(
     private val _state = MutableStateFlow(SettingsViewState())
     val state = _state.asStateFlow()
 
+    init {
+        getSettings()
+    }
+
     fun dispatchAction(action: SettingsViewAction) {
         when (action) {
             is SettingsViewAction.GetSettings -> getSettings()

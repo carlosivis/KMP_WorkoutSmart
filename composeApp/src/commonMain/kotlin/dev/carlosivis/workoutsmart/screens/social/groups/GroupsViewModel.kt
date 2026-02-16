@@ -24,6 +24,10 @@ class GroupsViewModel(
     val _state = MutableStateFlow(GroupsViewState())
     val state = _state.asStateFlow()
 
+    init {
+        getGroups()
+    }
+
 
     fun dispatchAction(action: GroupsViewAction) {
         when (action) {

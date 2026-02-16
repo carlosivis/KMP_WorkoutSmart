@@ -121,4 +121,14 @@
     <string name="groups_screen_join_group_button">Entrar em Grupo</string>
     <string name="groups_screen_user_rank">Rank: #%1$d</string>
 
+    <!-- NetworkWrapper.kt -->
+    <string name="network_error_timeout">Tempo limite excedido. Tente novamente.</string>
+    <string name="network_error_no_internet">Sem conexão com a internet.</string>
+    <string name="network_error_unknown">Erro inesperado. Tente novamente.</string>
+    <string name="network_error_bad_request">Requisição inválida.</string>
+    <string name="network_error_unauthorized">Sessão expirada. Faça login novamente.</string>
+    <string name="network_error_forbidden">Você não tem permissão para realizar esta ação.</string>
+    <string name="network_error_not_found">Conteúdo não encontrado.</string>
+    <string name="network_error_server">Erro interno no servidor.</string>
+    <string name="network_error_unknown_code">Erro inesperado (%1$d).</string>
 </resources>

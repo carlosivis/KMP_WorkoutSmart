@@ -165,22 +165,42 @@ private fun Content(
 
             val top3 = rankingSorted.take(3)
             val others = rankingSorted.drop(3)
-            RankingPodiumCard(top3)
 
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-                    .padding(horizontal = Dimens.Medium),
-                verticalArrangement = Arrangement.spacedBy(Dimens.Small)
-            ) {
-                items(
-                    items = others,
-                    key = { it.position }
-                ) { member ->
-                    RankingRowCard(
-                        member
+            if (rankingSorted.isNotEmpty()) {
+                RankingPodiumCard(top3)
+            }
+
+            if (others.isEmpty() && rankingSorted.size < 4) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .padding(horizontal = Dimens.Medium),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Nossa, que vazio aqui",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center
                     )
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .padding(horizontal = Dimens.Medium),
+                    verticalArrangement = Arrangement.spacedBy(Dimens.Small)
+                ) {
+                    items(
+                        items = others,
+                        key = { it.position }
+                    ) { member ->
+                        RankingRowCard(
+                            member
+                        )
+                    }
                 }
             }
         }
@@ -191,7 +211,7 @@ private fun Content(
 fun RankingPodiumCard(top3: List<RankingMember>) {
     Card(
         modifier = Modifier.padding(Dimens.Medium)
-            .fillMaxHeight(0.5f)
+            .fillMaxHeight(if (top3.size < 3) 0.35f else 0.5f)
             .fillMaxWidth()
 
     ) {
@@ -205,13 +225,17 @@ fun RankingPodiumCard(top3: List<RankingMember>) {
             verticalAlignment = Alignment.Bottom
         ) {
             podiumOrder.forEach { pos ->
-                top3.firstOrNull { it.position == pos }?.let { member ->
-                    PodiumItem(
-                        rankingMember = member,
-                        podium = PodiumStyle.fromPosition(member.position),
-                        modifier = Modifier.weight(1f)
+                if (top3.any { it.position == pos }) {
+                    top3.firstOrNull { it.position == pos }?.let { member ->
+                        PodiumItem(
+                            rankingMember = member,
+                            podium = PodiumStyle.fromPosition(member.position),
+                            modifier = Modifier.weight(1f)
 
-                    )
+                        )
+                    }
+                } else {
+                    Spacer(Modifier.weight(1f))
                 }
             }
         }
@@ -604,3 +628,64 @@ private fun ContentPreview() {
         )
     }
 }
+
+@Preview
+@Composable
+private fun ContentPreviewWithFewMembers() {
+    WorkoutsSmartTheme(ThemeMode.DARK) {
+        Content(
+            state = RankingViewState(
+                group = GroupResponse(
+                    id = 1,
+                    name = "Grupo Pequeno",
+                    inviteCode = "SMALL",
+                    userScore = 1000,
+                    userPosition = 1
+                ),
+                ranking = listOf(
+                    RankingMember(
+                        position = 1,
+                        displayName = "User 1",
+                        photoUrl = "",
+                        score = 1000
+                    ),
+                    RankingMember(
+                        position = 2,
+                        displayName = "User 2",
+                        photoUrl = "",
+                        score = 800
+                    )
+                )
+            ),
+            action = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun ContentPreviewOneUser() {
+    WorkoutsSmartTheme(ThemeMode.DARK) {
+        Content(
+            state = RankingViewState(
+                group = GroupResponse(
+                    id = 1,
+                    name = "Grupo Solo",
+                    inviteCode = "SOLO",
+                    userScore = 1000,
+                    userPosition = 1
+                ),
+                ranking = listOf(
+                    RankingMember(
+                        position = 1,
+                        displayName = "User 1",
+                        photoUrl = "",
+                        score = 1000
+                    )
+                )
+            ),
+            action = {}
+        )
+    }
+}
+

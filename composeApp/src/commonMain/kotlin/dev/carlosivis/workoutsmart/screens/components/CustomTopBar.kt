@@ -1,6 +1,7 @@
 package dev.carlosivis.workoutsmart.screens.components
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -14,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import dev.carlosivis.workoutsmart.composeResources.Res
 import dev.carlosivis.workoutsmart.composeResources.action_back
@@ -33,43 +35,54 @@ fun CustomTopBar(
     rightIconDescription: StringResource? = null,
     onRightIconClick: () -> Unit = {}
 ) {
-    Box(
+    Row(
         modifier = Modifier.fillMaxWidth(),
-        contentAlignment = Alignment.Center
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        if (iconNavBack != null) {
-            IconButton(
-                onClick = { onNavBackClick() },
-                modifier = Modifier.align(Alignment.CenterStart)
-            ) {
-                Icon(
-                    imageVector = iconNavBack,
-                    contentDescription = stringResource(Res.string.action_back)
+        Box(
+            modifier = Modifier.weight(1f),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            if (iconNavBack != null) {
+                IconButton(onClick = onNavBackClick) {
+                    Icon(
+                        imageVector = iconNavBack,
+                        contentDescription = stringResource(Res.string.action_back)
+                    )
+                }
+            }
+        }
+
+        Box(
+            modifier = Modifier.weight(3f),
+            contentAlignment = Alignment.Center
+        ) {
+            if (title != null) {
+                Text(
+                    text = title,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = FontSizes.TitleMedium,
+                    textAlign = TextAlign.Center,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         }
-        if (title != null) {
-            Text(
-                text = title,
-                fontWeight = FontWeight.Bold,
-                fontSize = FontSizes.TitleMedium,
-                textAlign = TextAlign.Center
-            )
-        }
 
-        if (rightIcon != null) {
-            IconButton(
-                onClick = { onRightIconClick() },
-                modifier = Modifier.align(Alignment.CenterEnd)
-            ){
-                Icon(
-                    imageVector = rightIcon,
-                    contentDescription = rightIconDescription?.let { stringResource(it) }
-                )
+        Box(
+            modifier = Modifier.weight(1f),
+            contentAlignment = Alignment.CenterEnd
+        ) {
+            if (rightIcon != null) {
+                IconButton(onClick = onRightIconClick) {
+                    Icon(
+                        imageVector = rightIcon,
+                        contentDescription = rightIconDescription?.let { stringResource(it) }
+                    )
+                }
             }
         }
     }
-
 }
 
 

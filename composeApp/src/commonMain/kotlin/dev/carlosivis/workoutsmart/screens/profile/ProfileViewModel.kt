@@ -20,6 +20,10 @@ class ProfileViewModel(
     private val _state = MutableStateFlow(ProfileViewState())
     val state = _state.asStateFlow()
 
+    init {
+        getUser()
+    }
+
     fun dispatchAction(action: ProfileViewAction) {
         when (action) {
             ProfileViewAction.GoogleLogin -> onGoogleLoginClick()

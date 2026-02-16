@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.arkivanov.decompose.extensions.compose.stack.Children
+import com.arkivanov.decompose.extensions.compose.stack.animation.fade
+import com.arkivanov.decompose.extensions.compose.stack.animation.plus
 import com.arkivanov.decompose.extensions.compose.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import dev.carlosivis.workoutsmart.models.SettingsModel
@@ -29,7 +31,7 @@ fun App(root: RootComponent) {
     WorkoutsSmartTheme(themeMode = settings.themeMode) {
         Children(
             stack = root.childStack,
-            animation = stackAnimation(slide())
+            animation = stackAnimation(slide() + fade())
         ) {
             when (val instance = it.instance) {
                 is RootComponent.Child.Home -> HomeScreen(instance.component.viewModel)
