@@ -528,7 +528,7 @@ private fun WorkoutTypeSelector(
                 FilterChip(
                     selected = type == selected,
                     onClick = { onSelect(type) },
-                    label = { Text(type.displayName.lowercase().replaceFirstChar { it.uppercase() }) }
+                    label = { Text(stringResource(type.displayName)) }
                 )
             }
         }

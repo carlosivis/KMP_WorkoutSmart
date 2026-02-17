@@ -3,7 +3,7 @@
     <string name="app_name">Workout Smart</string>
     <!-- HomeScreen.kt -->
     <string name="delete_workout_title">Deletar Treino</string>
-    <string name="delete_workout_message">Você tem certeza que deseja deletar o treino \"%1$s\"?"</string>
+    <string name="delete_workout_message">Você tem certeza que deseja deletar o treino \"%1$s\"?</string>
     <string name="create_workout_fab">Criar Treino</string>
     <string name="home_screen_title">Workout Smart</string>
     <string name="saved_workouts_section_title">Treinos Salvos</string>
@@ -150,4 +150,12 @@
     <string name="network_error_not_found">Conteúdo não encontrado.</string>
     <string name="network_error_server">Erro interno no servidor.</string>
     <string name="network_error_unknown_code">Erro inesperado (%1$d).</string>
+
+    <!-- WorkoutLogModels.kt -->
+    <string name="workout_type_gym">Academia</string>
+    <string name="workout_type_running">Corrida</string>
+    <string name="workout_type_cycling">Ciclismo</string>
+    <string name="workout_type_sports">Esporte</string>
+    <string name="workout_type_crossfit">Crossfit</string>
+    <string name="workout_type_other">Outro</string>
 </resources>
