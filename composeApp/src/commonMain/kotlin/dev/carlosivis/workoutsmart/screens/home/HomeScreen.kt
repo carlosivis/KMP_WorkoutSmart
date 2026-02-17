@@ -14,6 +14,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,6 +24,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Login
 import androidx.compose.material.icons.filled.Add
@@ -30,16 +32,20 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,18 +55,31 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.carlosivis.features.workoutlog.WorkoutLogRequest
+import dev.carlosivis.features.workoutlog.WorkoutType
 import dev.carlosivis.workoutsmart.composeResources.Res
 import dev.carlosivis.workoutsmart.composeResources.create_workout_fab
 import dev.carlosivis.workoutsmart.composeResources.delete_action
 import dev.carlosivis.workoutsmart.composeResources.delete_workout_message
 import dev.carlosivis.workoutsmart.composeResources.delete_workout_title
 import dev.carlosivis.workoutsmart.composeResources.edit_action
+import dev.carlosivis.workoutsmart.composeResources.fab_collapse_menu_description
+import dev.carlosivis.workoutsmart.composeResources.fab_expand_menu_description
+import dev.carlosivis.workoutsmart.composeResources.history_card_details
 import dev.carlosivis.workoutsmart.composeResources.home_screen_duration
 import dev.carlosivis.workoutsmart.composeResources.home_screen_login
 import dev.carlosivis.workoutsmart.composeResources.home_screen_my_profile
+import dev.carlosivis.workoutsmart.composeResources.home_screen_register_workout
 import dev.carlosivis.workoutsmart.composeResources.home_screen_title
+import dev.carlosivis.workoutsmart.composeResources.log_workout_dialog_cancel
+import dev.carlosivis.workoutsmart.composeResources.log_workout_dialog_description
+import dev.carlosivis.workoutsmart.composeResources.log_workout_dialog_duration
+import dev.carlosivis.workoutsmart.composeResources.log_workout_dialog_save
+import dev.carlosivis.workoutsmart.composeResources.log_workout_dialog_title
+import dev.carlosivis.workoutsmart.composeResources.log_workout_dialog_workout_type
 import dev.carlosivis.workoutsmart.composeResources.ranking_carousel_title
 import dev.carlosivis.workoutsmart.composeResources.saved_workouts_section_title
 import dev.carlosivis.workoutsmart.composeResources.workout_history_section_title
@@ -107,6 +126,17 @@ private fun Content(
             message = stringResource(Res.string.delete_workout_message, state.workoutToDelete.name),
             onConfirm = { action(HomeViewAction.ConfirmDeleteWorkout) },
             onCancel = { action(HomeViewAction.CancelDeleteWorkout) }
+        )
+    }
+
+    AnimatedVisibility(
+        visible = state.showRegisterWorkoutDialog,
+        enter = fadeIn() + slideInHorizontally(),
+        exit = fadeOut() + slideOutHorizontally()
+    ){
+        WorkoutLogDialog(
+            onDismiss = { action(HomeViewAction.ShowRegisterWorkoutDialog) },
+            onConfirm = { action(HomeViewAction.RegisterWorkoutLog(it)) }
         )
     }
 
@@ -304,12 +334,12 @@ private fun HistoryCard(
             .fillMaxWidth()
     ) {
         Text(
-            text = "${history.workoutName}\n$formattedDate ${
-                stringResource(
-                    Res.string.home_screen_duration,
-                    formattedDuration
-                )
-            }",
+            text = stringResource(
+                Res.string.history_card_details,
+                history.workoutName,
+                formattedDate,
+                stringResource(Res.string.home_screen_duration, formattedDuration)
+            ),
             modifier = Modifier.padding(Dimens.Medium),
             fontSize = FontSizes.BodyLarge
         )
@@ -350,7 +380,7 @@ fun ExpandableFABMenuAction(
                 )
 
                 FabMiniAction(
-                    label = "Treino Avulso",
+                    label = stringResource(Res.string.home_screen_register_workout),
                     icon = Icons.Filled.Edit,
                     onClick = {
                         !expanded
@@ -367,7 +397,8 @@ fun ExpandableFABMenuAction(
         ) {
             Icon(
                 imageVector = if (expanded) Icons.Filled.Close else Icons.Filled.Add,
-                contentDescription = null,
+                contentDescription = if (expanded) stringResource(Res.string.fab_collapse_menu_description)
+                else stringResource(Res.string.fab_expand_menu_description),
             )
         }
     }
@@ -400,13 +431,109 @@ private fun FabMiniAction(
             )
             Icon(
                 imageVector = icon,
-                contentDescription = null,
+                contentDescription = label,
                 tint = MaterialTheme.colorScheme.primary
             )
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun WorkoutLogDialog(
+    onDismiss: () -> Unit,
+    onConfirm: (WorkoutLogRequest) -> Unit
+) {
+    var selectedType by remember { mutableStateOf(WorkoutType.GYM) }
+    var description by remember { mutableStateOf("") }
+    var duration by remember { mutableStateOf("") }
+
+    val isValid = duration.toLongOrNull()?.let { it > 0 } ?: false
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        shape = RoundedCornerShape(Shapes.ExtraLarge),
+        title = {
+            Text(
+                text = stringResource(Res.string.log_workout_dialog_title),
+                style = MaterialTheme.typography.titleLarge
+            )
+        },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(Dimens.Medium)) {
+
+                WorkoutTypeSelector(
+                    selected = selectedType,
+                    onSelect = { selectedType = it }
+                )
+
+                OutlinedTextField(
+                    value = description,
+                    onValueChange = { description = it },
+                    label = { Text(stringResource(Res.string.log_workout_dialog_description)) },
+                    maxLines = 3,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                OutlinedTextField(
+                    value = duration,
+                    onValueChange = { duration = it.filter(Char::isDigit) },
+                    label = { Text(stringResource(Res.string.log_workout_dialog_duration)) },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(
+                enabled = isValid,
+                onClick = {
+                    onConfirm(
+                        WorkoutLogRequest(
+                            type = selectedType,
+                            description = description.takeIf { it.isNotBlank() },
+                            durationInSeconds = duration.toLong() * 60
+                        )
+                    )
+                }
+            ) {
+                Text(stringResource(Res.string.log_workout_dialog_save))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(Res.string.log_workout_dialog_cancel))
+            }
+        }
+    )
+}
+
+@Composable
+private fun WorkoutTypeSelector(
+    selected: WorkoutType,
+    onSelect: (WorkoutType) -> Unit
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(Dimens.Small)) {
+
+        Text(
+            text = stringResource(Res.string.log_workout_dialog_workout_type),
+            style = MaterialTheme.typography.labelLarge
+        )
+
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(Dimens.Small),
+            verticalArrangement = Arrangement.spacedBy(Dimens.Small)
+        ) {
+            WorkoutType.entries.forEach { type ->
+                FilterChip(
+                    selected = type == selected,
+                    onClick = { onSelect(type) },
+                    label = { Text(type.displayName.lowercase().replaceFirstChar { it.uppercase() }) }
+                )
+            }
+        }
+    }
+}
 
 @Preview
 @Composable

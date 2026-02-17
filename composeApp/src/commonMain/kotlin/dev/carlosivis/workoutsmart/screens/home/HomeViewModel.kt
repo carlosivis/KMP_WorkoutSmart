@@ -3,6 +3,8 @@ package dev.carlosivis.workoutsmart.screens.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.carlosivis.features.workoutlog.WorkoutLogRequest
+import dev.carlosivis.workoutsmart.composeResources.Res
+import dev.carlosivis.workoutsmart.composeResources.workout_saved_successfully
 import dev.carlosivis.workoutsmart.domain.GetGroupsUseCase
 import dev.carlosivis.workoutsmart.domain.GetUserUseCase
 import dev.carlosivis.workoutsmart.domain.RegisterWorkoutLogUseCase
@@ -13,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.getString
 
 class HomeViewModel(
     private val repository: WorkoutRepository,
@@ -144,11 +147,12 @@ class HomeViewModel(
             setLoading(true)
             registerWorkoutLogUseCase(workout)
                 .onSuccess {
-                    _state.update { it.copy(message = "Workout saved successfully") }
+                    _state.update { it.copy(message = getString(Res.string.workout_saved_successfully)) }
                 }
                 .onFailure { error ->
                     _state.update { it.copy(error = error.message) }
                 }
+            showRegisterWorkoutDialog()
             setLoading(false)
         }
     }
