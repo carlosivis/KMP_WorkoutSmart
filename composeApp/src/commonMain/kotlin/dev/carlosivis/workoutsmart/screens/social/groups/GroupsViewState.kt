@@ -6,6 +6,7 @@ data class GroupsViewState(
     val isLoading: Boolean = false,
     val groups: List<GroupResponse>? = emptyList(),
     val error: String? = null,
+    val message: String? = null,
     val showAddGroup: Boolean = false,
     val showAddInvite: Boolean = false,
 )

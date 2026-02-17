@@ -28,9 +28,10 @@ class RankingViewModel(
     fun dispatchAction(action: RankingViewAction) {
         when (action) {
             RankingViewAction.GetRanking -> getRanking()
-            RankingViewAction.CleanError -> cleanError()
+            RankingViewAction.CleanMessages -> cleanMessages()
             RankingViewAction.Navigate.Back -> navigator.back()
             RankingViewAction.ShowInviteCode -> showInviteCode()
+            RankingViewAction.CopyInviteCode -> copyInviteCode()
         }
     }
 
@@ -64,8 +65,11 @@ class RankingViewModel(
         _state.update { it.copy(showInviteCode = !it.showInviteCode) }
     }
 
+    private fun copyInviteCode(){
+        _state.update { it.copy(message = "Código copiado para a área de transferência!") }
+    }
 
-    private fun cleanError() {
-        _state.update { it.copy(error = null) }
+    private fun cleanMessages() {
+        _state.update { it.copy(error = null, message = null) }
     }
 }

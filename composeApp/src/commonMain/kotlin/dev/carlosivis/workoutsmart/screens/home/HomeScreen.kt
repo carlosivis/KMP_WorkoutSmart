@@ -33,7 +33,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -64,13 +63,14 @@ import dev.carlosivis.workoutsmart.screens.components.RankingCarousel
 import dev.carlosivis.workoutsmart.screens.components.RankingLoginRequiredCard
 import dev.carlosivis.workoutsmart.screens.components.loadings.PlaceholderHighlight
 import dev.carlosivis.workoutsmart.screens.components.loadings.placeholder
+import dev.carlosivis.workoutsmart.utils.AppSnackbarHost
 import dev.carlosivis.workoutsmart.utils.Dimens
 import dev.carlosivis.workoutsmart.utils.FontSizes
 import dev.carlosivis.workoutsmart.utils.Shapes
 import dev.carlosivis.workoutsmart.utils.WorkoutsSmartTheme
-import dev.carlosivis.workoutsmart.utils.errorSnackbar
 import dev.carlosivis.workoutsmart.utils.formatDateToString
 import dev.carlosivis.workoutsmart.utils.formatDuration
+import dev.carlosivis.workoutsmart.utils.rememberSnackbarHandler
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -100,13 +100,14 @@ private fun Content(
         )
     }
 
-    val errorHandler = errorSnackbar(
+    val (snackbarHostState, snackbarType) = rememberSnackbarHandler(
         error = state.error,
-        action = { action(HomeViewAction.CleanError) }
+        message = state.message,
+        action = { action(HomeViewAction.CleanMessages) }
     )
 
     Scaffold(
-        snackbarHost = { SnackbarHost(hostState = errorHandler) },
+        snackbarHost = { AppSnackbarHost(hostState = snackbarHostState, type = snackbarType) },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { action(HomeViewAction.Navigate.CreateWorkout) },

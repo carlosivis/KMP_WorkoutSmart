@@ -121,6 +121,16 @@
     <string name="groups_screen_join_group_button">Entrar em Grupo</string>
     <string name="groups_screen_user_rank">Rank: #%1$d</string>
 
+    <!-- RankingScreen.kt -->
+    <string name="ranking_screen_invite_message">"Venha participar do grupo %1$s no WorkoutSmart! Código de convite: %2$s"</string>
+    <string name="ranking_screen_invite_friends">Convidar amigos</string>
+    <string name="ranking_screen_empty_ranking">Nossa, que vazio aqui</string>
+    <string name="ranking_screen_invite_friends_title">Convide seus amigos</string>
+    <string name="ranking_screen_share_code">Compartilhe este código:</string>
+    <string name="ranking_screen_copy">Copiar</string>
+    <string name="ranking_screen_share">Compartilhar</string>
+    <string name="ranking_screen_copy_code_description">Copiar código</string>
+
     <!-- NetworkWrapper.kt -->
     <string name="network_error_timeout">Tempo limite excedido. Tente novamente.</string>
     <string name="network_error_no_internet">Sem conexão com a internet.</string>

@@ -83,10 +83,12 @@ import dev.carlosivis.workoutsmart.screens.components.CustomDialog
 import dev.carlosivis.workoutsmart.screens.components.CustomTopBar
 import dev.carlosivis.workoutsmart.screens.components.RestTimerSelectorDialog
 import dev.carlosivis.workoutsmart.screens.components.expect.KeepScreenOn
+import dev.carlosivis.workoutsmart.utils.AppSnackbarHost
 import dev.carlosivis.workoutsmart.utils.Dimens
 import dev.carlosivis.workoutsmart.utils.FontSizes
 import dev.carlosivis.workoutsmart.utils.WhitePure
 import dev.carlosivis.workoutsmart.utils.WorkoutsSmartTheme
+import dev.carlosivis.workoutsmart.utils.rememberSnackbarHandler
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -117,7 +119,14 @@ private fun Content(
 ) {
 
     KeepScreenOn(enabled = state.settings.keepScreenOn)
+    val (snackbarHostState, snackbarType) = rememberSnackbarHandler(
+        error = state.error,
+        message = state.message,
+        action = { action(ActiveWorkoutViewAction.CleanMessages) }
+    )
     Scaffold(
+        snackbarHost = { AppSnackbarHost(hostState = snackbarHostState, type = snackbarType) },
+
         floatingActionButton = {
             ExpandableFABMenu(
                 onSelectFinish = { action(ActiveWorkoutViewAction.StopWorkout) },

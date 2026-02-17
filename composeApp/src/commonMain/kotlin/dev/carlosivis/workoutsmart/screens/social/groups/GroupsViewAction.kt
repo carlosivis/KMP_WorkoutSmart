@@ -6,7 +6,7 @@ import dev.carlosivis.workoutsmart.models.JoinGroupRequest
 
 sealed class GroupsViewAction {
     object GetGroups : GroupsViewAction()
-    object CleanError : GroupsViewAction()
+    object CleanMessages : GroupsViewAction()
     object ShowAddGroup : GroupsViewAction()
     object ShowAddInvite : GroupsViewAction()
     data class CreateGroup(val create: CreateGroupRequest) : GroupsViewAction()

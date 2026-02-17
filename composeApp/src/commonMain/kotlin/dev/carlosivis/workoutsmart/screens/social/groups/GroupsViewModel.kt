@@ -32,7 +32,7 @@ class GroupsViewModel(
     fun dispatchAction(action: GroupsViewAction) {
         when (action) {
             GroupsViewAction.GetGroups -> getGroups()
-            GroupsViewAction.CleanError -> cleanError()
+            GroupsViewAction.CleanMessages -> cleanMessages()
             GroupsViewAction.Navigate.Back -> navigator.back()
             is GroupsViewAction.Navigate.Ranking -> navigator.toRanking(action.group)
             is GroupsViewAction.CreateGroup -> createGroup(action.create)
@@ -115,7 +115,7 @@ class GroupsViewModel(
     }
 
 
-    private fun cleanError() {
-        _state.update { it.copy(error = null) }
+    private fun cleanMessages() {
+        _state.update { it.copy(error = null, message = null) }
     }
 }

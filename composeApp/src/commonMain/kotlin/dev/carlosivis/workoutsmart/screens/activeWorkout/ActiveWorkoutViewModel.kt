@@ -44,6 +44,7 @@ class ActiveWorkoutViewModel(
             is ActiveWorkoutViewAction.ToggleRestTimer -> toggleRestTimer()
             is ActiveWorkoutViewAction.ExitWithoutSave -> exitWithoutSave()
             is ActiveWorkoutViewAction.GetSettings -> getSettings()
+            is ActiveWorkoutViewAction.CleanMessages -> cleanMessages()
         }
     }
 
@@ -171,6 +172,10 @@ class ActiveWorkoutViewModel(
     
     private fun toggleRestTimer() {
         _state.update { it.copy(showRestTimerSelector = !it.showRestTimerSelector) }
+    }
+
+    private fun cleanMessages() {
+        _state.update { it.copy(error = null, message = null) }
     }
 
     override fun onCleared() {

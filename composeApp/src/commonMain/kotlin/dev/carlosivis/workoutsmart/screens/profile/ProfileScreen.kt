@@ -30,7 +30,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -57,9 +56,10 @@ import dev.carlosivis.workoutsmart.models.UserResponse
 import dev.carlosivis.workoutsmart.repository.ThemeMode
 import dev.carlosivis.workoutsmart.screens.components.CustomTopBar
 import dev.carlosivis.workoutsmart.screens.components.GoogleButton
+import dev.carlosivis.workoutsmart.utils.AppSnackbarHost
 import dev.carlosivis.workoutsmart.utils.Dimens
 import dev.carlosivis.workoutsmart.utils.WorkoutsSmartTheme
-import dev.carlosivis.workoutsmart.utils.errorSnackbar
+import dev.carlosivis.workoutsmart.utils.rememberSnackbarHandler
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -100,13 +100,14 @@ private fun Content(
         }
     }
     Box(Modifier.fillMaxSize()) {
-        val errorHandler = errorSnackbar(
+        val (snackbarHostState, snackbarType) = rememberSnackbarHandler(
             error = state.error,
-            action = { action(ProfileViewAction.CleanError) },
+            message = state.message,
+            action = { action(ProfileViewAction.CleanMessages) }
         )
 
         Scaffold(
-            snackbarHost = { SnackbarHost(hostState = errorHandler) }
+            snackbarHost = { AppSnackbarHost(hostState = snackbarHostState, type = snackbarType) }
         ) { paddingValues ->
             Column(
                 modifier = Modifier

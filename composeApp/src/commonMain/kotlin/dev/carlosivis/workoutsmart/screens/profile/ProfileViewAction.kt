@@ -6,7 +6,7 @@ sealed class ProfileViewAction {
         object Back : ProfileViewAction()
         object Settings: ProfileViewAction()
     }
-    object CleanError: ProfileViewAction()
+    object CleanMessages: ProfileViewAction()
     object Logout: ProfileViewAction()
     object GetUserProfile: ProfileViewAction()
 }

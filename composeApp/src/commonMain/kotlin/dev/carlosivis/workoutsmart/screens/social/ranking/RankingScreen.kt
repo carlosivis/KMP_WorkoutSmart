@@ -32,12 +32,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,6 +45,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -54,12 +55,23 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import dev.carlosivis.workoutsmart.composeResources.Res
 import dev.carlosivis.workoutsmart.composeResources.ic_user_placeholder
+import dev.carlosivis.workoutsmart.composeResources.ranking_screen_copy
+import dev.carlosivis.workoutsmart.composeResources.ranking_screen_copy_code_description
+import dev.carlosivis.workoutsmart.composeResources.ranking_screen_empty_ranking
+import dev.carlosivis.workoutsmart.composeResources.ranking_screen_invite_friends
+import dev.carlosivis.workoutsmart.composeResources.ranking_screen_invite_friends_title
+import dev.carlosivis.workoutsmart.composeResources.ranking_screen_invite_message
+import dev.carlosivis.workoutsmart.composeResources.ranking_screen_share
+import dev.carlosivis.workoutsmart.composeResources.ranking_screen_share_code
 import dev.carlosivis.workoutsmart.models.GroupResponse
 import dev.carlosivis.workoutsmart.models.RankingMember
+import dev.carlosivis.workoutsmart.plataform.copyText
+import dev.carlosivis.workoutsmart.plataform.shareText
 import dev.carlosivis.workoutsmart.repository.ThemeMode
 import dev.carlosivis.workoutsmart.screens.components.CustomTopBar
 import dev.carlosivis.workoutsmart.screens.components.loadings.PlaceholderHighlight
 import dev.carlosivis.workoutsmart.screens.components.loadings.placeholder
+import dev.carlosivis.workoutsmart.utils.AppSnackbarHost
 import dev.carlosivis.workoutsmart.utils.BronzeColor
 import dev.carlosivis.workoutsmart.utils.BronzeGradient
 import dev.carlosivis.workoutsmart.utils.BronzeGradientLinear
@@ -72,8 +84,10 @@ import dev.carlosivis.workoutsmart.utils.SilverColor
 import dev.carlosivis.workoutsmart.utils.SilverGradient
 import dev.carlosivis.workoutsmart.utils.SilverGradientLinear
 import dev.carlosivis.workoutsmart.utils.WorkoutsSmartTheme
-import dev.carlosivis.workoutsmart.utils.errorSnackbar
+import dev.carlosivis.workoutsmart.utils.rememberSnackbarHandler
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun RankingScreen(
@@ -90,24 +104,38 @@ private fun Content(
     state: RankingViewState,
     action: (RankingViewAction) -> Unit,
 ) {
+    val clipboard = LocalClipboard.current
+    val scope = rememberCoroutineScope()
+    val inviteMessage = stringResource(Res.string.ranking_screen_invite_message, state.group?.name ?: "", state.group?.inviteCode ?: "")
+
     AnimatedVisibility(
         visible = state.showInviteCode,
         modifier = Modifier.fillMaxSize(),
     ) {
         InviteCodeBottomSheet(
             inviteCode = state.group!!.inviteCode,
-            onCopy = { },
-            onShare = { },
+            onCopy = {
+                scope.launch {
+                    clipboard.copyText(state.group.inviteCode)
+                }
+                action(RankingViewAction.CopyInviteCode)
+            },
+            onShare = {
+                scope.launch {
+                    shareText(inviteMessage)
+                }
+            },
             onDismiss = { action(RankingViewAction.ShowInviteCode) }
         )
     }
 
-    val errorHandler = errorSnackbar(
+    val (snackbarHostState, snackbarType) = rememberSnackbarHandler(
         error = state.error,
-        action = { action(RankingViewAction.CleanError) }
+        message = state.message,
+        action = { action(RankingViewAction.CleanMessages) }
     )
     Scaffold(
-        snackbarHost = { SnackbarHost(hostState = errorHandler) },
+        snackbarHost = { AppSnackbarHost(hostState = snackbarHostState, type = snackbarType) },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { action(RankingViewAction.ShowInviteCode) },
@@ -125,7 +153,7 @@ private fun Content(
                     Row {
                         Icon(Icons.Filled.PersonAdd, contentDescription = null)
                         Spacer(Modifier.width(Dimens.Small))
-                        Text("Convidar amigos")
+                        Text(stringResource(Res.string.ranking_screen_invite_friends))
                     }
                 }
             }
@@ -166,18 +194,17 @@ private fun Content(
                         member
                     )
                 }
-                item{
-                    if (state.others.isEmpty() && !state.isLoading){
+                item {
+                    if (state.others.isEmpty() && !state.isLoading) {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .fillMaxHeight()
-                                .padding(horizontal = Dimens.Medium)
-                            ,
+                                .padding(horizontal = Dimens.Medium),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = "Nossa, que vazio aqui",
+                                text = stringResource(Res.string.ranking_screen_empty_ranking),
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 textAlign = TextAlign.Center
@@ -399,14 +426,14 @@ fun InviteCodeBottomSheet(
         ) {
 
             Text(
-                text = "Convide seus amigos",
+                text = stringResource(Res.string.ranking_screen_invite_friends_title),
                 style = MaterialTheme.typography.titleMedium
             )
 
             Spacer(Modifier.height(Dimens.Small))
 
             Text(
-                text = "Compartilhe este código:",
+                text = stringResource(Res.string.ranking_screen_share_code),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -425,12 +452,12 @@ fun InviteCodeBottomSheet(
                 horizontalArrangement = Arrangement.spacedBy(Dimens.Medium)
             ) {
                 ActionButton(
-                    label = "Copiar",
+                    label = stringResource(Res.string.ranking_screen_copy),
                     onClick = onCopy
                 )
 
                 ActionButton(
-                    label = "Compartilhar",
+                    label = stringResource(Res.string.ranking_screen_share),
                     onClick = onShare
                 )
             }
@@ -470,7 +497,7 @@ fun InviteCodeCard(
 
             Icon(
                 imageVector = Icons.Default.ContentCopy,
-                contentDescription = "Copiar código"
+                contentDescription = stringResource(Res.string.ranking_screen_copy_code_description)
             )
         }
     }
@@ -590,7 +617,8 @@ private fun ContentPreview() {
                         displayName = "User 3",
                         photoUrl = "",
                         score = 600
-                    )),
+                    )
+                ),
                 others = listOf(
                     RankingMember(
                         position = 4,

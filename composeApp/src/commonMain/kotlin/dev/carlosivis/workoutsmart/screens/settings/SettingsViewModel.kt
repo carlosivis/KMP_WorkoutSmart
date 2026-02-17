@@ -28,7 +28,7 @@ class SettingsViewModel(
             is SettingsViewAction.UpdateDefaultRestTime -> updateDefaultRestTime(action.time)
             is SettingsViewAction.UpdateKeepScreenOn -> updateKeepScreenOn(action.keepScreenOn)
             is SettingsViewAction.UpdateVibrationEnabled -> updateVibrationEnabled(action.vibrationEnabled)
-            is SettingsViewAction.CleanError -> cleanError()
+            is SettingsViewAction.CleanMessages -> cleanMessages()
         }
     }
 
@@ -92,9 +92,8 @@ class SettingsViewModel(
         }
     }
 
-    private fun cleanError(){
-        _state.update { it.copy(error = null) }
-
+    private fun cleanMessages(){
+        _state.update { it.copy(error = null, message = null) }
     }
 
 }

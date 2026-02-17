@@ -11,7 +11,7 @@ sealed class HomeViewAction {
     data class AttemptDeleteWorkout(val workout: WorkoutModel) : HomeViewAction()
     object ConfirmDeleteWorkout : HomeViewAction()
     object CancelDeleteWorkout : HomeViewAction()
-    object CleanError : HomeViewAction()
+    object CleanMessages : HomeViewAction()
 
     object Navigate {
         object CreateWorkout : HomeViewAction()

@@ -6,7 +6,8 @@ import dev.carlosivis.workoutsmart.models.WorkoutModel
 data class CreateWorkoutViewState(
     val isLoading: Boolean = false,
     val showExitConfirmationDialog: Boolean = false,
-    val errorMessage: String? = null,
+    val error: String? = null,
+    val message: String? = null,
     val workout: WorkoutModel = WorkoutModel.empty(),
     val isAddingExercise: Boolean = false,
     val newExercise: ExerciseModel = ExerciseModel.empty(),
@@ -27,6 +28,8 @@ data class CreateWorkoutViewState(
         other as CreateWorkoutViewState
 
         if (isLoading != other.isLoading) return false
+        if (error != other.error) return false
+        if (message != other.message) return false
         if (showExitConfirmationDialog != other.showExitConfirmationDialog) return false
         if (isAddingExercise != other.isAddingExercise) return false
         if (showCamera != other.showCamera) return false
@@ -35,7 +38,6 @@ data class CreateWorkoutViewState(
         if (targetExerciseIndex != other.targetExerciseIndex) return false
         if (showImageSourceDialog != other.showImageSourceDialog) return false
         if (showPhotoPreviewDialog != other.showPhotoPreviewDialog) return false
-        if (errorMessage != other.errorMessage) return false
         if (workout != other.workout) return false
         if (newExercise != other.newExercise) return false
         if (!capturedPhotoPreview.contentEquals(other.capturedPhotoPreview)) return false
@@ -55,7 +57,8 @@ data class CreateWorkoutViewState(
         result = 31 * result + (targetExerciseIndex ?: 0)
         result = 31 * result + showImageSourceDialog.hashCode()
         result = 31 * result + showPhotoPreviewDialog.hashCode()
-        result = 31 * result + (errorMessage?.hashCode() ?: 0)
+        result = 31 * result + (error?.hashCode() ?: 0)
+        result = 31 * result + (message?.hashCode() ?: 0)
         result = 31 * result + workout.hashCode()
         result = 31 * result + newExercise.hashCode()
         result = 31 * result + (capturedPhotoPreview?.contentHashCode() ?: 0)

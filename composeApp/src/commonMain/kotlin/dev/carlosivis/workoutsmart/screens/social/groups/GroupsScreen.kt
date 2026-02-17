@@ -27,7 +27,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -56,11 +55,12 @@ import dev.carlosivis.workoutsmart.screens.components.CustomTopBar
 import dev.carlosivis.workoutsmart.screens.components.RankingEmptyState
 import dev.carlosivis.workoutsmart.screens.components.loadings.PlaceholderHighlight
 import dev.carlosivis.workoutsmart.screens.components.loadings.placeholder
+import dev.carlosivis.workoutsmart.utils.AppSnackbarHost
 import dev.carlosivis.workoutsmart.utils.Dimens
 import dev.carlosivis.workoutsmart.utils.FontSizes
 import dev.carlosivis.workoutsmart.utils.Shapes
 import dev.carlosivis.workoutsmart.utils.WorkoutsSmartTheme
-import dev.carlosivis.workoutsmart.utils.errorSnackbar
+import dev.carlosivis.workoutsmart.utils.rememberSnackbarHandler
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -81,13 +81,14 @@ private fun Content(
     action: (GroupsViewAction) -> Unit,
 ) {
 
-    val errorHandler = errorSnackbar(
+    val (snackbarHostState, snackbarType) = rememberSnackbarHandler(
         error = state.error,
-        action = { action(GroupsViewAction.CleanError) }
+        message = state.message,
+        action = { action(GroupsViewAction.CleanMessages) }
     )
 
     Scaffold(
-        snackbarHost = { SnackbarHost(hostState = errorHandler) }
+        snackbarHost = { AppSnackbarHost(hostState = snackbarHostState, type = snackbarType) }
     ) { paddingValues ->
 
         AnimatedVisibility(

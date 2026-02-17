@@ -67,9 +67,11 @@ import dev.carlosivis.workoutsmart.screens.components.CameraCaptureScreen
 import dev.carlosivis.workoutsmart.screens.components.CustomDialog
 import dev.carlosivis.workoutsmart.screens.components.CustomTopBar
 import dev.carlosivis.workoutsmart.screens.components.PhotoPreviewDialog
+import dev.carlosivis.workoutsmart.utils.AppSnackbarHost
 import dev.carlosivis.workoutsmart.utils.Dimens
 import dev.carlosivis.workoutsmart.utils.Shapes
 import dev.carlosivis.workoutsmart.utils.WorkoutsSmartTheme
+import dev.carlosivis.workoutsmart.utils.rememberSnackbarHandler
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -161,7 +163,15 @@ private fun Content(
         )
     }
 
-    Scaffold(modifier = modifier) { paddingValues ->
+    val (snackbarHostState, snackbarType) = rememberSnackbarHandler(
+        error = state.error,
+        message = state.message,
+        action = { action(CreateWorkoutViewAction.CleanMessages) }
+    )
+    Scaffold(
+        snackbarHost = { AppSnackbarHost(hostState = snackbarHostState, type = snackbarType) },
+        modifier = modifier)
+        { paddingValues ->
 
         Column(
             modifier = modifier
