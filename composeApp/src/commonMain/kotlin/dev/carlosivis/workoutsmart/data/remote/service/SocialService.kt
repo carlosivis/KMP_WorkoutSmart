@@ -1,5 +1,6 @@
 package dev.carlosivis.workoutsmart.data.remote.service
 
+import dev.carlosivis.features.workoutlog.WorkoutLogRequest
 import dev.carlosivis.workoutsmart.models.CreateGroupRequest
 import dev.carlosivis.workoutsmart.models.JoinGroupRequest
 import io.ktor.client.HttpClient
@@ -28,6 +29,11 @@ class SocialService(private val client: HttpClient) {
     }
     suspend fun getRankingMembers(groupId: Int): HttpResponse {
         return client.get("/groups/$groupId/ranking") {
+        }
+    }
+    suspend fun registerWorkoutLog(request: WorkoutLogRequest): HttpResponse {
+        return client.post("/workout/logs") {
+            setBody(request)
         }
     }
 }

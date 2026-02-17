@@ -1,5 +1,6 @@
 package dev.carlosivis.workoutsmart.data.remote.datasource
 
+import dev.carlosivis.features.workoutlog.WorkoutLogRequest
 import dev.carlosivis.workoutsmart.core.NetworkWrapper
 import dev.carlosivis.workoutsmart.data.remote.service.SocialService
 import dev.carlosivis.workoutsmart.models.CreateGroupRequest
@@ -64,6 +65,21 @@ class SocialRemoteDataSourceImpl(
         } catch (e: Exception) {
             Result.failure(e)
         }
+    }
+
+    override suspend fun registerWorkoutLog(request: WorkoutLogRequest): Result<Unit> {
+        return try {
+            val response = NetworkWrapper.safeCall<Unit> {
+                service.registerWorkoutLog(request)
+            }
+            Result.success(response)
+
+        } catch (e: NetworkWrapper.AppNetworkException) {
+            Result.failure(e)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+
     }
 
 
