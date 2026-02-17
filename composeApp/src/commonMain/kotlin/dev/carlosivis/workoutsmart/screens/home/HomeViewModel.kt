@@ -2,8 +2,10 @@ package dev.carlosivis.workoutsmart.screens.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.carlosivis.features.workoutlog.WorkoutLogRequest
 import dev.carlosivis.workoutsmart.domain.GetGroupsUseCase
 import dev.carlosivis.workoutsmart.domain.GetUserUseCase
+import dev.carlosivis.workoutsmart.domain.RegisterWorkoutLogUseCase
 import dev.carlosivis.workoutsmart.models.WorkoutModel
 import dev.carlosivis.workoutsmart.navigation.navigator.HomeNavigator
 import dev.carlosivis.workoutsmart.repository.WorkoutRepository
@@ -16,6 +18,7 @@ class HomeViewModel(
     private val repository: WorkoutRepository,
     private val getUserUseCase: GetUserUseCase,
     private val getGroupsUseCase: GetGroupsUseCase,
+    private val registerWorkoutLogUseCase: RegisterWorkoutLogUseCase,
     private val navigator: HomeNavigator
 ) : ViewModel() {
     private val _state = MutableStateFlow(HomeViewState())
@@ -27,6 +30,7 @@ class HomeViewModel(
         getUser()
         getGroups()
     }
+
     fun dispatchAction(action: HomeViewAction) {
         when (action) {
             is HomeViewAction.GetWorkouts -> getWorkouts()
@@ -43,6 +47,8 @@ class HomeViewModel(
             is HomeViewAction.CleanMessages -> cleanMessages()
             is HomeViewAction.Navigate.Groups -> navigator.toGroups(_state.value.groups)
             is HomeViewAction.Navigate.Ranking -> navigator.toRanking(action.group)
+            is HomeViewAction.RegisterWorkoutLog -> registerWorkoutLog(action.log)
+            is HomeViewAction.ShowRegisterWorkoutDialog -> showRegisterWorkoutDialog()
         }
     }
 
@@ -120,6 +126,25 @@ class HomeViewModel(
             getGroupsUseCase(Unit)
                 .onSuccess { groups ->
                     _state.update { it.copy(groups = groups) }
+                }
+                .onFailure { error ->
+                    _state.update { it.copy(error = error.message) }
+                }
+            setLoading(false)
+        }
+    }
+
+    private fun showRegisterWorkoutDialog() {
+        _state.update { it.copy(showRegisterWorkoutDialog = !it.showRegisterWorkoutDialog) }
+    }
+
+
+    private fun registerWorkoutLog(workout: WorkoutLogRequest) {
+        viewModelScope.launch {
+            setLoading(true)
+            registerWorkoutLogUseCase(workout)
+                .onSuccess {
+                    _state.update { it.copy(message = "Workout saved successfully") }
                 }
                 .onFailure { error ->
                     _state.update { it.copy(error = error.message) }

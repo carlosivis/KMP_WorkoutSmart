@@ -21,6 +21,7 @@ import dev.carlosivis.workoutsmart.domain.GetUserUseCase
 import dev.carlosivis.workoutsmart.domain.JoinGroupUseCase
 import dev.carlosivis.workoutsmart.domain.LoginGoogleUseCase
 import dev.carlosivis.workoutsmart.domain.LogoutUseCase
+import dev.carlosivis.workoutsmart.domain.RegisterWorkoutLogUseCase
 import dev.carlosivis.workoutsmart.models.GroupResponse
 import dev.carlosivis.workoutsmart.models.WorkoutModel
 import dev.carlosivis.workoutsmart.navigation.navigator.GroupsNavigator
@@ -72,10 +73,10 @@ val networkModule = module {
 @OptIn(ExperimentalTime::class)
 val commonModule = module {
     viewModel { (navigator: HomeNavigator) ->
-        HomeViewModel(get(), get(), get(), navigator)
+        HomeViewModel(get(), get(), get(), get(), navigator)
     }
     viewModel { (workout: WorkoutModel, onNavigateBack: () -> Unit) ->
-        ActiveWorkoutViewModel(workout, get(), get(), onNavigateBack, get())
+        ActiveWorkoutViewModel(workout, get(), get(), get(), onNavigateBack, get())
     }
     viewModel { (onNavigateBack: () -> Unit) ->
         CreateWorkoutViewModel(get(), onNavigateBack)
@@ -83,11 +84,11 @@ val commonModule = module {
 
     viewModel { (navigator: GroupsNavigator, groups: List<GroupResponse>?) ->
         GroupsViewModel(
-           groups, get(), get(), get(), navigator
+            groups, get(), get(), get(), navigator
         )
     }
 
-    viewModel {(onNavigateBack: () -> Unit) ->
+    viewModel { (onNavigateBack: () -> Unit) ->
         SettingsViewModel(get(), onNavigateBack)
     }
 
@@ -158,6 +159,13 @@ val commonModule = module {
 
     factory {
         GetRankingMembersUseCase(
+            repository = get(),
+            dispatcher = get()
+        )
+    }
+
+    factory {
+        RegisterWorkoutLogUseCase(
             repository = get(),
             dispatcher = get()
         )

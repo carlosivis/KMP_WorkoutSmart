@@ -18,5 +18,4 @@ sealed class ActiveWorkoutViewAction {
     data class MarkExerciseAsCompleted(val exerciseName: String) : ActiveWorkoutViewAction()
     object GetSettings : ActiveWorkoutViewAction()
     object CleanMessages : ActiveWorkoutViewAction()
-
 }

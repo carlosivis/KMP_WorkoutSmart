@@ -1,5 +1,6 @@
 package dev.carlosivis.workoutsmart.screens.home
 
+import dev.carlosivis.features.workoutlog.WorkoutLogRequest
 import dev.carlosivis.workoutsmart.models.GroupResponse
 import dev.carlosivis.workoutsmart.models.WorkoutModel
 
@@ -12,6 +13,8 @@ sealed class HomeViewAction {
     object ConfirmDeleteWorkout : HomeViewAction()
     object CancelDeleteWorkout : HomeViewAction()
     object CleanMessages : HomeViewAction()
+    object ShowRegisterWorkoutDialog : HomeViewAction()
+    data class RegisterWorkoutLog(val log: WorkoutLogRequest) : HomeViewAction()
 
     object Navigate {
         object CreateWorkout : HomeViewAction()

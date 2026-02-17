@@ -58,8 +58,8 @@ fun AppSnackbarHost(
         modifier = modifier
     ) { data ->
         val containerColor = when (type) {
-            SnackbarType.ERROR -> MaterialTheme.colorScheme.error
-            SnackbarType.SUCCESS -> MaterialTheme.colorScheme.primary
+            SnackbarType.ERROR -> MaterialTheme.colorScheme.error.copy(alpha = 0.5f)
+            SnackbarType.SUCCESS -> MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
         }
         val contentColor = when (type) {
             SnackbarType.ERROR -> MaterialTheme.colorScheme.onError
@@ -69,7 +69,8 @@ fun AppSnackbarHost(
         Snackbar(
             snackbarData = data,
             containerColor = containerColor,
-            contentColor = contentColor
+            contentColor = contentColor,
+            shape = MaterialTheme.shapes.extraLarge
         )
     }
 }

@@ -2,6 +2,9 @@ package dev.carlosivis.workoutsmart.screens.activeWorkout
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.carlosivis.features.workoutlog.WorkoutLogRequest
+import dev.carlosivis.features.workoutlog.WorkoutType
+import dev.carlosivis.workoutsmart.domain.RegisterWorkoutLogUseCase
 import dev.carlosivis.workoutsmart.models.WorkoutModel
 import dev.carlosivis.workoutsmart.repository.SettingsRepository
 import dev.carlosivis.workoutsmart.repository.WorkoutRepository
@@ -18,6 +21,7 @@ class ActiveWorkoutViewModel(
     val workout: WorkoutModel,
     private val repository: WorkoutRepository,
     private val settingsRepository: SettingsRepository,
+    private val registerWorkoutLogUseCase: RegisterWorkoutLogUseCase,
     private val onNavigateBack: () -> Unit,
     private val vibratorHelper: VibratorHelper
 ) : ViewModel() {
@@ -144,6 +148,15 @@ class ActiveWorkoutViewModel(
             val timestamp: Long = kotlin.time.Clock.System.now().epochSeconds
             val duration: Long = _state.value.elapsedTime
             repository.insertHistory(workout.name, timestamp, duration)
+            registerWorkoutLogUseCase(WorkoutLogRequest(
+                type = WorkoutType.GYM,
+                description = workout.name,
+                durationInSeconds = duration
+            )).onSuccess {
+                _state.update { it.copy(message = "Workout saved successfully") }
+            }.onFailure { error ->
+                _state.update { it.copy(error = error.message) }
+            }
             _state.update { it.copy(showFinishedWorkoutDialog = false, showExitUnfinishedDialog = false) }
             setLoading(false)
             onNavigateBack()

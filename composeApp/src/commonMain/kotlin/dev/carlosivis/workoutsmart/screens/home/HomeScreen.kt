@@ -1,14 +1,18 @@
 package dev.carlosivis.workoutsmart.screens.home
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,6 +26,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Login
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Person
@@ -33,11 +38,16 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -109,14 +119,10 @@ private fun Content(
     Scaffold(
         snackbarHost = { AppSnackbarHost(hostState = snackbarHostState, type = snackbarType) },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = { action(HomeViewAction.Navigate.CreateWorkout) },
-                containerColor = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(Dimens.Medium),
-                shape = RoundedCornerShape(Shapes.ExtraLarge)
-            ) {
-                Icon(Icons.Filled.Add, stringResource(Res.string.create_workout_fab))
-            }
+            ExpandableFABMenuAction(
+                onSelectAdd = {action(HomeViewAction.Navigate.CreateWorkout)},
+                onSelectRegister = {action(HomeViewAction.ShowRegisterWorkoutDialog)}
+            )
         }
     ) { padding ->
         Column(
@@ -309,6 +315,98 @@ private fun HistoryCard(
         )
     }
 }
+@Composable
+fun ExpandableFABMenuAction(
+    onSelectAdd: () -> Unit = {},
+    onSelectRegister: () -> Unit = {}
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(Dimens.Medium),
+        contentAlignment = Alignment.BottomEnd
+    ) {
+
+        AnimatedVisibility(
+            visible = expanded,
+            enter = fadeIn() + slideInVertically { it / 2 },
+            exit = fadeOut() + slideOutVertically { it / 2 }
+        ) {
+            Column(
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.spacedBy(Dimens.Small),
+                modifier = Modifier.padding(bottom = Dimens.ImageSizeMedium)
+
+            ) {
+                FabMiniAction(
+                    label = stringResource(Res.string.create_workout_fab),
+                    icon = Icons.Filled.Add,
+                    onClick = {
+                        !expanded
+                        onSelectAdd()
+                    }
+                )
+
+                FabMiniAction(
+                    label = "Treino Avulso",
+                    icon = Icons.Filled.Edit,
+                    onClick = {
+                        !expanded
+                        onSelectRegister()
+                    }
+                )
+            }
+        }
+
+        FloatingActionButton(
+            onClick = { expanded = !expanded },
+            containerColor = MaterialTheme.colorScheme.primary,
+            shape = RoundedCornerShape(Shapes.ExtraLarge)
+        ) {
+            Icon(
+                imageVector = if (expanded) Icons.Filled.Close else Icons.Filled.Add,
+                contentDescription = null,
+            )
+        }
+    }
+}
+
+@Composable
+private fun FabMiniAction(
+    label: String,
+    icon: ImageVector,
+    onClick: () -> Unit
+) {
+    Surface(
+        shape = RoundedCornerShape(50),
+        color = MaterialTheme.colorScheme.surface,
+        shadowElevation = Dimens.Small,
+        tonalElevation = Dimens.Small,
+        modifier = Modifier.clickable { onClick() }
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(Dimens.Small),
+            modifier = Modifier.padding(
+                horizontal = Dimens.Large,
+                vertical = Dimens.Small
+            )
+        ) {
+            Text(
+                text = label,
+                fontSize = FontSizes.TitleSmall
+            )
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary
+            )
+        }
+    }
+}
+
 
 @Preview
 @Composable

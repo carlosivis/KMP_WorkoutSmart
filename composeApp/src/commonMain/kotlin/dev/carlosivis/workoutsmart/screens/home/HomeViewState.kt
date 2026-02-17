@@ -7,6 +7,8 @@ import dev.carlosivis.workoutsmart.models.WorkoutModel
 
 data class HomeViewState(
     val isLoading: Boolean = false,
+    val isRefreshing: Boolean = false,
+    val showRegisterWorkoutDialog: Boolean = false,
     val error: String? = null,
     val message: String? = null,
     val workouts: List<WorkoutModel> = emptyList(),
