@@ -1,0 +1,31 @@
+package dev.carlosivis.workoutsmart.models
+
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class CreateGroupRequest(
+    val name: String,
+    val description: String? = null
+)
+
+@Serializable
+data class JoinGroupRequest(
+    val inviteCode: String
+)
+
+@Serializable
+data class GroupResponse(
+    val id: Int,
+    val name: String,
+    val inviteCode: String,
+    val userScore: Long,
+    val userPosition: Int
+)
+
+@Serializable
+data class RankingMember(
+    val position: Int,
+    val displayName: String,
+    val photoUrl: String,
+    val score: Long
+)

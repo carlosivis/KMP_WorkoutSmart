@@ -23,25 +23,18 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -52,15 +45,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import dev.carlosivis.workoutsmart.Utils.Dimens
-import dev.carlosivis.workoutsmart.Utils.WorkoutsSmartTheme
 import dev.carlosivis.workoutsmart.composeResources.Res
-import dev.carlosivis.workoutsmart.composeResources.action_back
-import dev.carlosivis.workoutsmart.composeResources.delete_action
 import dev.carlosivis.workoutsmart.composeResources.ic_user_placeholder
+import dev.carlosivis.workoutsmart.composeResources.profile_fallback_display_name
+import dev.carlosivis.workoutsmart.composeResources.profile_login_subtitle
+import dev.carlosivis.workoutsmart.composeResources.profile_login_title
+import dev.carlosivis.workoutsmart.composeResources.profile_logout
+import dev.carlosivis.workoutsmart.composeResources.profile_settings_action
 import dev.carlosivis.workoutsmart.models.UserResponse
 import dev.carlosivis.workoutsmart.repository.ThemeMode
+import dev.carlosivis.workoutsmart.screens.components.CustomTopBar
 import dev.carlosivis.workoutsmart.screens.components.GoogleButton
+import dev.carlosivis.workoutsmart.utils.AppSnackbarHost
+import dev.carlosivis.workoutsmart.utils.Dimens
+import dev.carlosivis.workoutsmart.utils.WorkoutsSmartTheme
+import dev.carlosivis.workoutsmart.utils.rememberSnackbarHandler
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -70,25 +69,11 @@ fun ProfileScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val action: (ProfileViewAction) -> Unit = viewModel::dispatchAction
-    val snackbarHostState = remember { SnackbarHostState() }
 
-    LaunchedEffect(state.error) {
-        state.error?.let {
-            snackbarHostState.showSnackbar(
-                message = it,
-                duration = SnackbarDuration.Long
-            )
-            action(ProfileViewAction.CleanError)
-        }
-    }
-    LaunchedEffect(Unit) {
-        action(ProfileViewAction.GetUserProfile)
-    }
 
     Content(
         state = state,
         action = action,
-        snackbarHostState = snackbarHostState
     )
 
 }
@@ -97,7 +82,6 @@ fun ProfileScreen(
 private fun Content(
     state: ProfileViewState,
     action: (ProfileViewAction) -> Unit,
-    snackbarHostState: SnackbarHostState
 ) {
 
     AnimatedVisibility(
@@ -116,9 +100,14 @@ private fun Content(
         }
     }
     Box(Modifier.fillMaxSize()) {
+        val (snackbarHostState, snackbarType) = rememberSnackbarHandler(
+            error = state.error,
+            message = state.message,
+            action = { action(ProfileViewAction.CleanMessages) }
+        )
 
         Scaffold(
-            snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+            snackbarHost = { AppSnackbarHost(hostState = snackbarHostState, type = snackbarType) }
         ) { paddingValues ->
             Column(
                 modifier = Modifier
@@ -126,41 +115,28 @@ private fun Content(
                     .padding(paddingValues)
                     .padding(Dimens.Medium),
             ) {
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    IconButton(
-                        onClick = { action(ProfileViewAction.Navigate.Back) },
-                        modifier = Modifier.align(Alignment.CenterStart)
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(Res.string.action_back)
-                        )
-                    }
+                CustomTopBar(
+                    onNavBackClick = { action(ProfileViewAction.Navigate.Back) },
+                    onRightIconClick = { action(ProfileViewAction.Navigate.Settings) },
+                    rightIcon = Icons.Filled.Settings,
+                    rightIconDescription = Res.string.profile_settings_action
+                )
 
-                    IconButton(
-                        onClick = { action(ProfileViewAction.Navigate.Settings) },
-                        modifier = Modifier.align(Alignment.CenterEnd)
-                    ) {
-                        Icon(
-                            Icons.Filled.Settings,
-                            stringResource(Res.string.delete_action)
-                        )
-                    }
-                }
                 AnimatedContent(
                     targetState = state.user,
                     transitionSpec = {
-                       if (initialState == null || targetState == null) {
+                        if (initialState == null || targetState == null) {
                             (fadeIn(animationSpec = tween(600)) +
                                     slideInHorizontally { width -> width / 2 })
                                 .togetherWith(
                                     fadeOut(animationSpec = tween(600)) +
                                             slideOutHorizontally { width -> -width / 2 })
                         } else {
-                            fadeIn(animationSpec = tween(300)) togetherWith fadeOut(animationSpec = tween(300))
+                            fadeIn(animationSpec = tween(300)) togetherWith fadeOut(
+                                animationSpec = tween(
+                                    300
+                                )
+                            )
                         }
                     },
                     label = "ProfileTransition"
@@ -172,7 +148,7 @@ private fun Content(
                         )
                     } else {
                         ProfileSection(
-                            user = currentUser, // Passa o objeto seguro
+                            user = currentUser,
                             logout = { action(ProfileViewAction.Logout) }
                         )
                     }
@@ -225,7 +201,7 @@ private fun ProfileSection(user: UserResponse, logout: () -> Unit = {}) {
         Spacer(Modifier.height(Dimens.Medium))
 
         Text(
-            text = user.displayName ?: "Atleta",
+            text = user.displayName ?: stringResource(Res.string.profile_fallback_display_name),
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold
         )
@@ -243,13 +219,13 @@ private fun ProfileSection(user: UserResponse, logout: () -> Unit = {}) {
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ExitToApp,
-                contentDescription = null,
+                contentDescription = stringResource(Res.string.profile_logout),
                 modifier = Modifier.size(Dimens.Medium),
                 tint = MaterialTheme.colorScheme.error
             )
             Spacer(Modifier.width(Dimens.Small))
             Text(
-                text = "Sair da conta",
+                text = stringResource(Res.string.profile_logout),
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.labelLarge
             )
@@ -273,19 +249,19 @@ private fun LoginSection(
         ) {
             Icon(
                 imageVector = Icons.Default.AccountCircle,
-                contentDescription = null,
+                contentDescription = stringResource(Res.string.profile_login_title),
                 modifier = Modifier.padding(Dimens.Medium)
                     .fillMaxSize()
             )
         }
         Spacer(Modifier.height(Dimens.Large))
         Text(
-            text = "Evolua seu Treino",
+            text = stringResource(Res.string.profile_login_title),
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold
         )
         Text(
-            text = "Sincronize seu progresso e pontue seus treinos em qualquer dispositivo.",
+            text = stringResource(Res.string.profile_login_subtitle),
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -305,7 +281,6 @@ private fun ContentPreview() {
         Content(
             state = ProfileViewState(),
             action = {},
-            snackbarHostState = remember { SnackbarHostState() }
         )
     }
 

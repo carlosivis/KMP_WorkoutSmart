@@ -1,7 +1,6 @@
 package dev.carlosivis.workoutsmart.screens.settings
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,35 +12,27 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.BrightnessMedium
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.carlosivis.workoutsmart.Utils.Dimens
-import dev.carlosivis.workoutsmart.Utils.FontSizes
-import dev.carlosivis.workoutsmart.Utils.WorkoutsSmartTheme
 import dev.carlosivis.workoutsmart.composeResources.Res
-import dev.carlosivis.workoutsmart.composeResources.action_back
 import dev.carlosivis.workoutsmart.composeResources.settings_keep_screen_on_description
 import dev.carlosivis.workoutsmart.composeResources.settings_keep_screen_on_label
 import dev.carlosivis.workoutsmart.composeResources.settings_rest_time_seconds
@@ -56,6 +47,11 @@ import dev.carlosivis.workoutsmart.composeResources.settings_vibration_descripti
 import dev.carlosivis.workoutsmart.composeResources.settings_vibration_label
 import dev.carlosivis.workoutsmart.models.SettingsModel
 import dev.carlosivis.workoutsmart.repository.ThemeMode
+import dev.carlosivis.workoutsmart.screens.components.CustomTopBar
+import dev.carlosivis.workoutsmart.utils.AppSnackbarHost
+import dev.carlosivis.workoutsmart.utils.Dimens
+import dev.carlosivis.workoutsmart.utils.WorkoutsSmartTheme
+import dev.carlosivis.workoutsmart.utils.rememberSnackbarHandler
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -65,10 +61,6 @@ fun SettingsScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val action: (SettingsViewAction) -> Unit = viewModel::dispatchAction
 
-    LaunchedEffect(Unit) {
-        action(SettingsViewAction.GetSettings)
-    }
-
     Content(
         state = state,
         action = action
@@ -76,36 +68,30 @@ fun SettingsScreen(
 }
 
 @Composable
-fun Content(
+private fun Content(
     state: SettingsViewState,
     action: (SettingsViewAction) -> Unit
 ) {
-    Scaffold { paddingValues ->
+    val (snackbarHostState, snackbarType) = rememberSnackbarHandler(
+        error = state.error,
+        message = state.message,
+        action = { action(SettingsViewAction.CleanMessages) }
+    )
+
+    Scaffold(
+        snackbarHost = { AppSnackbarHost(hostState = snackbarHostState, type = snackbarType) }
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState())
         ) {
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                IconButton(
-                    onClick = { action(SettingsViewAction.NavigateBack) },
-                    modifier = Modifier.align(Alignment.CenterStart)
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(Res.string.action_back)
-                    )
-                }
-                Text(
-                    text = stringResource(Res.string.settings_screen_title),
-                    fontSize = FontSizes.TitleMedium,
-                    textAlign = TextAlign.Center
-                )
-            }
+
+            CustomTopBar(
+                onNavBackClick = { action(SettingsViewAction.NavigateBack) },
+                title = stringResource(Res.string.settings_screen_title)
+            )
 
             SectionTitle(stringResource(Res.string.settings_section_theme))
             ThemeSection(state, action)
@@ -191,7 +177,12 @@ fun RestTimeSection(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(stringResource(Res.string.settings_rest_time_seconds, state.settings.defaultRestSeconds))
+                Text(
+                    stringResource(
+                        Res.string.settings_rest_time_seconds,
+                        state.settings.defaultRestSeconds
+                    )
+                )
             }
             Spacer(Modifier.size(Dimens.Small))
             Slider(
@@ -224,7 +215,6 @@ fun AdditionalSettingsSection(
                 .fillMaxWidth()
                 .padding(Dimens.Medium)
         ) {
-            // Keep Screen On
             SettingOption(
                 label = stringResource(Res.string.settings_keep_screen_on_label),
                 description = stringResource(Res.string.settings_keep_screen_on_description),
@@ -232,7 +222,6 @@ fun AdditionalSettingsSection(
                 onCheckedChange = { action(SettingsViewAction.UpdateKeepScreenOn(it)) }
             )
             Spacer(Modifier.size(Dimens.Medium))
-            // Vibration
             SettingOption(
                 label = stringResource(Res.string.settings_vibration_label),
                 description = stringResource(Res.string.settings_vibration_description),

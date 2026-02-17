@@ -16,8 +16,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import dev.carlosivis.workoutsmart.Utils.FontSizes
-import dev.carlosivis.workoutsmart.Utils.format
+import dev.carlosivis.workoutsmart.utils.FontSizes
+import dev.carlosivis.workoutsmart.utils.format
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

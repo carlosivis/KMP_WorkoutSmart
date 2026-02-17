@@ -1,20 +1,27 @@
 package dev.carlosivis.workoutsmart.screens.home
 
+import dev.carlosivis.features.workoutlog.WorkoutLogRequest
+import dev.carlosivis.workoutsmart.models.GroupResponse
 import dev.carlosivis.workoutsmart.models.WorkoutModel
 
 sealed class HomeViewAction {
     object GetWorkouts : HomeViewAction()
     object GetHistory : HomeViewAction()
     object GetUserProfile : HomeViewAction()
+    object GetGroups : HomeViewAction()
     data class AttemptDeleteWorkout(val workout: WorkoutModel) : HomeViewAction()
     object ConfirmDeleteWorkout : HomeViewAction()
     object CancelDeleteWorkout : HomeViewAction()
+    object CleanMessages : HomeViewAction()
+    object ShowRegisterWorkoutDialog : HomeViewAction()
+    data class RegisterWorkoutLog(val log: WorkoutLogRequest) : HomeViewAction()
 
     object Navigate {
-        data class Details(val workoutId: Int) : HomeViewAction()
         object CreateWorkout : HomeViewAction()
         data class Workout(val workout: WorkoutModel) : HomeViewAction()
         data class Edit(val workout: WorkoutModel) : HomeViewAction()
         object Profile : HomeViewAction()
+        object Groups : HomeViewAction()
+        data class Ranking(val group: GroupResponse) : HomeViewAction()
     }
 }

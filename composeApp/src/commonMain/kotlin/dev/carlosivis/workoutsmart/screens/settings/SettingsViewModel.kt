@@ -16,6 +16,10 @@ class SettingsViewModel(
     private val _state = MutableStateFlow(SettingsViewState())
     val state = _state.asStateFlow()
 
+    init {
+        getSettings()
+    }
+
     fun dispatchAction(action: SettingsViewAction) {
         when (action) {
             is SettingsViewAction.GetSettings -> getSettings()
@@ -24,6 +28,7 @@ class SettingsViewModel(
             is SettingsViewAction.UpdateDefaultRestTime -> updateDefaultRestTime(action.time)
             is SettingsViewAction.UpdateKeepScreenOn -> updateKeepScreenOn(action.keepScreenOn)
             is SettingsViewAction.UpdateVibrationEnabled -> updateVibrationEnabled(action.vibrationEnabled)
+            is SettingsViewAction.CleanMessages -> cleanMessages()
         }
     }
 
@@ -85,6 +90,10 @@ class SettingsViewModel(
         viewModelScope.launch {
             repository.saveSettings(_state.value.settings)
         }
+    }
+
+    private fun cleanMessages(){
+        _state.update { it.copy(error = null, message = null) }
     }
 
 }

@@ -20,12 +20,16 @@ class ProfileViewModel(
     private val _state = MutableStateFlow(ProfileViewState())
     val state = _state.asStateFlow()
 
+    init {
+        getUser()
+    }
+
     fun dispatchAction(action: ProfileViewAction) {
         when (action) {
             ProfileViewAction.GoogleLogin -> onGoogleLoginClick()
             ProfileViewAction.Navigate.Back -> navigator.back()
             ProfileViewAction.Navigate.Settings -> navigator.toSettings()
-            ProfileViewAction.CleanError -> cleanError()
+            ProfileViewAction.CleanMessages -> cleanMessages()
             ProfileViewAction.Logout -> logout()
             ProfileViewAction.GetUserProfile -> getUser()
         }
@@ -76,7 +80,7 @@ class ProfileViewModel(
         }
     }
 
-    private fun cleanError() {
-        _state.update { it.copy(error = null) }
+    private fun cleanMessages() {
+        _state.update { it.copy(error = null, message = null) }
     }
 }

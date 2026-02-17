@@ -7,19 +7,14 @@ import dev.carlosivis.workoutsmart.screens.activeWorkout.ActiveWorkoutViewAction
 import dev.carlosivis.workoutsmart.screens.activeWorkout.ActiveWorkoutViewModel
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
+import org.koin.core.parameter.parametersOf
 
 class ActiveWorkoutComponent(
     componentContext: ComponentContext,
     val workout: WorkoutModel,
     val onNavigateBack: () -> Unit
 ) : ComponentContext by componentContext, KoinComponent {
-    val viewModel = ActiveWorkoutViewModel(
-        workout = workout,
-        repository = get(),
-        onNavigateBack = onNavigateBack,
-        settingsRepository = get(),
-        vibratorHelper = get()
-    )
+    val viewModel: ActiveWorkoutViewModel = get { parametersOf(workout, onNavigateBack) }
 
     private val backCallback = BackCallback {
         viewModel.dispatchAction(ActiveWorkoutViewAction.AttemptToNavigateBack)

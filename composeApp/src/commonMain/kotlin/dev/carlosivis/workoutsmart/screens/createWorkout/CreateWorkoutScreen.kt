@@ -1,7 +1,6 @@
 package dev.carlosivis.workoutsmart.screens.createWorkout
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,15 +14,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -37,20 +32,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.preat.peekaboo.image.picker.SelectionMode
 import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
 import com.preat.peekaboo.ui.camera.rememberPeekabooCameraState
-import dev.carlosivis.workoutsmart.Utils.Dimens
-import dev.carlosivis.workoutsmart.Utils.FontSizes
-import dev.carlosivis.workoutsmart.Utils.Shapes
-import dev.carlosivis.workoutsmart.Utils.WorkoutsSmartTheme
 import dev.carlosivis.workoutsmart.composeResources.Res
 import dev.carlosivis.workoutsmart.composeResources.action_allow
-import dev.carlosivis.workoutsmart.composeResources.action_back
 import dev.carlosivis.workoutsmart.composeResources.action_cancel
 import dev.carlosivis.workoutsmart.composeResources.action_confirm
 import dev.carlosivis.workoutsmart.composeResources.action_deny
@@ -76,7 +65,13 @@ import dev.carlosivis.workoutsmart.composeResources.workout_title_label
 import dev.carlosivis.workoutsmart.models.ExerciseModel
 import dev.carlosivis.workoutsmart.screens.components.CameraCaptureScreen
 import dev.carlosivis.workoutsmart.screens.components.CustomDialog
+import dev.carlosivis.workoutsmart.screens.components.CustomTopBar
 import dev.carlosivis.workoutsmart.screens.components.PhotoPreviewDialog
+import dev.carlosivis.workoutsmart.utils.AppSnackbarHost
+import dev.carlosivis.workoutsmart.utils.Dimens
+import dev.carlosivis.workoutsmart.utils.Shapes
+import dev.carlosivis.workoutsmart.utils.WorkoutsSmartTheme
+import dev.carlosivis.workoutsmart.utils.rememberSnackbarHandler
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -168,7 +163,15 @@ private fun Content(
         )
     }
 
-    Scaffold(modifier = modifier) { paddingValues ->
+    val (snackbarHostState, snackbarType) = rememberSnackbarHandler(
+        error = state.error,
+        message = state.message,
+        action = { action(CreateWorkoutViewAction.CleanMessages) }
+    )
+    Scaffold(
+        snackbarHost = { AppSnackbarHost(hostState = snackbarHostState, type = snackbarType) },
+        modifier = modifier)
+        { paddingValues ->
 
         Column(
             modifier = modifier
@@ -176,27 +179,11 @@ private fun Content(
                 .padding(paddingValues),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                IconButton(
-                    onClick = { action(CreateWorkoutViewAction.AttemptToNavigateBack) },
-                    modifier = Modifier.align(Alignment.CenterStart)
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(Res.string.action_back)
-                    )
-                }
-                Text(
-                    text = if (state.isEditMode) stringResource(Res.string.edit_workout_screen_title) else stringResource(
-                        Res.string.create_workout_screen_title
-                    ),
-                    fontSize = FontSizes.TitleMedium,
-                    textAlign = TextAlign.Center
-                )
-            }
+            CustomTopBar(
+                onNavBackClick = { action(CreateWorkoutViewAction.AttemptToNavigateBack) },
+                title = if (state.isEditMode) stringResource(Res.string.edit_workout_screen_title)
+                else stringResource(Res.string.create_workout_screen_title),
+            )
 
             TextField(
                 value = state.workout.name,

@@ -56,7 +56,11 @@ class CreateWorkoutViewModel(
             is CreateWorkoutViewAction.RetakeCapturedPhoto -> retakeCapturedPhoto()
             is CreateWorkoutViewAction.OnGalleryImageSelected -> onGalleryImageSelected(action.image)
             is CreateWorkoutViewAction.InitializeEditMode -> initializeEditMode(action.workout)
+            is CreateWorkoutViewAction.CleanMessages -> cleanMessages()
         }
+    }
+    private fun cleanMessages() {
+        _state.update { it.copy(error = null, message = null) }
     }
 
 
@@ -295,5 +299,7 @@ class CreateWorkoutViewModel(
                 currentState.copy(workout = currentState.workout.copy(exercises = mutableExercises))
             }
         }
+
+
     }
 }

@@ -3,13 +3,27 @@
     <string name="app_name">Workout Smart</string>
     <!-- HomeScreen.kt -->
     <string name="delete_workout_title">Deletar Treino</string>
-    <string name="delete_workout_message">Você tem certeza que deseja deletar o treino "%1$s"?</string>
+    <string name="delete_workout_message">Você tem certeza que deseja deletar o treino \"%1$s\"?</string>
     <string name="create_workout_fab">Criar Treino</string>
     <string name="home_screen_title">Workout Smart</string>
     <string name="saved_workouts_section_title">Treinos Salvos</string>
     <string name="workout_history_section_title">Histórico de Treinos</string>
     <string name="delete_action">Deletar</string>
     <string name="edit_action">Editar</string>
+    <string name="home_screen_my_profile">Meu Perfil</string>
+    <string name="home_screen_login">Entrar</string>
+    <string name="home_screen_duration">• Duração: %1$s</string>
+    <string name="home_screen_register_workout">Treino Avulso</string>
+    <string name="log_workout_dialog_title">Registrar treino</string>
+    <string name="log_workout_dialog_description">Descrição (opcional)</string>
+    <string name="log_workout_dialog_duration">Duração (minutos)</string>
+    <string name="log_workout_dialog_save">Salvar</string>
+    <string name="log_workout_dialog_cancel">Cancelar</string>
+    <string name="log_workout_dialog_workout_type">Tipo de treino</string>
+    <string name="history_card_details">%1$s\n%2$s %3$s</string>
+    <string name="fab_expand_menu_description">Expandir menu</string>
+    <string name="fab_collapse_menu_description">Recolher menu</string>
+    <string name="workout_saved_successfully">Workout saved successfully</string>
 
     <!-- ActiveWorkoutScreen.kt -->
     <string name="start_workout_button">Iniciar Treino</string>
@@ -25,10 +39,8 @@
     <string name="finish_workout_uncompleted_exercises_message">Deseja sair sem salvar?</string>
     <string name="finished_workout_tittle">Treino finalizado!</string>
     <string name="finished_workout_message">Bom trabalho! Você concluiu seu treino. Salve seu progresso no histórico.</string>
-    <string name="active_workout_sets">Séries: 
-%1$d</string>
-    <string name="active_workout_reps">Repetições: 
-%1$d</string>
+    <string name="active_workout_sets">Séries: \n%1$d</string>
+    <string name="active_workout_reps">Repetições: \n%1$d</string>
     <string name="active_workout_timer_separator">:</string>
     <string name="active_workout_toggle_menu">Alternar Menu</string>
     <string name="active_workout_finish">Finalizar</string>
@@ -70,6 +82,14 @@
     <string name="camera_button">Câmera</string>
     <string name="gallery_button">Galeria</string>
     <string name="camera_permission_denied_message">A permissão para acessar a câmera foi negada. Por favor, habilite-a nas configurações do aplicativo para continuar.</string>
+    <string name="join_group_dialog_title">Entrar em um Grupo</string>
+    <string name="join_group_dialog_invite_code_label">Código do Convite</string>
+    <string name="join_group_dialog_join_button">Entrar</string>
+    <string name="create_group_dialog_title">Criar Novo Grupo</string>
+    <string name="create_group_dialog_name_label">Nome do Grupo</string>
+    <string name="create_group_dialog_description_label">Descrição (Opcional)</string>
+    <string name="create_group_dialog_create_button">Criar Grupo</string>
+
 
     <!-- Common / Strings.kt -->
     <string name="action_save">Salvar</string>
@@ -91,4 +111,51 @@
     <string name="settings_vibration_label">Vibração</string>
     <string name="settings_vibration_description">Ativar feedback de vibração</string>
 
+    <!-- ProfileScreen.kt -->
+    <string name="profile_fallback_display_name">Atleta</string>
+    <string name="profile_logout">Sair da conta</string>
+    <string name="profile_login_title">Evolua seu Treino</string>
+    <string name="profile_login_subtitle">Sincronize seu progresso e pontue seus treinos em qualquer dispositivo.</string>
+    <string name="profile_settings_action">Configurações</string>
+
+    <!-- RankingCarousel.kt -->
+    <string name="ranking_carousel_title">Seu Ranking</string>
+    <string name="ranking_carousel_empty_title">Nossa... que vazio por aqui 👀</string>
+    <string name="ranking_carousel_empty_subtitle">Que tal entrar em um grupo e subir no ranking?</string>
+    <string name="ranking_login_required_title">Entre para ver seu ranking</string>
+    <string name="ranking_login_required_subtitle">Faça login para acompanhar sua posição, competir e evoluir nos treinos, clique aqui.</string>
+    <!-- GroupsScreen.kt -->
+    <string name="groups_screen_title">Grupos</string>
+    <string name="groups_screen_create_group_button">Criar Grupo</string>
+    <string name="groups_screen_join_group_button">Entrar em Grupo</string>
+    <string name="groups_screen_user_rank">Rank: #%1$d</string>
+
+    <!-- RankingScreen.kt -->
+    <string name="ranking_screen_invite_message">\"Venha participar do grupo %1$s no WorkoutSmart! Código de convite: %2$s\"</string>
+    <string name="ranking_screen_invite_friends">Convidar amigos</string>
+    <string name="ranking_screen_empty_ranking">Nossa, que vazio aqui</string>
+    <string name="ranking_screen_invite_friends_title">Convide seus amigos</string>
+    <string name="ranking_screen_share_code">Compartilhe este código:</string>
+    <string name="ranking_screen_copy">Copiar</string>
+    <string name="ranking_screen_share">Compartilhar</string>
+    <string name="ranking_screen_copy_code_description">Copiar código</string>
+
+    <!-- NetworkWrapper.kt -->
+    <string name="network_error_timeout">Tempo limite excedido. Tente novamente.</string>
+    <string name="network_error_no_internet">Sem conexão com a internet.</string>
+    <string name="network_error_unknown">Erro inesperado. Tente novamente.</string>
+    <string name="network_error_bad_request">Requisição inválida.</string>
+    <string name="network_error_unauthorized">Sessão expirada. Faça login novamente.</string>
+    <string name="network_error_forbidden">Você não tem permissão para realizar esta ação.</string>
+    <string name="network_error_not_found">Conteúdo não encontrado.</string>
+    <string name="network_error_server">Erro interno no servidor.</string>
+    <string name="network_error_unknown_code">Erro inesperado (%1$d).</string>
+
+    <!-- WorkoutLogModels.kt -->
+    <string name="workout_type_gym">Academia</string>
+    <string name="workout_type_running">Corrida</string>
+    <string name="workout_type_cycling">Ciclismo</string>
+    <string name="workout_type_sports">Esporte</string>
+    <string name="workout_type_crossfit">Crossfit</string>
+    <string name="workout_type_other">Outro</string>
 </resources>

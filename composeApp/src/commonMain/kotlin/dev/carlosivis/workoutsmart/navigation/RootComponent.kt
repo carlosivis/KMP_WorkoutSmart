@@ -6,9 +6,12 @@ import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
+import dev.carlosivis.workoutsmart.models.GroupResponse
 import dev.carlosivis.workoutsmart.models.WorkoutModel
+import dev.carlosivis.workoutsmart.navigation.navigator.GroupsNavigator
 import dev.carlosivis.workoutsmart.navigation.navigator.HomeNavigator
 import dev.carlosivis.workoutsmart.navigation.navigator.ProfileNavigator
+import dev.carlosivis.workoutsmart.navigation.navigator.RankingNavigator
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
 
@@ -37,13 +40,19 @@ class RootComponent(
                     componentContext = context,
                     navigator = HomeNavigator(
                         toCreateWorkout = { navigation.push(Configuration.CreateWorkout) },
-                        toActiveWorkout = { workout -> navigation.push(
-                            Configuration.ActiveWorkout(workout)
-                            ) },
-                        toEditWorkout = { workout -> navigation.push(
+                        toActiveWorkout = { workout ->
+                            navigation.push(
+                                Configuration.ActiveWorkout(workout)
+                            )
+                        },
+                        toEditWorkout = { workout ->
+                            navigation.push(
                                 Configuration.EditWorkout(workout)
-                            ) },
-                        toProfile = { navigation.push(Configuration.Profile) }
+                            )
+                        },
+                        toProfile = { navigation.push(Configuration.Profile) },
+                        toGroups = { groups -> navigation.push(Configuration.Groups(groups)) },
+                        toRanking = { group -> navigation.push(Configuration.Ranking(group)) }
                     )
                 )
             )
@@ -78,7 +87,7 @@ class RootComponent(
                 )
             )
 
-            is Configuration.Profile -> Child.Login(
+            is Configuration.Profile -> Child.Profile(
                 ProfileComponent(
                     componentContext = context,
                     navigator = ProfileNavigator(
@@ -87,8 +96,30 @@ class RootComponent(
                     )
                 )
             )
+
+            is Configuration.Groups -> Child.Groups(
+                GroupsComponent(
+                    componentContext = context,
+                    groups = config.groups,
+                    navigator = GroupsNavigator(
+                        toRanking = { group -> navigation.push(Configuration.Ranking(group)) },
+                        back = { navigation.pop() }
+                    )
+                )
+            )
+
+            is Configuration.Ranking -> Child.Ranking(
+                RankingComponent(
+                    componentContext = context,
+                    group = config.group,
+                    navigator = RankingNavigator(
+                        back = { navigation.pop() }
+                    )
+                )
+            )
         }
     }
+
 
     sealed class Child {
         data class Home(val component: HomeComponent) : Child()
@@ -96,7 +127,9 @@ class RootComponent(
         data class EditWorkout(val component: CreateWorkoutComponent) : Child()
         data class ActiveWorkout(val component: ActiveWorkoutComponent) : Child()
         data class Settings(val component: SettingsComponent) : Child()
-        data class Login(val component: ProfileComponent) : Child()
+        data class Profile(val component: ProfileComponent) : Child()
+        data class Groups(val component: GroupsComponent) : Child()
+        data class Ranking(val component: RankingComponent) : Child()
     }
 }
 
@@ -119,4 +152,10 @@ sealed class Configuration {
 
     @Serializable
     data object Profile : Configuration()
+
+    @Serializable
+    data class Groups(val groups: List<GroupResponse>?) : Configuration()
+
+    @Serializable
+    data class Ranking(val group: GroupResponse) : Configuration()
 }

@@ -4,6 +4,7 @@ import dev.carlosivis.workoutsmart.models.ExerciseModel
 
 sealed class CreateWorkoutViewAction {
     object GetExercises : CreateWorkoutViewAction()
+    object CleanMessages : CreateWorkoutViewAction()
     data class AddName(val name: String) : CreateWorkoutViewAction()
     data class AddDescription(val description: String) : CreateWorkoutViewAction()
     object StartAddingExercise : CreateWorkoutViewAction()
