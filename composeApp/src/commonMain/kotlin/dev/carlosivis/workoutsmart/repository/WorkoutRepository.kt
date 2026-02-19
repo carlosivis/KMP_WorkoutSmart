@@ -2,11 +2,13 @@ package dev.carlosivis.workoutsmart.repository
 
 import dev.carlosivis.workoutsmart.models.HistoryModel
 import dev.carlosivis.workoutsmart.models.WorkoutModel
+import dev.carlosivis.workoutsmart.models.WorkoutSummaryModel
 import kotlinx.coroutines.flow.Flow
 
 interface WorkoutRepository {
-    fun getAllWorkouts(): Flow<List<WorkoutModel>>
+    fun getAllWorkouts(): Flow<List<WorkoutSummaryModel>>
     fun getAllHistory(): Flow<List<HistoryModel>>
+    fun getWorkoutById(id: Long): Flow<WorkoutModel>
     suspend fun insertWorkout(workout: WorkoutModel)
     suspend fun updateWorkout(workout: WorkoutModel)
     suspend fun deleteWorkout(workoutId: Long)

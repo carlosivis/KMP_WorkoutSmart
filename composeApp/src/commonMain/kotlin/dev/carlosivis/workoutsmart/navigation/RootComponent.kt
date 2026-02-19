@@ -7,7 +7,6 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
 import dev.carlosivis.workoutsmart.models.GroupResponse
-import dev.carlosivis.workoutsmart.models.WorkoutModel
 import dev.carlosivis.workoutsmart.navigation.navigator.GroupsNavigator
 import dev.carlosivis.workoutsmart.navigation.navigator.HomeNavigator
 import dev.carlosivis.workoutsmart.navigation.navigator.ProfileNavigator
@@ -45,9 +44,9 @@ class RootComponent(
                                 Configuration.ActiveWorkout(workout)
                             )
                         },
-                        toEditWorkout = { workout ->
+                        toEditWorkout = { id ->
                             navigation.push(
-                                Configuration.EditWorkout(workout)
+                                Configuration.EditWorkout(id)
                             )
                         },
                         toProfile = { navigation.push(Configuration.Profile) },
@@ -68,14 +67,14 @@ class RootComponent(
                 CreateWorkoutComponent(
                     componentContext = context,
                     onNavigateBack = { navigation.pop() },
-                    workoutToEdit = config.workout
+                    workoutIdToEdit = config.id
                 )
             )
 
             is Configuration.ActiveWorkout -> Child.ActiveWorkout(
                 ActiveWorkoutComponent(
                     componentContext = context,
-                    workout = config.workout,
+                    workoutId = config.id,
                     onNavigateBack = { navigation.pop() }
                 )
             )
@@ -142,10 +141,10 @@ sealed class Configuration {
     data object CreateWorkout : Configuration()
 
     @Serializable
-    data class EditWorkout(val workout: WorkoutModel) : Configuration()
+    data class EditWorkout(val id: Long) : Configuration()
 
     @Serializable
-    data class ActiveWorkout(val workout: WorkoutModel) : Configuration()
+    data class ActiveWorkout(val id: Long) : Configuration()
 
     @Serializable
     data object Settings : Configuration()

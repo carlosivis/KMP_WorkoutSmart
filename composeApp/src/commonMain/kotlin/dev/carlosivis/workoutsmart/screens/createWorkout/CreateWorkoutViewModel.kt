@@ -13,17 +13,12 @@ import kotlinx.coroutines.launch
 class CreateWorkoutViewModel(
     private val repository: WorkoutRepository,
     private val onNavigateBack: () -> Unit,
-    private val workoutToEdit: WorkoutModel? = null
+    private val workoutIdToEdit: Long? = null
 ): ViewModel() {
 
     private val _state = MutableStateFlow(CreateWorkoutViewState())
     val state = _state.asStateFlow()
 
-    init {
-        if (workoutToEdit != null) {
-            dispatchAction(CreateWorkoutViewAction.InitializeEditMode(workoutToEdit))
-        }
-    }
 
     fun dispatchAction(action: CreateWorkoutViewAction) {
         when (action) {
@@ -55,7 +50,7 @@ class CreateWorkoutViewModel(
             is CreateWorkoutViewAction.ConfirmCapturedPhoto -> confirmCapturedPhoto()
             is CreateWorkoutViewAction.RetakeCapturedPhoto -> retakeCapturedPhoto()
             is CreateWorkoutViewAction.OnGalleryImageSelected -> onGalleryImageSelected(action.image)
-            is CreateWorkoutViewAction.InitializeEditMode -> initializeEditMode(action.workout)
+            is CreateWorkoutViewAction.InitializeEditMode -> initializeEditMode()
             is CreateWorkoutViewAction.CleanMessages -> cleanMessages()
         }
     }
@@ -80,12 +75,24 @@ class CreateWorkoutViewModel(
         }
     }
 
-    private fun initializeEditMode(workout: WorkoutModel) {
-        _state.update { it.copy(
-            isEditMode = true,
-            workout = workout,
-            originalWorkout = workout
-        ) }
+    private fun initializeEditMode() {
+        viewModelScope.launch {
+            setLoading(true)
+            try {
+                val id = workoutIdToEdit ?: return@launch
+
+                repository.getWorkoutById(id).collect { workout ->
+                    _state.update { it.copy(
+                        isEditMode = true,
+                        workout = workout,
+                        originalWorkout = workout
+                    ) }
+                }
+
+            }finally {
+                setLoading(false)
+            }
+        }
     }
 
     private fun setLoading(isLoading: Boolean) {

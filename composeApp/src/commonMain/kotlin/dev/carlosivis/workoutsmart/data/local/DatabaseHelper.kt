@@ -1,23 +1,27 @@
-package dev.carlosivis.workoutsmart.database
+package dev.carlosivis.workoutsmart.data.local
 
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
+import app.cash.sqldelight.coroutines.mapToOneOrNull
 import app.cash.sqldelight.db.SqlDriver
 import dev.carlosivis.workoutsmart.core.transactionWithContext
+import dev.carlosivis.workoutsmart.database.WorkoutSmartDatabase
 import dev.carlosivis.workoutsmart.models.ExerciseModel
 import dev.carlosivis.workoutsmart.models.HistoryModel
 import dev.carlosivis.workoutsmart.models.WorkoutModel
+import dev.carlosivis.workoutsmart.models.WorkoutSummaryModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 
 class DatabaseHelper(
     sqlDriver: SqlDriver,
     private val backgroundDispatcher: CoroutineDispatcher
 ) {
-    private val dbRef: WorkoutSmartDatabase = WorkoutSmartDatabase(sqlDriver)
+    private val dbRef: WorkoutSmartDatabase = WorkoutSmartDatabase.Companion(sqlDriver)
 
     suspend fun insertWorkout(workout: WorkoutModel) {
         dbRef.transactionWithContext(backgroundDispatcher) {
@@ -43,7 +47,6 @@ class DatabaseHelper(
 
     suspend fun updateWorkout(workout: WorkoutModel) {
         dbRef.transactionWithContext(backgroundDispatcher) {
-            // Atualizar informações do treino
             dbRef.workoutSmartDatabaseQueries.updateWorkout(
                 name = workout.name,
                 description = workout.description.ifEmpty { "Sem descrição" },
@@ -71,21 +74,38 @@ class DatabaseHelper(
         }
     }
 
-    fun getAllWorkouts(): Flow<List<WorkoutModel>> = dbRef.workoutSmartDatabaseQueries
+    fun getAllWorkouts(): Flow<List<WorkoutSummaryModel>> = dbRef.workoutSmartDatabaseQueries
         .selectAllWorkouts()
         .asFlow()
         .mapToList(Dispatchers.Default)
         .map { workouts ->
             workouts.map { workout ->
-                WorkoutModel(
+                WorkoutSummaryModel(
                     id = workout.id,
                     name = workout.name,
                     description = workout.description,
-                    exercises = getExercisesForWorkoutSync(workout.id)
                 )
             }
         }
         .flowOn(backgroundDispatcher)
+
+    fun getWorkoutById(id: Long): Flow<WorkoutModel> =
+        dbRef.workoutSmartDatabaseQueries
+            .selectWorkoutById(id)
+            .asFlow()
+            .mapToOneOrNull(Dispatchers.Default)
+            .mapNotNull { workout ->
+                workout?.let {
+                    WorkoutModel(
+                        id = workout.id,
+                        name = workout.name,
+                        description = workout.description,
+                        exercises = getExercisesForWorkoutSync(workout.id)
+                    )
+                }
+            }
+            .flowOn(backgroundDispatcher)
+
 
     private fun getExercisesForWorkoutSync(workoutId: Long): List<ExerciseModel> =
         dbRef.workoutSmartDatabaseQueries

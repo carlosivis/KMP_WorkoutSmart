@@ -8,7 +8,6 @@ import dev.carlosivis.workoutsmart.composeResources.workout_saved_successfully
 import dev.carlosivis.workoutsmart.domain.GetGroupsUseCase
 import dev.carlosivis.workoutsmart.domain.GetUserUseCase
 import dev.carlosivis.workoutsmart.domain.RegisterWorkoutLogUseCase
-import dev.carlosivis.workoutsmart.models.WorkoutModel
 import dev.carlosivis.workoutsmart.navigation.navigator.HomeNavigator
 import dev.carlosivis.workoutsmart.repository.WorkoutRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,10 +38,10 @@ class HomeViewModel(
             is HomeViewAction.GetWorkouts -> getWorkouts()
             is HomeViewAction.GetHistory -> getHistory()
             is HomeViewAction.Navigate.CreateWorkout -> navigator.toCreateWorkout()
-            is HomeViewAction.Navigate.Workout -> navigator.toActiveWorkout(action.workout)
-            is HomeViewAction.Navigate.Edit -> navigator.toEditWorkout(action.workout)
+            is HomeViewAction.Navigate.Workout -> navigator.toActiveWorkout(action.id)
+            is HomeViewAction.Navigate.Edit -> navigator.toEditWorkout(action.id)
             is HomeViewAction.Navigate.Profile -> navigator.toProfile()
-            is HomeViewAction.AttemptDeleteWorkout -> attemptDeleteWorkout(action.workout)
+            is HomeViewAction.AttemptDeleteWorkout -> attemptDeleteWorkout(action.id,action.name)
             is HomeViewAction.ConfirmDeleteWorkout -> deleteWorkout()
             is HomeViewAction.CancelDeleteWorkout -> cancelDeleteWorkout()
             is HomeViewAction.GetUserProfile -> getUser()
@@ -87,20 +86,20 @@ class HomeViewModel(
         }
     }
 
-    private fun attemptDeleteWorkout(workout: WorkoutModel) {
-        _state.update { it.copy(workoutToDelete = workout) }
+    private fun attemptDeleteWorkout(id: Long, name: String) {
+        _state.update { it.copy(workoutIdToDelete = id, workoutToDelete = name) }
     }
 
     private fun cancelDeleteWorkout() {
-        _state.update { it.copy(workoutToDelete = null) }
+        _state.update { it.copy(workoutIdToDelete = null, workoutToDelete = null) }
     }
 
     private fun deleteWorkout() {
-        state.value.workoutToDelete?.let { workout ->
+        _state.value.workoutIdToDelete?.let { id ->
             viewModelScope.launch {
                 setLoading(true)
                 try {
-                    repository.deleteWorkout(workout.id)
+                    repository.deleteWorkout(id)
                 } finally {
                     setLoading(false)
                     cancelDeleteWorkout()
