@@ -1,9 +1,10 @@
-package dev.carlosivis.workoutsmart.repository
+package dev.carlosivis.workoutsmart.data.repository
 
 import dev.carlosivis.workoutsmart.data.local.datasource.UserLocalDataSource
 import dev.carlosivis.workoutsmart.data.remote.datasource.AuthRemoteDataSource
+import dev.carlosivis.workoutsmart.domain.repository.AuthRepository
 import dev.carlosivis.workoutsmart.models.UserResponse
-import dev.carlosivis.workoutsmart.plataform.GoogleAuthProvider
+import dev.carlosivis.workoutsmart.platform.GoogleAuthProvider
 import dev.gitlive.firebase.auth.FirebaseAuth
 
 class AuthRepositoryImpl(

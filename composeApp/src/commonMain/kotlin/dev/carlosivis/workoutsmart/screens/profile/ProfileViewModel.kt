@@ -2,9 +2,9 @@ package dev.carlosivis.workoutsmart.screens.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.carlosivis.workoutsmart.domain.GetUserUseCase
-import dev.carlosivis.workoutsmart.domain.LoginGoogleUseCase
-import dev.carlosivis.workoutsmart.domain.LogoutUseCase
+import dev.carlosivis.workoutsmart.domain.usecase.GetUserUseCase
+import dev.carlosivis.workoutsmart.domain.usecase.LoginGoogleUseCase
+import dev.carlosivis.workoutsmart.domain.usecase.LogoutUseCase
 import dev.carlosivis.workoutsmart.navigation.navigator.ProfileNavigator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

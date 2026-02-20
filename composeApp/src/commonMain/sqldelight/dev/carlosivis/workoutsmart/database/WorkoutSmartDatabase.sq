@@ -38,6 +38,9 @@ UPDATE Workout
 SET name = ?, description = ?
 WHERE id = ?;
 
+selectWorkoutById:
+SELECT * FROM Workout WHERE id = ?;
+
 -- Exercise queries
 selectExercisesByWorkoutId:
 SELECT * FROM Exercise WHERE workoutId = ?;

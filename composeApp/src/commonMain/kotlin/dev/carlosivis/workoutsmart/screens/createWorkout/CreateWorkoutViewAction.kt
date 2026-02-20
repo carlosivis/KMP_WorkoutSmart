@@ -32,5 +32,5 @@ sealed class CreateWorkoutViewAction {
     object ConfirmCapturedPhoto : CreateWorkoutViewAction()
     object RetakeCapturedPhoto : CreateWorkoutViewAction()
     data class OnGalleryImageSelected(val image: ByteArray) : CreateWorkoutViewAction()
-    data class InitializeEditMode(val workout: dev.carlosivis.workoutsmart.models.WorkoutModel) : CreateWorkoutViewAction()
+    object InitializeEditMode : CreateWorkoutViewAction()
 }

@@ -2,8 +2,8 @@ package dev.carlosivis.workoutsmart.screens.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.carlosivis.workoutsmart.repository.SettingsRepository
-import dev.carlosivis.workoutsmart.repository.ThemeMode
+import dev.carlosivis.workoutsmart.domain.repository.SettingsRepository
+import dev.carlosivis.workoutsmart.utils.ThemeMode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

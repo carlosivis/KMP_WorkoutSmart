@@ -4,10 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.carlosivis.features.workoutlog.WorkoutLogRequest
 import dev.carlosivis.features.workoutlog.WorkoutType
-import dev.carlosivis.workoutsmart.domain.RegisterWorkoutLogUseCase
-import dev.carlosivis.workoutsmart.models.WorkoutModel
-import dev.carlosivis.workoutsmart.repository.SettingsRepository
-import dev.carlosivis.workoutsmart.repository.WorkoutRepository
+import dev.carlosivis.workoutsmart.domain.usecase.RegisterWorkoutLogUseCase
+import dev.carlosivis.workoutsmart.domain.repository.SettingsRepository
+import dev.carlosivis.workoutsmart.domain.repository.WorkoutRepository
 import dev.carlosivis.workoutsmart.screens.components.expect.VibratorHelper
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -18,7 +17,7 @@ import kotlinx.coroutines.launch
 import kotlin.time.ExperimentalTime
 
 class ActiveWorkoutViewModel(
-    val workout: WorkoutModel,
+    val workoutId: Long,
     private val repository: WorkoutRepository,
     private val settingsRepository: SettingsRepository,
     private val registerWorkoutLogUseCase: RegisterWorkoutLogUseCase,
@@ -29,6 +28,7 @@ class ActiveWorkoutViewModel(
     val state = _state.asStateFlow()
     private var timerJob: Job? = null
     private var workoutTimerJob: Job? = null
+
 
     fun dispatchAction(action: ActiveWorkoutViewAction) {
         when (action) {
@@ -66,11 +66,21 @@ class ActiveWorkoutViewModel(
         _state.update { it.copy(restTime = _state.value.settings.defaultRestSeconds) }
     }
     private fun getWorkout() {
-        _state.update {
-            it.copy(
-                workout = workout,
-                remainingSeries = workout.exercises.associate { exercise -> exercise.name to exercise.series }
-            )
+        viewModelScope.launch {
+            setLoading(true)
+            try {
+                repository.getWorkoutById(workoutId)
+                    .collect { workout ->
+                        _state.update {
+                            it.copy(
+                                workout = workout,
+                                remainingSeries = workout.exercises.associate { exercise -> exercise.name to exercise.series }
+                            )
+                        }
+                    }
+            }finally {
+                setLoading(false)
+            }
         }
     }
 
@@ -147,10 +157,10 @@ class ActiveWorkoutViewModel(
             setLoading(true)
             val timestamp: Long = kotlin.time.Clock.System.now().epochSeconds
             val duration: Long = _state.value.elapsedTime
-            repository.insertHistory(workout.name, timestamp, duration)
+            repository.insertHistory(_state.value.workout.name, timestamp, duration)
             registerWorkoutLogUseCase(WorkoutLogRequest(
                 type = WorkoutType.GYM,
-                description = workout.name,
+                description = _state.value.workout.name,
                 durationInSeconds = duration
             )).onSuccess {
                 _state.update { it.copy(message = "Workout saved successfully") }

@@ -84,8 +84,8 @@ import dev.carlosivis.workoutsmart.composeResources.ranking_carousel_title
 import dev.carlosivis.workoutsmart.composeResources.saved_workouts_section_title
 import dev.carlosivis.workoutsmart.composeResources.workout_history_section_title
 import dev.carlosivis.workoutsmart.models.HistoryModel
-import dev.carlosivis.workoutsmart.models.WorkoutModel
-import dev.carlosivis.workoutsmart.repository.ThemeMode
+import dev.carlosivis.workoutsmart.models.WorkoutSummaryModel
+import dev.carlosivis.workoutsmart.utils.ThemeMode
 import dev.carlosivis.workoutsmart.screens.components.CustomDialog
 import dev.carlosivis.workoutsmart.screens.components.CustomTopBar
 import dev.carlosivis.workoutsmart.screens.components.RankingCarousel
@@ -120,10 +120,10 @@ private fun Content(
     state: HomeViewState,
     action: (HomeViewAction) -> Unit
 ) {
-    if (state.workoutToDelete != null) {
+    if (state.workoutIdToDelete != null && state.workoutToDelete != null) {
         CustomDialog(
             title = stringResource(Res.string.delete_workout_title),
-            message = stringResource(Res.string.delete_workout_message, state.workoutToDelete.name),
+            message = stringResource(Res.string.delete_workout_message, state.workoutToDelete),
             onConfirm = { action(HomeViewAction.ConfirmDeleteWorkout) },
             onCancel = { action(HomeViewAction.CancelDeleteWorkout) }
         )
@@ -240,9 +240,9 @@ private fun Content(
                             .padding(vertical = Dimens.Small)
                             .placeholder(state.isLoading, PlaceholderHighlight.shimmer()),
                         workout = workout,
-                        navigate = { action(HomeViewAction.Navigate.Workout(workout)) },
-                        delete = { action(HomeViewAction.AttemptDeleteWorkout(workout)) },
-                        edit = { action(HomeViewAction.Navigate.Edit(workout)) }
+                        navigate = { action(HomeViewAction.Navigate.Workout(workout.id)) },
+                        delete = { action(HomeViewAction.AttemptDeleteWorkout(workout.id, workout.name)) },
+                        edit = { action(HomeViewAction.Navigate.Edit(workout.id)) }
                     )
                 }
             }
@@ -275,7 +275,7 @@ private fun Content(
 @Composable
 private fun WorkoutCard(
     modifier: Modifier = Modifier,
-    workout: WorkoutModel, navigate: () -> Unit = {},
+    workout: WorkoutSummaryModel, navigate: () -> Unit = {},
     delete: () -> Unit = {}, edit: () -> Unit = {}
 ) {
     Card(
@@ -542,17 +542,15 @@ private fun ContentPreview() {
         Content(
             state = HomeViewState(
                 workouts = listOf(
-                    WorkoutModel(
+                    WorkoutSummaryModel(
                         id = 1,
                         name = "Workout A",
                         description = "Description A",
-                        exercises = emptyList()
                     ),
-                    WorkoutModel(
+                    WorkoutSummaryModel(
                         id = 2,
                         name = "Workout B",
                         description = "Description B",
-                        exercises = emptyList()
                     )
                 ),
                 history = listOf(

@@ -3,8 +3,8 @@ package dev.carlosivis.workoutsmart.di
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import dev.carlosivis.workoutsmart.database.WorkoutSmartDatabase
-import dev.carlosivis.workoutsmart.plataform.GoogleAuthProvider
-import dev.carlosivis.workoutsmart.plataform.GoogleAuthProviderAndroid
+import dev.carlosivis.workoutsmart.platform.GoogleAuthProvider
+import dev.carlosivis.workoutsmart.platform.GoogleAuthProviderAndroid
 import dev.carlosivis.workoutsmart.screens.components.expect.AndroidVibratorHelper
 import dev.carlosivis.workoutsmart.screens.components.expect.VibratorHelper
 import org.koin.android.ext.koin.androidContext

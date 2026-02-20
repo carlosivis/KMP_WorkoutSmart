@@ -1,4 +1,4 @@
-package dev.carlosivis.workoutsmart.plataform
+package dev.carlosivis.workoutsmart.platform
 
 import cocoapods.GoogleSignIn.GIDSignIn
 import dev.gitlive.firebase.auth.AuthCredential
@@ -8,7 +8,7 @@ import platform.UIKit.UIApplication
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-class GoogleAuthProviderIos : dev.carlosivis.workoutsmart.plataform.GoogleAuthProvider {
+class GoogleAuthProviderIos : dev.carlosivis.workoutsmart.platform.GoogleAuthProvider {
 
     @OptIn(ExperimentalForeignApi::class)
     override suspend fun getCredential(): AuthCredential? {

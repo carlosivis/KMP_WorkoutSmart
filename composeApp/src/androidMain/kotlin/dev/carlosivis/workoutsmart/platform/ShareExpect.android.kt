@@ -1,4 +1,4 @@
-package dev.carlosivis.workoutsmart.plataform
+package dev.carlosivis.workoutsmart.platform
 
 import android.content.ClipData
 import android.content.Context

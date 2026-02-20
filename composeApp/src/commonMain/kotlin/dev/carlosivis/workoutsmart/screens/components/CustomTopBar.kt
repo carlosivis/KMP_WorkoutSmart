@@ -20,7 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import dev.carlosivis.workoutsmart.composeResources.Res
 import dev.carlosivis.workoutsmart.composeResources.action_back
 import dev.carlosivis.workoutsmart.composeResources.home_screen_title
-import dev.carlosivis.workoutsmart.repository.ThemeMode
+import dev.carlosivis.workoutsmart.utils.ThemeMode
 import dev.carlosivis.workoutsmart.utils.FontSizes
 import dev.carlosivis.workoutsmart.utils.WorkoutsSmartTheme
 import org.jetbrains.compose.resources.StringResource
