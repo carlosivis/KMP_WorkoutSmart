@@ -1,4 +1,4 @@
-package dev.carlosivis.workoutsmart.plataform
+package dev.carlosivis.workoutsmart.platform
 
 import android.content.Context
 import androidx.credentials.CredentialManager
@@ -13,7 +13,7 @@ import dev.gitlive.firebase.auth.GoogleAuthProvider
 
 class GoogleAuthProviderAndroid(
     private val context: Context
-) : dev.carlosivis.workoutsmart.plataform.GoogleAuthProvider {
+) : dev.carlosivis.workoutsmart.platform.GoogleAuthProvider {
 
     override suspend fun getCredential(): AuthCredential? {
         try {

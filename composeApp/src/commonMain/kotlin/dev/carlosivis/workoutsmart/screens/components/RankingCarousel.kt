@@ -49,7 +49,7 @@ import dev.carlosivis.workoutsmart.composeResources.ranking_carousel_empty_title
 import dev.carlosivis.workoutsmart.composeResources.ranking_login_required_subtitle
 import dev.carlosivis.workoutsmart.composeResources.ranking_login_required_title
 import dev.carlosivis.workoutsmart.models.GroupResponse
-import dev.carlosivis.workoutsmart.repository.ThemeMode
+import dev.carlosivis.workoutsmart.utils.ThemeMode
 import dev.carlosivis.workoutsmart.utils.BronzeGradient
 import dev.carlosivis.workoutsmart.utils.DefaultRankColor
 import dev.carlosivis.workoutsmart.utils.Dimens

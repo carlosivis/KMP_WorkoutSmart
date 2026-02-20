@@ -1,7 +1,7 @@
-package dev.carlosivis.workoutsmart.domain
+package dev.carlosivis.workoutsmart.domain.usecase
 
 import dev.carlosivis.workoutsmart.core.UseCase
-import dev.carlosivis.workoutsmart.repository.AuthRepository
+import dev.carlosivis.workoutsmart.domain.repository.AuthRepository
 import kotlinx.coroutines.CoroutineDispatcher
 
 class LogoutUseCase(

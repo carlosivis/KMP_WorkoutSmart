@@ -1,6 +1,7 @@
-package dev.carlosivis.workoutsmart.repository
+package dev.carlosivis.workoutsmart.data.repository
 
 import dev.carlosivis.workoutsmart.data.local.DatabaseHelper
+import dev.carlosivis.workoutsmart.domain.repository.WorkoutRepository
 import dev.carlosivis.workoutsmart.models.HistoryModel
 import dev.carlosivis.workoutsmart.models.WorkoutModel
 import dev.carlosivis.workoutsmart.models.WorkoutSummaryModel

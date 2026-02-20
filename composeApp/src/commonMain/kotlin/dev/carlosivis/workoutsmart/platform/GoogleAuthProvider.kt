@@ -1,4 +1,4 @@
-package dev.carlosivis.workoutsmart.plataform
+package dev.carlosivis.workoutsmart.platform
 
 import dev.gitlive.firebase.auth.AuthCredential
 

@@ -46,7 +46,7 @@ import dev.carlosivis.workoutsmart.composeResources.settings_theme_option_system
 import dev.carlosivis.workoutsmart.composeResources.settings_vibration_description
 import dev.carlosivis.workoutsmart.composeResources.settings_vibration_label
 import dev.carlosivis.workoutsmart.models.SettingsModel
-import dev.carlosivis.workoutsmart.repository.ThemeMode
+import dev.carlosivis.workoutsmart.utils.ThemeMode
 import dev.carlosivis.workoutsmart.screens.components.CustomTopBar
 import dev.carlosivis.workoutsmart.utils.AppSnackbarHost
 import dev.carlosivis.workoutsmart.utils.Dimens

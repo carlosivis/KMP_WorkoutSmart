@@ -1,7 +1,8 @@
-package dev.carlosivis.workoutsmart.repository
+package dev.carlosivis.workoutsmart.data.repository
 
 import dev.carlosivis.features.workoutlog.WorkoutLogRequest
 import dev.carlosivis.workoutsmart.data.remote.datasource.SocialRemoteDataSource
+import dev.carlosivis.workoutsmart.domain.repository.SocialRepository
 import dev.carlosivis.workoutsmart.models.CreateGroupRequest
 import dev.carlosivis.workoutsmart.models.GroupResponse
 import dev.carlosivis.workoutsmart.models.JoinGroupRequest

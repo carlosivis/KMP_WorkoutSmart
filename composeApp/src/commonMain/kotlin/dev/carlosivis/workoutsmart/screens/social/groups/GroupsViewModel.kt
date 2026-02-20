@@ -2,9 +2,9 @@ package dev.carlosivis.workoutsmart.screens.social.groups
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.carlosivis.workoutsmart.domain.CreateGroupUseCase
-import dev.carlosivis.workoutsmart.domain.GetGroupsUseCase
-import dev.carlosivis.workoutsmart.domain.JoinGroupUseCase
+import dev.carlosivis.workoutsmart.domain.usecase.CreateGroupUseCase
+import dev.carlosivis.workoutsmart.domain.usecase.GetGroupsUseCase
+import dev.carlosivis.workoutsmart.domain.usecase.JoinGroupUseCase
 import dev.carlosivis.workoutsmart.models.CreateGroupRequest
 import dev.carlosivis.workoutsmart.models.GroupResponse
 import dev.carlosivis.workoutsmart.models.JoinGroupRequest

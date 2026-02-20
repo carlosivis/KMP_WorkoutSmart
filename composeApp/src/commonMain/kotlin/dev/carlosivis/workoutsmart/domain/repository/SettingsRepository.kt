@@ -1,4 +1,4 @@
-package dev.carlosivis.workoutsmart.repository
+package dev.carlosivis.workoutsmart.domain.repository
 
 import dev.carlosivis.workoutsmart.models.SettingsModel
 import kotlinx.coroutines.flow.Flow
@@ -8,8 +8,3 @@ interface SettingsRepository {
     suspend fun saveSettings(settings: SettingsModel)
 }
 
-enum class ThemeMode{
-    LIGHT,
-    DARK,
-    SYSTEM
-}

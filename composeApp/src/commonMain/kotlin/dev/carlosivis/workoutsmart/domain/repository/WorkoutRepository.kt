@@ -1,4 +1,4 @@
-package dev.carlosivis.workoutsmart.repository
+package dev.carlosivis.workoutsmart.domain.repository
 
 import dev.carlosivis.workoutsmart.models.HistoryModel
 import dev.carlosivis.workoutsmart.models.WorkoutModel

@@ -65,9 +65,9 @@ import dev.carlosivis.workoutsmart.composeResources.ranking_screen_share
 import dev.carlosivis.workoutsmart.composeResources.ranking_screen_share_code
 import dev.carlosivis.workoutsmart.models.GroupResponse
 import dev.carlosivis.workoutsmart.models.RankingMember
-import dev.carlosivis.workoutsmart.plataform.copyText
-import dev.carlosivis.workoutsmart.plataform.shareText
-import dev.carlosivis.workoutsmart.repository.ThemeMode
+import dev.carlosivis.workoutsmart.platform.copyText
+import dev.carlosivis.workoutsmart.platform.shareText
+import dev.carlosivis.workoutsmart.utils.ThemeMode
 import dev.carlosivis.workoutsmart.screens.components.CustomTopBar
 import dev.carlosivis.workoutsmart.screens.components.loadings.PlaceholderHighlight
 import dev.carlosivis.workoutsmart.screens.components.loadings.placeholder

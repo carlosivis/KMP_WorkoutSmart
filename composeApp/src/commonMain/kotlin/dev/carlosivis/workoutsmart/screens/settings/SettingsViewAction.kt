@@ -1,6 +1,6 @@
 package dev.carlosivis.workoutsmart.screens.settings
 
-import dev.carlosivis.workoutsmart.repository.ThemeMode
+import dev.carlosivis.workoutsmart.utils.ThemeMode
 
 sealed class SettingsViewAction {
     object GetSettings : SettingsViewAction()

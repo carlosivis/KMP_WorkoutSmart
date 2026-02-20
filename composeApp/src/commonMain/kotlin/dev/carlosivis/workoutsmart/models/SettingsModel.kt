@@ -1,6 +1,6 @@
 package dev.carlosivis.workoutsmart.models
 
-import dev.carlosivis.workoutsmart.repository.ThemeMode
+import dev.carlosivis.workoutsmart.utils.ThemeMode
 
 data class SettingsModel(
     val themeMode: ThemeMode,

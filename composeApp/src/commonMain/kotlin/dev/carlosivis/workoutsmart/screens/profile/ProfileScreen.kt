@@ -53,7 +53,7 @@ import dev.carlosivis.workoutsmart.composeResources.profile_login_title
 import dev.carlosivis.workoutsmart.composeResources.profile_logout
 import dev.carlosivis.workoutsmart.composeResources.profile_settings_action
 import dev.carlosivis.workoutsmart.models.UserResponse
-import dev.carlosivis.workoutsmart.repository.ThemeMode
+import dev.carlosivis.workoutsmart.utils.ThemeMode
 import dev.carlosivis.workoutsmart.screens.components.CustomTopBar
 import dev.carlosivis.workoutsmart.screens.components.GoogleButton
 import dev.carlosivis.workoutsmart.utils.AppSnackbarHost

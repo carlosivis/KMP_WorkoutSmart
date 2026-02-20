@@ -1,6 +1,8 @@
-package dev.carlosivis.workoutsmart.repository
+package dev.carlosivis.workoutsmart.data.repository
 
 import dev.carlosivis.workoutsmart.data.local.datasource.SettingsLocalDataSource
+import dev.carlosivis.workoutsmart.domain.repository.SettingsRepository
+import dev.carlosivis.workoutsmart.utils.ThemeMode
 import dev.carlosivis.workoutsmart.models.SettingsModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

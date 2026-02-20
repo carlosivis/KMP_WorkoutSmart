@@ -1,4 +1,4 @@
-package dev.carlosivis.workoutsmart.plataform
+package dev.carlosivis.workoutsmart.platform
 
 import androidx.compose.ui.platform.Clipboard
 import platform.UIKit.UIActivityViewController

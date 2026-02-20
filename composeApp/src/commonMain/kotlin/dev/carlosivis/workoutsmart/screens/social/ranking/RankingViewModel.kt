@@ -2,7 +2,7 @@ package dev.carlosivis.workoutsmart.screens.social.ranking
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.carlosivis.workoutsmart.domain.GetRankingMembersUseCase
+import dev.carlosivis.workoutsmart.domain.usecase.GetRankingMembersUseCase
 import dev.carlosivis.workoutsmart.models.GroupResponse
 import dev.carlosivis.workoutsmart.navigation.navigator.RankingNavigator
 import kotlinx.coroutines.delay

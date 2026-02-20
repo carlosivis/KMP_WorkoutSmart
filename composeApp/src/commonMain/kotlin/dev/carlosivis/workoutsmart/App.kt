@@ -8,9 +8,9 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.stack.animation.plus
 import com.arkivanov.decompose.extensions.compose.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
+import dev.carlosivis.workoutsmart.domain.repository.SettingsRepository
 import dev.carlosivis.workoutsmart.models.SettingsModel
 import dev.carlosivis.workoutsmart.navigation.RootComponent
-import dev.carlosivis.workoutsmart.repository.SettingsRepository
 import dev.carlosivis.workoutsmart.screens.activeWorkout.ActiveWorkoutScreen
 import dev.carlosivis.workoutsmart.screens.createWorkout.CreateWorkoutScreen
 import dev.carlosivis.workoutsmart.screens.home.HomeScreen

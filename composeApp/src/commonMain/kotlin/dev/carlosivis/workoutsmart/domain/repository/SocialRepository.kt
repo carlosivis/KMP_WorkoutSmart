@@ -1,4 +1,4 @@
-package dev.carlosivis.workoutsmart.repository
+package dev.carlosivis.workoutsmart.domain.repository
 
 import dev.carlosivis.features.workoutlog.WorkoutLogRequest
 import dev.carlosivis.workoutsmart.models.CreateGroupRequest

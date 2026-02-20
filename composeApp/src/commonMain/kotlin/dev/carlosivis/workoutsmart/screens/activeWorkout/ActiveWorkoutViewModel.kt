@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.carlosivis.features.workoutlog.WorkoutLogRequest
 import dev.carlosivis.features.workoutlog.WorkoutType
-import dev.carlosivis.workoutsmart.domain.RegisterWorkoutLogUseCase
-import dev.carlosivis.workoutsmart.repository.SettingsRepository
-import dev.carlosivis.workoutsmart.repository.WorkoutRepository
+import dev.carlosivis.workoutsmart.domain.usecase.RegisterWorkoutLogUseCase
+import dev.carlosivis.workoutsmart.domain.repository.SettingsRepository
+import dev.carlosivis.workoutsmart.domain.repository.WorkoutRepository
 import dev.carlosivis.workoutsmart.screens.components.expect.VibratorHelper
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

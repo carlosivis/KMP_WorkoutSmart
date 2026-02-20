@@ -48,7 +48,7 @@ import dev.carlosivis.workoutsmart.composeResources.groups_screen_join_group_but
 import dev.carlosivis.workoutsmart.composeResources.groups_screen_title
 import dev.carlosivis.workoutsmart.composeResources.groups_screen_user_rank
 import dev.carlosivis.workoutsmart.models.GroupResponse
-import dev.carlosivis.workoutsmart.repository.ThemeMode
+import dev.carlosivis.workoutsmart.utils.ThemeMode
 import dev.carlosivis.workoutsmart.screens.components.CustomCreateGroupDialog
 import dev.carlosivis.workoutsmart.screens.components.CustomJoinGroupDialog
 import dev.carlosivis.workoutsmart.screens.components.CustomTopBar
