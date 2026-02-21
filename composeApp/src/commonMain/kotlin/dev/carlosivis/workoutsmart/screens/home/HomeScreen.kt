@@ -46,6 +46,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -85,7 +86,6 @@ import dev.carlosivis.workoutsmart.composeResources.saved_workouts_section_title
 import dev.carlosivis.workoutsmart.composeResources.workout_history_section_title
 import dev.carlosivis.workoutsmart.models.HistoryModel
 import dev.carlosivis.workoutsmart.models.WorkoutSummaryModel
-import dev.carlosivis.workoutsmart.utils.ThemeMode
 import dev.carlosivis.workoutsmart.screens.components.CustomDialog
 import dev.carlosivis.workoutsmart.screens.components.CustomTopBar
 import dev.carlosivis.workoutsmart.screens.components.RankingCarousel
@@ -96,6 +96,7 @@ import dev.carlosivis.workoutsmart.utils.AppSnackbarHost
 import dev.carlosivis.workoutsmart.utils.Dimens
 import dev.carlosivis.workoutsmart.utils.FontSizes
 import dev.carlosivis.workoutsmart.utils.Shapes
+import dev.carlosivis.workoutsmart.utils.ThemeMode
 import dev.carlosivis.workoutsmart.utils.WorkoutsSmartTheme
 import dev.carlosivis.workoutsmart.utils.formatDateToString
 import dev.carlosivis.workoutsmart.utils.formatDuration
@@ -108,6 +109,7 @@ fun HomeScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val action: (HomeViewAction) -> Unit = viewModel::dispatchAction
+
     Content(
         state = state,
         action = action
@@ -155,6 +157,12 @@ private fun Content(
             )
         }
     ) { padding ->
+
+        PullToRefreshBox(
+            onRefresh = { action(HomeViewAction.Refresh) },
+            isRefreshing = state.isRefreshing
+        ) {
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -210,9 +218,9 @@ private fun Content(
                         modifier = Modifier
                             .fillMaxWidth()
                             .placeholder(
-                            state.isLoading,
-                            PlaceholderHighlight.shimmer()
-                        ),
+                                state.isLoading,
+                                PlaceholderHighlight.shimmer()
+                            ),
                         groups = state.groups,
                         onCardClick = { action(HomeViewAction.Navigate.Groups) },
                         onGroupClick = { action(HomeViewAction.Navigate.Ranking(it)) }
@@ -241,7 +249,14 @@ private fun Content(
                             .placeholder(state.isLoading, PlaceholderHighlight.shimmer()),
                         workout = workout,
                         navigate = { action(HomeViewAction.Navigate.Workout(workout.id)) },
-                        delete = { action(HomeViewAction.AttemptDeleteWorkout(workout.id, workout.name)) },
+                        delete = {
+                            action(
+                                HomeViewAction.AttemptDeleteWorkout(
+                                    workout.id,
+                                    workout.name
+                                )
+                            )
+                        },
                         edit = { action(HomeViewAction.Navigate.Edit(workout.id)) }
                     )
                 }
@@ -269,6 +284,7 @@ private fun Content(
                 }
             }
         }
+    }
     }
 }
 

@@ -5,6 +5,7 @@ import dev.carlosivis.workoutsmart.models.GroupResponse
 import dev.carlosivis.workoutsmart.models.JoinGroupRequest
 
 sealed class GroupsViewAction {
+    object Refresh : GroupsViewAction()
     object GetGroups : GroupsViewAction()
     object CleanMessages : GroupsViewAction()
     object ShowAddGroup : GroupsViewAction()

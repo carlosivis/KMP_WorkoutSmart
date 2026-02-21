@@ -4,8 +4,6 @@ import dev.carlosivis.features.workoutlog.WorkoutLogRequest
 import dev.carlosivis.workoutsmart.models.GroupResponse
 
 sealed class HomeViewAction {
-    object GetWorkouts : HomeViewAction()
-    object GetHistory : HomeViewAction()
     object GetUserProfile : HomeViewAction()
     object GetGroups : HomeViewAction()
     data class AttemptDeleteWorkout(val id: Long, val name: String) : HomeViewAction()
@@ -14,6 +12,7 @@ sealed class HomeViewAction {
     object CleanMessages : HomeViewAction()
     object ShowRegisterWorkoutDialog : HomeViewAction()
     data class RegisterWorkoutLog(val log: WorkoutLogRequest) : HomeViewAction()
+    object Refresh : HomeViewAction()
 
     object Navigate {
         object CreateWorkout : HomeViewAction()
