@@ -1,6 +1,7 @@
 package dev.carlosivis.workoutsmart.data.repository
 
-import dev.carlosivis.workoutsmart.data.local.DatabaseHelper
+import dev.carlosivis.workoutsmart.data.local.datasource.HistoryLocalDataSource
+import dev.carlosivis.workoutsmart.data.local.datasource.WorkoutLocalDataSource
 import dev.carlosivis.workoutsmart.domain.repository.WorkoutRepository
 import dev.carlosivis.workoutsmart.models.HistoryModel
 import dev.carlosivis.workoutsmart.models.WorkoutModel
@@ -8,27 +9,28 @@ import dev.carlosivis.workoutsmart.models.WorkoutSummaryModel
 import kotlinx.coroutines.flow.Flow
 
 class WorkoutRepositoryImpl(
-    private val databaseHelper: DatabaseHelper
+    private val workoutLocalDataSource: WorkoutLocalDataSource,
+    private val historyLocalDataSource: HistoryLocalDataSource
 ) : WorkoutRepository {
     override fun getAllWorkouts(): Flow<List<WorkoutSummaryModel>> =
-        databaseHelper.getAllWorkouts()
+        workoutLocalDataSource.getAllWorkouts()
 
     override fun getAllHistory(): Flow<List<HistoryModel>> =
-        databaseHelper.getAllHistory()
+        historyLocalDataSource.getAllHistory()
 
     override fun getWorkoutById(id: Long): Flow<WorkoutModel> =
-        databaseHelper.getWorkoutById(id)
+        workoutLocalDataSource.getWorkoutById(id)
 
     override suspend fun insertWorkout(workout: WorkoutModel) =
-        databaseHelper.insertWorkout(workout)
+        workoutLocalDataSource.insertWorkout(workout)
 
     override suspend fun updateWorkout(workout: WorkoutModel) =
-        databaseHelper.updateWorkout(workout)
+        workoutLocalDataSource.updateWorkout(workout)
 
     override suspend fun deleteWorkout(workoutId: Long) =
-        databaseHelper.deleteWorkout(workoutId)
+        workoutLocalDataSource.deleteWorkout(workoutId)
 
     override suspend fun insertHistory(workoutName: String, timestamp: Long, duration: Long) =
-        databaseHelper.insertHistory(workoutName, timestamp, duration)
+        historyLocalDataSource.insertHistory(workoutName, timestamp, duration)
 }
 
