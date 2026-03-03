@@ -1,62 +1,112 @@
-# WorkoutSmart KMP
+# WorkoutSmart 💪
 
-WorkoutSmart is a cross-platform application (Android and iOS) developed with Kotlin Multiplatform and Compose Multiplatform. It allows users to create, manage, and track their workouts in a simple and efficient way.
+O **WorkoutSmart** é um aplicativo de acompanhamento de treinos multiplataforma (Android e iOS) desenvolvido 100% com **Kotlin Multiplatform (KMP)** e **Compose Multiplatform**. 
+
+Construído com foco em performance e organização, o app permite que os usuários gerenciem suas rotinas de academia, registrem seus históricos de treinos de forma *offline-first* e interajam com amigos através de um sistema gamificado de grupos e rankings.
+
+---
+
+## 🔗 Backend API
+Este aplicativo consome uma API dedicada para a sincronização de dados sociais e autenticação. O código-fonte do servidor e as instruções para rodá-lo localmente podem ser encontrados no repositório abaixo:
+👉 **[WorkoutSmartBackend](https://github.com/carlosivis/WorkoutSmartBackend)**
+
+---
+
+## ✨ Funcionalidades (Features)
+
+* **Autenticação Segura:** Login unificado com Google utilizando **Firebase Authentication**, sincronizado com o backend próprio para geração de tokens de acesso.
+* **Gestão de Treinos Offline-First:** * Crie, edite e exclua treinos e exercícios.
+  * Os dados são salvos localmente utilizando **SQLDelight**, garantindo que o app funcione perfeitamente sem internet.
+* **Execução de Treino:** Interface dedicada para treinos ativos, contando com cronômetro de descanso (`TimerPicker`) e registro automático de duração.
+* **Histórico de Atividades:** Acompanhamento automático da data e duração dos treinos finalizados.
+* **Recursos Sociais e Gamificação:** * Crie grupos e convide amigos via código.
+  * Visualize rankings dinâmicos de membros baseados na consistência e conclusão de treinos.
+* **Suporte a Temas:** Alternância entre Light e Dark mode.
+
+---
+
+## 🏗️ Arquitetura e Padrões
+
+O projeto foi rigorosamente estruturado seguindo os princípios da **Clean Architecture**, garantindo alta testabilidade, separação de responsabilidades e escalabilidade.
+
+* **Camada de Apresentação (UI):** Padrão MVI/MVVM utilizando `ViewState`, `ViewAction` e `ViewModel`.
+* **Camada de Domínio (Domain):** Isolamento de regras de negócio em `UseCases` (ex: `LoginGoogleUseCase`, `CreateGroupUseCase`) e contratos de repositórios.
+* **Camada de Dados (Data):** Padrão Repository e isolamento de fontes de dados (`LocalDataSource` e `RemoteDataSource`).
+
+### 🛠️ Tech Stack
+
+* **UI:** [Compose Multiplatform](https://www.jetbrains.com/lp/compose-mpp/)
+* **Navegação & Ciclo de Vida:** [Decompose](https://arkivanov.github.io/Decompose/)
+* **Injeção de Dependências:** [Koin](https://insert-koin.io/)
+* **Banco de Dados Local:** [SQLDelight](https://cashapp.github.io/sqldelight/)
+* **Networking HTTP:** [Ktor Client](https://ktor.io/)
+* **Concorrência:** Kotlin Coroutines & Flows
+* **Autenticação:** Firebase Auth + Provedores Nativos
+* **Data/Hora:** Kotlinx Datetime
+* **Serialização:** Kotlinx Serialization
+
+---
+
+## 📂 Estrutura do Projeto
+
+A base de código está dividida da seguinte forma para maximizar o compartilhamento:
+
+```text
+├── composeApp/
+│   ├── src/androidMain/     # Código específico para Android (Provedores nativos, MainActivity)
+│   ├── src/iosMain/         # Código específico para iOS (MainViewController, bindings)
+│   └── src/commonMain/      # Código 100% compartilhado (UI, Domain, Data, DI)
+│       ├── core/            # Utilitários, Ktor Client, Wrappers de Network
+│       ├── data/            # Implementações de Repositórios, Data Sources, SQLDelight
+│       ├── domain/          # Interfaces de Repositório, UseCases
+│       ├── models/          # Entidades, Responses, Requests
+│       ├── navigation/      # Componentes de navegação do Decompose
+│       └── screens/         # ViewModels, Estados, Ações e Telas em Compose
+├── iosApp/                  # Projeto nativo do Xcode
+└── backend/                 # (Link externo)
+
+```
+
+---
+
+## 🚀 Configuração do Ambiente (Setup)
+
+Para rodar o projeto localmente, é estritamente necessário configurar o Firebase e apontar para o seu backend.
+
+### Pré-requisitos
+
+* Android Studio (Ladybug ou superior recomendado).
+* Xcode (para build iOS).
+* Plugin do Kotlin Multiplatform instalado no Android Studio.
+
+### 1. Configuração do Firebase (Obrigatório)
+
+Crie um projeto no [Firebase Console](https://console.firebase.google.com/) com a autenticação do Google ativada e registre os aplicativos Android e iOS.
+
+* **Para Android:**
+1. Baixe o arquivo `google-services.json`.
+2. Adicione o arquivo no diretório: `composeApp/androidApp/src/main/` (ou onde estiver seu diretório raiz Android).
 
 
-## Features
+* **Para iOS:**
+1. Baixe o arquivo `GoogleService-Info.plist`.
+2. Abra o projeto iOS no Xcode (diretório `iosApp/`) e arraste o arquivo para dentro da raiz do target principal do projeto.
 
-The application offers a complete experience for workout management, including:
 
-* **🏋️‍♂️ Create Custom Workouts:**
 
-    * Set a name and description for each workout.
-    * Add detailed exercises, including name, notes, number of sets, and repetitions.
-    * Attach a photo to each exercise for easy reference.
+### 2. Configuração da API
 
-* **▶️ Execute Workouts:**
+O aplicativo utiliza o `BuildConfig.BASE_URL` para se conectar ao backend. Certifique-se de configurar essa constante no arquivo `build.gradle.kts` ou `local.properties` para apontar para o servidor (ex: `http://localhost:8080` ou a URL de produção).
 
-    * Start a saved workout and track the total exercise time.
-    * Mark exercises as completed to track your progress.
-    * Use a configurable rest timer between sets.
-    * Skip the rest time when you're ready for the next set.
+### 3. Executando o App
 
-* **📈 Activity History:**
+* **Android:** Selecione o target `composeApp` no Android Studio e clique em *Run* em um emulador ou dispositivo físico.
+* **iOS:** Abra o arquivo `.xcworkspace` em `iosApp/` pelo Xcode e execute em um simulador, ou use a configuração *iOS Simulator* no Fleet/Android Studio.
 
-    * View a history of all completed workouts, ordered by date.
-    * Track the date and name of each workout performed.
+---
 
-* **🗑️ Manage Workouts:**
+## 🤝 Contribuição
 
-    * View all your saved workouts on the main screen.
-    * Delete workouts that are no longer needed.
+Este é um projeto de portfólio pessoal e está em constante evolução. Feedbacks e sugestões sobre a arquitetura (especialmente KMP e Koin) são sempre bem-vindos! Sinta-se à vontade para abrir uma *Issue* ou enviar um *Pull Request*.
 
-## Architecture and Technologies
-
-This project was built using a modern, cross-platform approach with the following technologies and libraries:
-
-* **Language:** [Kotlin](https://kotlinlang.org/)
-* **Cross-Platform Framework:** [Kotlin Multiplatform (KMP)](https://www.google.com/search?q=https://kotlinlang.org/docs/multiplatform-mobile-overview.html)
-* **User Interface:** [Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform) to share the UI between Android and iOS.
-* **Navigation:** [Decompose](https://github.com/arkivanov/Decompose) for shared, component-based navigation.
-* **Dependency Injection:** [Koin](https://insert-koin.io/) for lightweight dependency management in the shared code.
-* **Database:** [SQLDelight](https://github.com/cashapp/sqldelight) to generate type-safe Kotlin APIs from SQL statements.
-* **Coroutines:** For managing concurrency and asynchronous operations.
-* **Image Loading:** [Coil](https://coil-kt.github.io/coil/compose/) for efficient image loading.
-* **Image Picker:** [Peekaboo](https://github.com/onseok/peekaboo) for an easy, cross-platform image selection.
-* **Serialization:** [Kotlinx Serialization](https://github.com/Kotlin/kotlinx.serialization) for serializing Kotlin objects.
-* **Date and Time:** [Kotlinx DateTime](https://github.com/Kotlin/kotlinx-datetime) for date and time manipulation.
-
-## How to Run
-
-To build and run this project, you will need:
-
-* Android Studio
-* Xcode (for the iOS version)
-* JDK 1.8 or higher
-
-**Steps:**
-
-1.  Clone the repository.
-2.  Open the project in Android Studio.
-3.  To run the Android version, select the `composeApp` module and run it on an emulator or a physical device.
-4.  To run the iOS version, open the project in Xcode and run it on a simulator or a physical device.
+```

@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 
 class GroupsViewModel(
     private val groups: List<GroupResponse>? = null,
-    private val GetGroupsUseCase: GetGroupsUseCase,
+    private val getGroupsUseCase: GetGroupsUseCase,
     private val CreateGroupUseCase: CreateGroupUseCase,
     private val JoinGroupUseCase: JoinGroupUseCase,
     private val navigator: GroupsNavigator
@@ -25,7 +25,10 @@ class GroupsViewModel(
     val state = _state.asStateFlow()
 
     init {
-        getGroups()
+        if (groups != null) {
+            _state.update { it.copy(groups = groups) }
+        } else
+            getGroups()
     }
 
 
@@ -39,27 +42,24 @@ class GroupsViewModel(
             is GroupsViewAction.JoinGroup -> joinGroup(action.join)
             GroupsViewAction.ShowAddGroup -> showAddGroup()
             GroupsViewAction.ShowAddInvite -> showAddInvite()
+            GroupsViewAction.Refresh -> getGroups()
         }
     }
 
     private fun setLoading(isLoading: Boolean) {
-        _state.update { it.copy(isLoading = isLoading)}
+        _state.update { it.copy(isLoading = isLoading) }
     }
 
     private fun getGroups() {
         setLoading(true)
-        if (groups != null) {
-            _state.update { it.copy(groups = groups)}
-        } else {
-            viewModelScope.launch {
-                GetGroupsUseCase(Unit)
-                    .onSuccess { groups ->
-                        _state.update { it.copy(groups = groups)}
-                    }
-                    .onFailure { error ->
-                        _state.update { it.copy(error = error.message)}
-                    }
-            }
+        viewModelScope.launch {
+            getGroupsUseCase(Unit)
+                .onSuccess { groups ->
+                    _state.update { it.copy(groups = groups) }
+                }
+                .onFailure { error ->
+                    _state.update { it.copy(error = error.message) }
+                }
         }
         setLoading(false)
     }
@@ -70,13 +70,15 @@ class GroupsViewModel(
         viewModelScope.launch {
             CreateGroupUseCase(params)
                 .onSuccess { group ->
-                    _state.update {  _state.value.copy(
-                        groups = _state.value.groups?.plus(group)
-                    )}
+                    _state.update {
+                        _state.value.copy(
+                            groups = _state.value.groups?.plus(group)
+                        )
+                    }
                     navigator.toRanking(group)
                 }
                 .onFailure { error ->
-                    _state.update { it.copy(error = error.message)}
+                    _state.update { it.copy(error = error.message) }
                 }
         }
         setLoading(false)
@@ -96,7 +98,7 @@ class GroupsViewModel(
                     navigator.toRanking(group)
                 }
                 .onFailure { error ->
-                    _state.update {  it.copy(error = error.message)}
+                    _state.update { it.copy(error = error.message) }
                 }
         }
         setLoading(false)

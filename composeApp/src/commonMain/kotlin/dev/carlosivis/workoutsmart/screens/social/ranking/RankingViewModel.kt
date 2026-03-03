@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import dev.carlosivis.workoutsmart.domain.usecase.GetRankingMembersUseCase
 import dev.carlosivis.workoutsmart.models.GroupResponse
 import dev.carlosivis.workoutsmart.navigation.navigator.RankingNavigator
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -21,7 +20,6 @@ class RankingViewModel(
     val state = _state.asStateFlow()
 
     init {
-        _state.update { it.copy(group = group) }
         getRanking()
     }
 
@@ -32,6 +30,7 @@ class RankingViewModel(
             RankingViewAction.Navigate.Back -> navigator.back()
             RankingViewAction.ShowInviteCode -> showInviteCode()
             RankingViewAction.CopyInviteCode -> copyInviteCode()
+            RankingViewAction.Refresh -> getRanking()
         }
     }
 
@@ -40,13 +39,11 @@ class RankingViewModel(
     }
 
     private fun getRanking() {
-        setLoading(true)
         viewModelScope.launch {
-            delay(5000)
-            GetRankingUseCase(_state.value.group!!.id)
+            setLoading(true)
+            GetRankingUseCase(group.id)
                 .onSuccess { ranking ->
                     val sorted = ranking.sortedByDescending { it.score }
-
                     _state.update {
                         it.copy(
                             podium = sorted.take(3),
@@ -57,6 +54,7 @@ class RankingViewModel(
                 .onFailure { error ->
                     _state.update { it.copy(error = error.message) }
                 }
+            _state.update { it.copy(group = group) }
             setLoading(false)
         }
     }

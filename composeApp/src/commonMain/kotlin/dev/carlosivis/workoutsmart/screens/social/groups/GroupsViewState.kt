@@ -4,6 +4,7 @@ import dev.carlosivis.workoutsmart.models.GroupResponse
 
 data class GroupsViewState(
     val isLoading: Boolean = false,
+    val isRefreshing: Boolean = false,
     val groups: List<GroupResponse>? = emptyList(),
     val error: String? = null,
     val message: String? = null,

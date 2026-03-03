@@ -1,4 +1,4 @@
-package dev.carlosivis.workoutsmart.data.local
+package dev.carlosivis.workoutsmart.data.local.datasource
 
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
@@ -7,23 +7,22 @@ import app.cash.sqldelight.db.SqlDriver
 import dev.carlosivis.workoutsmart.core.transactionWithContext
 import dev.carlosivis.workoutsmart.database.WorkoutSmartDatabase
 import dev.carlosivis.workoutsmart.models.ExerciseModel
-import dev.carlosivis.workoutsmart.models.HistoryModel
 import dev.carlosivis.workoutsmart.models.WorkoutModel
 import dev.carlosivis.workoutsmart.models.WorkoutSummaryModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 
-class DatabaseHelper(
+class WorkoutLocalDataSourceImpl(
     sqlDriver: SqlDriver,
     private val backgroundDispatcher: CoroutineDispatcher
-) {
+): WorkoutLocalDataSource {
     private val dbRef: WorkoutSmartDatabase = WorkoutSmartDatabase.Companion(sqlDriver)
 
-    suspend fun insertWorkout(workout: WorkoutModel) {
+
+    override suspend fun insertWorkout(workout: WorkoutModel) {
         dbRef.transactionWithContext(backgroundDispatcher) {
             dbRef.workoutSmartDatabaseQueries.insertWorkout(
                 name = workout.name,
@@ -45,7 +44,7 @@ class DatabaseHelper(
         }
     }
 
-    suspend fun updateWorkout(workout: WorkoutModel) {
+    override suspend fun updateWorkout(workout: WorkoutModel) {
         dbRef.transactionWithContext(backgroundDispatcher) {
             dbRef.workoutSmartDatabaseQueries.updateWorkout(
                 name = workout.name,
@@ -68,32 +67,33 @@ class DatabaseHelper(
         }
     }
 
-    suspend fun deleteWorkout(workoutId: Long) {
+    override suspend fun deleteWorkout(workoutId: Long) {
         dbRef.transactionWithContext(backgroundDispatcher) {
             dbRef.workoutSmartDatabaseQueries.deleteWorkout(workoutId)
         }
     }
 
-    fun getAllWorkouts(): Flow<List<WorkoutSummaryModel>> = dbRef.workoutSmartDatabaseQueries
-        .selectAllWorkouts()
-        .asFlow()
-        .mapToList(Dispatchers.Default)
-        .map { workouts ->
-            workouts.map { workout ->
-                WorkoutSummaryModel(
-                    id = workout.id,
-                    name = workout.name,
-                    description = workout.description,
-                )
+    override fun getAllWorkouts(): Flow<List<WorkoutSummaryModel>>
+        = dbRef.workoutSmartDatabaseQueries
+            .selectAllWorkouts()
+            .asFlow()
+            .mapToList(backgroundDispatcher)
+            .map { workouts ->
+                workouts.map { workout ->
+                    WorkoutSummaryModel(
+                        id = workout.id,
+                        name = workout.name,
+                        description = workout.description,
+                    )
+                }
             }
-        }
-        .flowOn(backgroundDispatcher)
+            .flowOn(backgroundDispatcher)
 
-    fun getWorkoutById(id: Long): Flow<WorkoutModel> =
+    override fun getWorkoutById(id: Long): Flow<WorkoutModel> =
         dbRef.workoutSmartDatabaseQueries
             .selectWorkoutById(id)
             .asFlow()
-            .mapToOneOrNull(Dispatchers.Default)
+            .mapToOneOrNull(backgroundDispatcher)
             .mapNotNull { workout ->
                 workout?.let {
                     WorkoutModel(
@@ -121,31 +121,4 @@ class DatabaseHelper(
                     image = exercise.image
                 )
             }
-
-    // History Operations
-    fun getAllHistory(): Flow<List<HistoryModel>> = dbRef.workoutSmartDatabaseQueries
-        .selectAllHistory()
-        .asFlow()
-        .mapToList(Dispatchers.Default)
-        .map { historyEntries ->
-            historyEntries.map { history ->
-                HistoryModel(
-                    id = history.id,
-                    workoutName = history.workoutName,
-                    date = history.date,
-                    duration = history.duration
-                )
-            }
-        }
-        .flowOn(backgroundDispatcher)
-
-    suspend fun insertHistory(workoutName: String, date: Long, duration: Long) {
-        dbRef.transactionWithContext(backgroundDispatcher) {
-            dbRef.workoutSmartDatabaseQueries.insertHistory(
-                workoutName = workoutName,
-                date = date,
-                duration = duration
-            )
-        }
-    }
 }

@@ -3,17 +3,28 @@ package dev.carlosivis.workoutsmart.di
 import com.russhwolf.settings.Settings
 import dev.carlosivis.workoutsmart.BuildConfig
 import dev.carlosivis.workoutsmart.core.KtorClient
-import dev.carlosivis.workoutsmart.data.local.DatabaseHelper
+import dev.carlosivis.workoutsmart.data.local.datasource.HistoryLocalDataSource
+import dev.carlosivis.workoutsmart.data.local.datasource.HistoryLocalDataSourceImpl
 import dev.carlosivis.workoutsmart.data.local.datasource.SettingsLocalDataSource
 import dev.carlosivis.workoutsmart.data.local.datasource.SettingsLocalDataSourceImpl
 import dev.carlosivis.workoutsmart.data.local.datasource.UserLocalDataSource
 import dev.carlosivis.workoutsmart.data.local.datasource.UserLocalDataSourceImpl
+import dev.carlosivis.workoutsmart.data.local.datasource.WorkoutLocalDataSource
+import dev.carlosivis.workoutsmart.data.local.datasource.WorkoutLocalDataSourceImpl
 import dev.carlosivis.workoutsmart.data.remote.datasource.AuthRemoteDataSource
 import dev.carlosivis.workoutsmart.data.remote.datasource.AuthRemoteDataSourceImpl
 import dev.carlosivis.workoutsmart.data.remote.datasource.SocialRemoteDataSource
 import dev.carlosivis.workoutsmart.data.remote.datasource.SocialRemoteDataSourceImpl
 import dev.carlosivis.workoutsmart.data.remote.service.AuthService
 import dev.carlosivis.workoutsmart.data.remote.service.SocialService
+import dev.carlosivis.workoutsmart.data.repository.AuthRepositoryImpl
+import dev.carlosivis.workoutsmart.data.repository.SettingsRepositoryImpl
+import dev.carlosivis.workoutsmart.data.repository.SocialRepositoryImpl
+import dev.carlosivis.workoutsmart.data.repository.WorkoutRepositoryImpl
+import dev.carlosivis.workoutsmart.domain.repository.AuthRepository
+import dev.carlosivis.workoutsmart.domain.repository.SettingsRepository
+import dev.carlosivis.workoutsmart.domain.repository.SocialRepository
+import dev.carlosivis.workoutsmart.domain.repository.WorkoutRepository
 import dev.carlosivis.workoutsmart.domain.usecase.CreateGroupUseCase
 import dev.carlosivis.workoutsmart.domain.usecase.GetGroupsUseCase
 import dev.carlosivis.workoutsmart.domain.usecase.GetRankingMembersUseCase
@@ -27,14 +38,6 @@ import dev.carlosivis.workoutsmart.navigation.navigator.GroupsNavigator
 import dev.carlosivis.workoutsmart.navigation.navigator.HomeNavigator
 import dev.carlosivis.workoutsmart.navigation.navigator.ProfileNavigator
 import dev.carlosivis.workoutsmart.navigation.navigator.RankingNavigator
-import dev.carlosivis.workoutsmart.domain.repository.AuthRepository
-import dev.carlosivis.workoutsmart.data.repository.AuthRepositoryImpl
-import dev.carlosivis.workoutsmart.domain.repository.SettingsRepository
-import dev.carlosivis.workoutsmart.data.repository.SettingsRepositoryImpl
-import dev.carlosivis.workoutsmart.domain.repository.SocialRepository
-import dev.carlosivis.workoutsmart.data.repository.SocialRepositoryImpl
-import dev.carlosivis.workoutsmart.domain.repository.WorkoutRepository
-import dev.carlosivis.workoutsmart.data.repository.WorkoutRepositoryImpl
 import dev.carlosivis.workoutsmart.screens.activeWorkout.ActiveWorkoutViewModel
 import dev.carlosivis.workoutsmart.screens.createWorkout.CreateWorkoutViewModel
 import dev.carlosivis.workoutsmart.screens.home.HomeViewModel
@@ -44,6 +47,7 @@ import dev.carlosivis.workoutsmart.screens.social.groups.GroupsViewModel
 import dev.carlosivis.workoutsmart.screens.social.ranking.RankingViewModel
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import org.koin.core.module.Module
@@ -81,13 +85,16 @@ val dataModule = module {
     single<SettingsLocalDataSource> { SettingsLocalDataSourceImpl(get()) }
     single<UserLocalDataSource> { UserLocalDataSourceImpl(get()) }
 
+    single<WorkoutLocalDataSource> { WorkoutLocalDataSourceImpl(get(), get()) }
+    single<HistoryLocalDataSource> { HistoryLocalDataSourceImpl(get(), get()) }
+
     single<AuthRemoteDataSource> { AuthRemoteDataSourceImpl(get()) }
     single<SocialRemoteDataSource> { SocialRemoteDataSourceImpl(get()) }
 
     single<AuthRepository> { AuthRepositoryImpl(get(), get(), get(), get()) }
     single<SettingsRepository> { SettingsRepositoryImpl(get()) }
     single<SocialRepository> { SocialRepositoryImpl(get()) }
-    single<WorkoutRepository> { WorkoutRepositoryImpl(get()) }
+    single<WorkoutRepository> { WorkoutRepositoryImpl(get(), get()) }
 }
 
 val domainModule = module {
@@ -182,9 +189,7 @@ val viewmodelModule = module {
 
 @OptIn(ExperimentalTime::class)
 val coreModule = module {
-    single {
-        DatabaseHelper(get(), Dispatchers.Default)
-    }
+    single<CoroutineDispatcher> { Dispatchers.Default }
 
     single<Settings> { Settings() }
 

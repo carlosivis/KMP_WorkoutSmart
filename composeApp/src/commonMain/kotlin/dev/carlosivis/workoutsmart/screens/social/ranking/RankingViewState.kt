@@ -5,6 +5,7 @@ import dev.carlosivis.workoutsmart.models.RankingMember
 
 data class RankingViewState(
     val isLoading: Boolean = false,
+    val isRefreshing: Boolean = false,
     val showInviteCode: Boolean = false,
     val error: String? = null,
     val message: String? = null,

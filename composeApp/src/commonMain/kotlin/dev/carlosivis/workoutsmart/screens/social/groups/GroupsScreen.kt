@@ -29,6 +29,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -48,7 +49,6 @@ import dev.carlosivis.workoutsmart.composeResources.groups_screen_join_group_but
 import dev.carlosivis.workoutsmart.composeResources.groups_screen_title
 import dev.carlosivis.workoutsmart.composeResources.groups_screen_user_rank
 import dev.carlosivis.workoutsmart.models.GroupResponse
-import dev.carlosivis.workoutsmart.utils.ThemeMode
 import dev.carlosivis.workoutsmart.screens.components.CustomCreateGroupDialog
 import dev.carlosivis.workoutsmart.screens.components.CustomJoinGroupDialog
 import dev.carlosivis.workoutsmart.screens.components.CustomTopBar
@@ -59,6 +59,7 @@ import dev.carlosivis.workoutsmart.utils.AppSnackbarHost
 import dev.carlosivis.workoutsmart.utils.Dimens
 import dev.carlosivis.workoutsmart.utils.FontSizes
 import dev.carlosivis.workoutsmart.utils.Shapes
+import dev.carlosivis.workoutsmart.utils.ThemeMode
 import dev.carlosivis.workoutsmart.utils.WorkoutsSmartTheme
 import dev.carlosivis.workoutsmart.utils.rememberSnackbarHandler
 import org.jetbrains.compose.resources.stringResource
@@ -109,52 +110,56 @@ private fun Content(
                 onCancel = { action(GroupsViewAction.ShowAddInvite) }
             )
         }
-        Column(
-            modifier = Modifier.padding(paddingValues)
-                .padding(Dimens.Medium)
+        PullToRefreshBox(
+            isRefreshing = state.isRefreshing,
+            onRefresh = { action(GroupsViewAction.Refresh) }
         ) {
+            Column(
+                modifier = Modifier.padding(paddingValues)
+                    .padding(Dimens.Medium)
+            ) {
 
-            CustomTopBar(
-                onNavBackClick = { action(GroupsViewAction.Navigate.Back) },
-                title = stringResource(Res.string.groups_screen_title)
-            )
+                CustomTopBar(
+                    onNavBackClick = { action(GroupsViewAction.Navigate.Back) },
+                    title = stringResource(Res.string.groups_screen_title)
+                )
 
-            if (state.groups.isNullOrEmpty()) {
-                RankingEmptyState()
-            } else {
-                LazyRow(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth()
-                ) {
-                    items(
-                        items = state.groups,
-                    ) { group ->
-                        GroupCard(
-                            modifier = Modifier.padding(Dimens.Small)
-                                .placeholder(state.isLoading, PlaceholderHighlight.shimmer()),
-                            group = group,
-                            onClick = { action(GroupsViewAction.Navigate.Ranking(group)) })
+                if (state.groups.isNullOrEmpty()) {
+                    RankingEmptyState()
+                } else {
+                    LazyRow(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth()
+                    ) {
+                        items(
+                            items = state.groups,
+                        ) { group ->
+                            GroupCard(
+                                modifier = Modifier.padding(Dimens.Small)
+                                    .placeholder(state.isLoading, PlaceholderHighlight.shimmer()),
+                                group = group,
+                                onClick = { action(GroupsViewAction.Navigate.Ranking(group)) })
+                        }
                     }
                 }
-            }
-            Column(verticalArrangement = Arrangement.Bottom) {
-                CustomActionButton(
-                    modifier = Modifier.padding(Dimens.Medium),
-                    title = stringResource(Res.string.groups_screen_create_group_button),
-                    icon = Icons.Default.Add,
-                    onClick = { action(GroupsViewAction.ShowAddGroup) }
-                )
-                Spacer(Modifier.height(Dimens.Medium))
+                Column(verticalArrangement = Arrangement.Bottom) {
+                    CustomActionButton(
+                        modifier = Modifier.padding(Dimens.Medium),
+                        title = stringResource(Res.string.groups_screen_create_group_button),
+                        icon = Icons.Default.Add,
+                        onClick = { action(GroupsViewAction.ShowAddGroup) }
+                    )
+                    Spacer(Modifier.height(Dimens.Medium))
 
-                CustomActionButton(
-                    modifier = Modifier.padding(Dimens.Medium),
-                    title = stringResource(Res.string.groups_screen_join_group_button),
-                    icon = Icons.AutoMirrored.Filled.Login,
-                    onClick = { action(GroupsViewAction.ShowAddInvite) }
-                )
+                    CustomActionButton(
+                        modifier = Modifier.padding(Dimens.Medium),
+                        title = stringResource(Res.string.groups_screen_join_group_button),
+                        icon = Icons.AutoMirrored.Filled.Login,
+                        onClick = { action(GroupsViewAction.ShowAddInvite) }
+                    )
+                }
             }
-
         }
     }
 }

@@ -34,6 +34,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -67,7 +68,6 @@ import dev.carlosivis.workoutsmart.models.GroupResponse
 import dev.carlosivis.workoutsmart.models.RankingMember
 import dev.carlosivis.workoutsmart.platform.copyText
 import dev.carlosivis.workoutsmart.platform.shareText
-import dev.carlosivis.workoutsmart.utils.ThemeMode
 import dev.carlosivis.workoutsmart.screens.components.CustomTopBar
 import dev.carlosivis.workoutsmart.screens.components.loadings.PlaceholderHighlight
 import dev.carlosivis.workoutsmart.screens.components.loadings.placeholder
@@ -83,6 +83,7 @@ import dev.carlosivis.workoutsmart.utils.Shapes
 import dev.carlosivis.workoutsmart.utils.SilverColor
 import dev.carlosivis.workoutsmart.utils.SilverGradient
 import dev.carlosivis.workoutsmart.utils.SilverGradientLinear
+import dev.carlosivis.workoutsmart.utils.ThemeMode
 import dev.carlosivis.workoutsmart.utils.WorkoutsSmartTheme
 import dev.carlosivis.workoutsmart.utils.rememberSnackbarHandler
 import kotlinx.coroutines.launch
@@ -106,7 +107,11 @@ private fun Content(
 ) {
     val clipboard = LocalClipboard.current
     val scope = rememberCoroutineScope()
-    val inviteMessage = stringResource(Res.string.ranking_screen_invite_message, state.group?.name ?: "", state.group?.inviteCode ?: "")
+    val inviteMessage = stringResource(
+        Res.string.ranking_screen_invite_message,
+        state.group?.name ?: "",
+        state.group?.inviteCode ?: ""
+    )
 
     AnimatedVisibility(
         visible = state.showInviteCode,
@@ -160,55 +165,61 @@ private fun Content(
         },
         floatingActionButtonPosition = androidx.compose.material3.FabPosition.Center
     ) { paddingValues ->
-        Column(
-            modifier = Modifier.padding(paddingValues)
-                .padding(Dimens.Medium)
-                .fillMaxSize()
+
+        PullToRefreshBox(
+            isRefreshing = state.isRefreshing,
+            onRefresh = { action(RankingViewAction.Refresh) }
         ) {
-            CustomTopBar(
-                onNavBackClick = { action(RankingViewAction.Navigate.Back) },
-                title = state.group?.name
-            )
-
-            RankingPodiumCard(
-                state.podium,
-                modifier = Modifier.placeholder(
-                    state.isLoading, PlaceholderHighlight.shimmer()
-                )
-            )
-
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-                    .padding(vertical = Dimens.Medium)
-                    .placeholder(
-                        state.isLoading, PlaceholderHighlight.shimmer()
-                    ),
-                verticalArrangement = Arrangement.spacedBy(Dimens.Small)
+            Column(
+                modifier = Modifier.padding(paddingValues)
+                    .padding(Dimens.Medium)
+                    .fillMaxSize()
             ) {
-                items(
-                    items = state.others
-                ) { member ->
-                    RankingRowCard(
-                        member
+                CustomTopBar(
+                    onNavBackClick = { action(RankingViewAction.Navigate.Back) },
+                    title = state.group?.name
+                )
+
+                RankingPodiumCard(
+                    state.podium,
+                    modifier = Modifier.placeholder(
+                        state.isLoading, PlaceholderHighlight.shimmer()
                     )
-                }
-                item {
-                    if (state.others.isEmpty() && !state.isLoading) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .fillMaxHeight()
-                                .padding(horizontal = Dimens.Medium),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = stringResource(Res.string.ranking_screen_empty_ranking),
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                textAlign = TextAlign.Center
-                            )
+                )
+
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .padding(vertical = Dimens.Medium)
+                        .placeholder(
+                            state.isLoading, PlaceholderHighlight.shimmer()
+                        ),
+                    verticalArrangement = Arrangement.spacedBy(Dimens.Small)
+                ) {
+                    items(
+                        items = state.others
+                    ) { member ->
+                        RankingRowCard(
+                            member
+                        )
+                    }
+                    item {
+                        if (state.others.isEmpty() && !state.isLoading) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .fillMaxHeight()
+                                    .padding(horizontal = Dimens.Medium),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = stringResource(Res.string.ranking_screen_empty_ranking),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
                         }
                     }
                 }
