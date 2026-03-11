@@ -117,17 +117,12 @@ kotlin {
             implementation(libs.gitlive.firebase.auth)
         }
 
-        commonTest.dependencies {
-            implementation(kotlin("test"))
-        }
-
         androidMain.dependencies {
+            implementation(project.dependencies.platform(libs.firebase.bom))
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.compose.ui.tooling)
             implementation(libs.sqldelight.android)
             implementation(libs.androidx.lifecycle.viewmodel)
-            implementation(libs.decompose)
-            implementation(libs.decompose.compose)
             implementation(libs.play.services.auth)
             implementation(libs.ktor.client.cio)
             implementation(libs.androidx.credentials.manager)
@@ -140,8 +135,6 @@ kotlin {
 
         iosMain.dependencies {
             implementation(libs.sqldelight.native)
-            implementation(libs.decompose)
-            implementation(libs.decompose.compose)
             implementation(libs.ktor.client.darwin)
         }
 
@@ -159,18 +152,10 @@ android {
 buildConfig {
     packageName = "dev.carlosivis.workoutsmart"
 
-    buildConfigField(
-        "String",
-        "BASE_URL",
-        "\"$baseUrl\""
-    )
+    buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
 
     sourceSets.named("androidMain") {
-        buildConfigField(
-            "String",
-            "WEB_CLIENT_ID",
-            "\"$webClientId\""
-        )
+        buildConfigField("String", "WEB_CLIENT_ID", "\"$webClientId\"")
     }
 }
 
