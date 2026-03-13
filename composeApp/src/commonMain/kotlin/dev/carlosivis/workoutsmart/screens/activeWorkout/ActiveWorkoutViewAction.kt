@@ -3,7 +3,6 @@ package dev.carlosivis.workoutsmart.screens.activeWorkout
 sealed class ActiveWorkoutViewAction {
     object StartWorkout : ActiveWorkoutViewAction()
     object StopWorkout : ActiveWorkoutViewAction()
-    object Tick : ActiveWorkoutViewAction()
     data class StartTimer(val exerciseName: String) : ActiveWorkoutViewAction()
     object StopTimer : ActiveWorkoutViewAction()
     object CancelNavigateBack : ActiveWorkoutViewAction()
