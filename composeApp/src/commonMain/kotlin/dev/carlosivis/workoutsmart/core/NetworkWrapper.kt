@@ -1,21 +1,11 @@
 package dev.carlosivis.workoutsmart.core
 
-import dev.carlosivis.workoutsmart.composeResources.Res
-import dev.carlosivis.workoutsmart.composeResources.network_error_bad_request
-import dev.carlosivis.workoutsmart.composeResources.network_error_forbidden
-import dev.carlosivis.workoutsmart.composeResources.network_error_no_internet
-import dev.carlosivis.workoutsmart.composeResources.network_error_not_found
-import dev.carlosivis.workoutsmart.composeResources.network_error_server
-import dev.carlosivis.workoutsmart.composeResources.network_error_timeout
-import dev.carlosivis.workoutsmart.composeResources.network_error_unauthorized
-import dev.carlosivis.workoutsmart.composeResources.network_error_unknown
-import dev.carlosivis.workoutsmart.composeResources.network_error_unknown_code
 import io.ktor.client.call.body
+import io.ktor.client.plugins.ResponseException
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.isSuccess
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.io.IOException
-import org.jetbrains.compose.resources.getString
 
 object NetworkWrapper {
 
@@ -45,29 +35,28 @@ object NetworkWrapper {
         }
     }
 
-    suspend fun mapThrowable(throwable: Throwable): AppNetworkException {
+    fun mapThrowable(throwable: Throwable): AppNetworkException {
         return when (throwable) {
             is AppNetworkException -> throwable
-            is TimeoutCancellationException -> TimeOutException(getString(Res.string.network_error_timeout))
-            is IOException -> NoInternetException(getString(Res.string.network_error_no_internet))
-            else -> UnknownNetworkException(getString(Res.string.network_error_unknown))
+            is ResponseException -> mapHttpException(
+                code = throwable.response.status.value,
+                message = throwable.message)
+            is TimeoutCancellationException -> TimeOutException("Request timed out")
+            is IOException -> NoInternetException("No internet connection")
+            else -> UnknownNetworkException(throwable.message ?: "Unknown network error")
         }
     }
 
-    suspend fun mapHttpException(
-        code: Int,
-        message: String?
-    ): AppNetworkException {
+    fun mapHttpException(code: Int, message: String?): AppNetworkException {
         val safeMessage = message?.takeIf { it.isNotBlank() }
-
         return when (code) {
-            400 -> BadRequestException(safeMessage ?: getString(Res.string.network_error_bad_request))
-            401 -> UnauthorizedException(safeMessage ?: getString(Res.string.network_error_unauthorized))
-            403 -> ForbiddenException(safeMessage ?: getString(Res.string.network_error_forbidden))
-            404 -> NotFoundException(safeMessage ?: getString(Res.string.network_error_not_found))
-            408 -> TimeOutException(getString(Res.string.network_error_timeout))
-            in 500..599 -> ServerException(safeMessage ?: getString(Res.string.network_error_server))
-            else -> UnknownCodeException(getString(Res.string.network_error_unknown_code, code))
+            400 -> BadRequestException(safeMessage ?: "Bad request")
+            401 -> UnauthorizedException(safeMessage ?: "Unauthorized")
+            403 -> ForbiddenException(safeMessage ?: "Forbidden")
+            404 -> NotFoundException(safeMessage ?: "Not found")
+            408 -> TimeOutException(safeMessage ?: "Request timed out")
+            in 500..599 -> ServerException(safeMessage ?: "Server error")
+            else -> UnknownCodeException(safeMessage ?: "Unexpected status code: $code")
         }
     }
 

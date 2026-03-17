@@ -124,6 +124,8 @@ kotlin {
             implementation(libs.kotlinx.coroutines.test)
             implementation(libs.ktor.client.mock)
             implementation(libs.koin.test)
+            implementation(libs.multiplatform.settings.test)
+            implementation(libs.slf4j.simple)
         }
 
         androidMain.dependencies {
@@ -141,6 +143,10 @@ kotlin {
             implementation(libs.koin.view.model)
             implementation(libs.koin.compose)
 
+        }
+
+        androidUnitTest.dependencies {
+            implementation(libs.sqldelight.jvm)
         }
 
         iosMain.dependencies {
