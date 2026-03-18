@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform) apply false
     alias(libs.plugins.google.services) apply false
     alias(libs.plugins.detekt) apply true
+    alias(libs.plugins.kover) apply false
 }
 allprojects {
     apply(plugin = "io.gitlab.arturbosch.detekt")

@@ -12,6 +12,7 @@ plugins {
     alias(libs.plugins.build.config)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.mokkery)
+    alias(libs.plugins.kover)
     kotlin("native.cocoapods")
 }
 
@@ -197,10 +198,10 @@ compose.resources {
     generateResClass = auto
 }
 
-tasks.register<Test>("runCommonTests") {
+tasks.register("runCommonTests") {
     group = "verification"
-
     dependsOn("testDebugUnitTest")
+    finalizedBy("koverHtmlReportDebug")
 }
 
 tasks.withType<Test> {
