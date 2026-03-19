@@ -161,7 +161,7 @@ val viewmodelModule = module {
     }
 
     viewModel { (workoutId: Long, onNavigateBack: () -> Unit) ->
-        ActiveWorkoutViewModel(workoutId, get(), get(), get(), onNavigateBack, get())
+        ActiveWorkoutViewModel(workoutId, get(), get(), get(), onNavigateBack, get(), get())
     }
 
     viewModel { (onNavigateBack: () -> Unit, workoutIdToEdit: Long?) ->
@@ -198,4 +198,6 @@ val coreModule = module {
     single<Clock> {
         Clock.System
     }
+
+    single<() -> Long> { { Clock.System.now().epochSeconds } }
 }

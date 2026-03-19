@@ -2,9 +2,9 @@ package dev.carlosivis.workoutsmart.screens.createWorkout
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.carlosivis.workoutsmart.domain.repository.WorkoutRepository
 import dev.carlosivis.workoutsmart.models.ExerciseModel
 import dev.carlosivis.workoutsmart.models.WorkoutModel
-import dev.carlosivis.workoutsmart.domain.repository.WorkoutRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -294,10 +294,8 @@ class CreateWorkoutViewModel(
             val targetIndex = currentState.targetExerciseIndex
 
             if (targetIndex == null) {
-                // Novo exercício
                 currentState.copy(newExercise = currentState.newExercise.copy(image = image))
             } else {
-                // Exercício existente
                 val mutableExercises = currentState.workout.exercises.toMutableList()
                 if (mutableExercises.indices.contains(targetIndex)) {
                     val updatedExercise = mutableExercises[targetIndex].copy(image = image)
@@ -306,7 +304,5 @@ class CreateWorkoutViewModel(
                 currentState.copy(workout = currentState.workout.copy(exercises = mutableExercises))
             }
         }
-
-
     }
 }

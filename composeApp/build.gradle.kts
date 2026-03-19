@@ -11,6 +11,8 @@ plugins {
     alias(libs.plugins.sqldelight)
     alias(libs.plugins.build.config)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.mokkery)
+    alias(libs.plugins.kover)
     kotlin("native.cocoapods")
 }
 
@@ -39,7 +41,7 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_1_8)
             freeCompilerArgs.addAll(
                 listOf(
-                    "-Xcontext-receivers",
+                    "-Xcontext-parameters",
                     "-Xinline-classes",
                     "-Xexpect-actual-classes"
                 )
@@ -119,6 +121,12 @@ kotlin {
 
         commonTest.dependencies {
             implementation(kotlin("test"))
+            implementation(libs.turbine)
+            implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.ktor.client.mock)
+            implementation(libs.koin.test)
+            implementation(libs.multiplatform.settings.test)
+            implementation(libs.slf4j.simple)
         }
 
         androidMain.dependencies {
@@ -136,6 +144,10 @@ kotlin {
             implementation(libs.koin.view.model)
             implementation(libs.koin.compose)
 
+        }
+
+        androidUnitTest.dependencies {
+            implementation(libs.sqldelight.jvm)
         }
 
         iosMain.dependencies {
@@ -184,4 +196,40 @@ sqldelight {
 compose.resources {
     packageOfResClass = "dev.carlosivis.workoutsmart.composeResources"
     generateResClass = auto
+}
+
+tasks.register("runCommonTests") {
+    group = "verification"
+    dependsOn("testDebugUnitTest")
+    finalizedBy("koverHtmlReportDebug")
+}
+
+tasks.withType<Test> {
+    testLogging{
+        events("passed", "skipped", "failed")
+
+        showExceptions = true
+        showCauses = true
+        showStackTraces = true
+        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+        showStandardStreams = true
+    }
+    addTestListener(object : TestListener {
+
+        override fun afterSuite(suite: TestDescriptor, result: TestResult) {
+            if (suite.parent == null) {
+
+                val totalTime = result.endTime - result.startTime
+                val status = if (result.failedTestCount > 0) "TESTS FAILED" else "TESTS PASSED"
+
+                println()
+                println(status)
+                println("Total: ${result.testCount} | Passed: ${result.successfulTestCount} | Failed: ${result.failedTestCount} | Skipped: ${result.skippedTestCount} | Time: ${totalTime} ms")
+
+            }
+        }
+        override fun beforeSuite(suite: TestDescriptor) {}
+        override fun beforeTest(testDescriptor: TestDescriptor) {}
+        override fun afterTest(testDescriptor: TestDescriptor, result: TestResult) {}
+    })
 }

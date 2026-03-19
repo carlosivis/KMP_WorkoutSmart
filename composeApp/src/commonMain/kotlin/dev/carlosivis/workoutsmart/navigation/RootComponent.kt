@@ -37,22 +37,31 @@ class RootComponent(
             is Configuration.Home -> Child.Home(
                 HomeComponent(
                     componentContext = context,
-                    navigator = HomeNavigator(
-                        toCreateWorkout = { navigation.push(Configuration.CreateWorkout) },
-                        toActiveWorkout = { workout ->
-                            navigation.push(
-                                Configuration.ActiveWorkout(workout)
-                            )
-                        },
-                        toEditWorkout = { id ->
-                            navigation.push(
-                                Configuration.EditWorkout(id)
-                            )
-                        },
-                        toProfile = { navigation.push(Configuration.Profile) },
-                        toGroups = { groups -> navigation.push(Configuration.Groups(groups)) },
-                        toRanking = { group -> navigation.push(Configuration.Ranking(group)) }
-                    )
+                    navigator = object : HomeNavigator {
+                        override fun toCreateWorkout() {
+                            navigation.push(Configuration.CreateWorkout)
+                        }
+
+                        override fun toActiveWorkout(id: Long) {
+                            navigation.push(Configuration.ActiveWorkout(id))
+                        }
+
+                        override fun toEditWorkout(id: Long) {
+                            navigation.push(Configuration.EditWorkout(id))
+                        }
+
+                        override fun toProfile() {
+                            navigation.push(Configuration.Profile)
+                        }
+
+                        override fun toGroups(groups: List<GroupResponse>?) {
+                            navigation.push(Configuration.Groups(groups))
+                        }
+
+                        override fun toRanking(group: GroupResponse) {
+                            navigation.push(Configuration.Ranking(group))
+                        }
+                    }
                 )
             )
 
@@ -89,10 +98,15 @@ class RootComponent(
             is Configuration.Profile -> Child.Profile(
                 ProfileComponent(
                     componentContext = context,
-                    navigator = ProfileNavigator(
-                        back = { navigation.pop() },
-                        toSettings = { navigation.push(Configuration.Settings) }
-                    )
+                    navigator = object : ProfileNavigator {
+                        override fun back() {
+                            navigation.pop()
+                        }
+
+                        override fun toSettings() {
+                            navigation.push(Configuration.Settings)
+                        }
+                    }
                 )
             )
 
@@ -100,10 +114,15 @@ class RootComponent(
                 GroupsComponent(
                     componentContext = context,
                     groups = config.groups,
-                    navigator = GroupsNavigator(
-                        toRanking = { group -> navigation.push(Configuration.Ranking(group)) },
-                        back = { navigation.pop() }
-                    )
+                    navigator = object : GroupsNavigator {
+                        override fun toRanking(group: GroupResponse) {
+                            navigation.push(Configuration.Ranking(group))
+                        }
+
+                        override fun back() {
+                            navigation.pop()
+                        }
+                    }
                 )
             )
 
@@ -111,9 +130,11 @@ class RootComponent(
                 RankingComponent(
                     componentContext = context,
                     group = config.group,
-                    navigator = RankingNavigator(
-                        back = { navigation.pop() }
-                    )
+                    navigator = object : RankingNavigator {
+                        override fun back() {
+                            navigation.pop()
+                        }
+                    }
                 )
             )
         }
