@@ -1,7 +1,7 @@
 package dev.carlosivis.workoutsmart.data.local.datasource
 
 import com.russhwolf.settings.Settings
-import dev.carlosivis.workoutsmart.models.UserResponse
+import dev.carlosivis.workoutsmart.shared.UserResponse
 import kotlinx.serialization.json.Json
 
 class UserLocalDataSourceImpl(

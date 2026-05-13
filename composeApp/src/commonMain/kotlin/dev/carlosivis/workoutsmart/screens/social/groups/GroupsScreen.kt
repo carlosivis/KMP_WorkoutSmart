@@ -48,13 +48,13 @@ import dev.carlosivis.workoutsmart.composeResources.groups_screen_create_group_b
 import dev.carlosivis.workoutsmart.composeResources.groups_screen_join_group_button
 import dev.carlosivis.workoutsmart.composeResources.groups_screen_title
 import dev.carlosivis.workoutsmart.composeResources.groups_screen_user_rank
-import dev.carlosivis.workoutsmart.models.GroupResponse
 import dev.carlosivis.workoutsmart.screens.components.CustomCreateGroupDialog
 import dev.carlosivis.workoutsmart.screens.components.CustomJoinGroupDialog
 import dev.carlosivis.workoutsmart.screens.components.CustomTopBar
 import dev.carlosivis.workoutsmart.screens.components.RankingEmptyState
 import dev.carlosivis.workoutsmart.screens.components.loadings.PlaceholderHighlight
 import dev.carlosivis.workoutsmart.screens.components.loadings.placeholder
+import dev.carlosivis.workoutsmart.shared.GroupResponse
 import dev.carlosivis.workoutsmart.utils.AppSnackbarHost
 import dev.carlosivis.workoutsmart.utils.Dimens
 import dev.carlosivis.workoutsmart.utils.FontSizes

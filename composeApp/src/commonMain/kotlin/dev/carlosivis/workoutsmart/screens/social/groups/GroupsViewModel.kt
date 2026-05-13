@@ -5,10 +5,10 @@ import androidx.lifecycle.viewModelScope
 import dev.carlosivis.workoutsmart.domain.usecase.CreateGroupUseCase
 import dev.carlosivis.workoutsmart.domain.usecase.GetGroupsUseCase
 import dev.carlosivis.workoutsmart.domain.usecase.JoinGroupUseCase
-import dev.carlosivis.workoutsmart.models.CreateGroupRequest
-import dev.carlosivis.workoutsmart.models.GroupResponse
-import dev.carlosivis.workoutsmart.models.JoinGroupRequest
 import dev.carlosivis.workoutsmart.navigation.navigator.GroupsNavigator
+import dev.carlosivis.workoutsmart.shared.CreateGroupRequest
+import dev.carlosivis.workoutsmart.shared.GroupResponse
+import dev.carlosivis.workoutsmart.shared.JoinGroupRequest
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

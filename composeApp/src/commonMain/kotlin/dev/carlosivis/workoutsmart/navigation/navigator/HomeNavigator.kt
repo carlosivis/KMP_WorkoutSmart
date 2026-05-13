@@ -1,6 +1,6 @@
 package dev.carlosivis.workoutsmart.navigation.navigator
 
-import dev.carlosivis.workoutsmart.models.GroupResponse
+import dev.carlosivis.workoutsmart.shared.GroupResponse
 
 interface HomeNavigator {
     fun toCreateWorkout()

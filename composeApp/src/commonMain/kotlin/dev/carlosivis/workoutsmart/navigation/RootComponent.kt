@@ -6,11 +6,11 @@ import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
-import dev.carlosivis.workoutsmart.models.GroupResponse
 import dev.carlosivis.workoutsmart.navigation.navigator.GroupsNavigator
 import dev.carlosivis.workoutsmart.navigation.navigator.HomeNavigator
 import dev.carlosivis.workoutsmart.navigation.navigator.ProfileNavigator
 import dev.carlosivis.workoutsmart.navigation.navigator.RankingNavigator
+import dev.carlosivis.workoutsmart.shared.GroupResponse
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
 

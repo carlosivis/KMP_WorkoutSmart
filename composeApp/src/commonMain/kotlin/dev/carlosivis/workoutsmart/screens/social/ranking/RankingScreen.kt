@@ -64,13 +64,13 @@ import dev.carlosivis.workoutsmart.composeResources.ranking_screen_invite_friend
 import dev.carlosivis.workoutsmart.composeResources.ranking_screen_invite_message
 import dev.carlosivis.workoutsmart.composeResources.ranking_screen_share
 import dev.carlosivis.workoutsmart.composeResources.ranking_screen_share_code
-import dev.carlosivis.workoutsmart.models.GroupResponse
-import dev.carlosivis.workoutsmart.models.RankingMember
 import dev.carlosivis.workoutsmart.platform.copyText
 import dev.carlosivis.workoutsmart.platform.shareText
 import dev.carlosivis.workoutsmart.screens.components.CustomTopBar
 import dev.carlosivis.workoutsmart.screens.components.loadings.PlaceholderHighlight
 import dev.carlosivis.workoutsmart.screens.components.loadings.placeholder
+import dev.carlosivis.workoutsmart.shared.GroupResponse
+import dev.carlosivis.workoutsmart.shared.RankingMember
 import dev.carlosivis.workoutsmart.utils.AppSnackbarHost
 import dev.carlosivis.workoutsmart.utils.BronzeColor
 import dev.carlosivis.workoutsmart.utils.BronzeGradient

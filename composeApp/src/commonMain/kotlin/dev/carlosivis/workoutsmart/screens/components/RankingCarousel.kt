@@ -48,8 +48,7 @@ import dev.carlosivis.workoutsmart.composeResources.ranking_carousel_empty_subti
 import dev.carlosivis.workoutsmart.composeResources.ranking_carousel_empty_title
 import dev.carlosivis.workoutsmart.composeResources.ranking_login_required_subtitle
 import dev.carlosivis.workoutsmart.composeResources.ranking_login_required_title
-import dev.carlosivis.workoutsmart.models.GroupResponse
-import dev.carlosivis.workoutsmart.utils.ThemeMode
+import dev.carlosivis.workoutsmart.shared.GroupResponse
 import dev.carlosivis.workoutsmart.utils.BronzeGradient
 import dev.carlosivis.workoutsmart.utils.DefaultRankColor
 import dev.carlosivis.workoutsmart.utils.Dimens
@@ -58,6 +57,7 @@ import dev.carlosivis.workoutsmart.utils.GoldColor
 import dev.carlosivis.workoutsmart.utils.GoldGradient
 import dev.carlosivis.workoutsmart.utils.Shapes
 import dev.carlosivis.workoutsmart.utils.SilverGradient
+import dev.carlosivis.workoutsmart.utils.ThemeMode
 import dev.carlosivis.workoutsmart.utils.WorkoutsSmartTheme
 import org.jetbrains.compose.resources.stringResource
 

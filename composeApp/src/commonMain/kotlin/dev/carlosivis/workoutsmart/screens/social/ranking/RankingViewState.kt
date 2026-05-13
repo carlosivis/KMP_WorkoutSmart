@@ -1,7 +1,7 @@
 package dev.carlosivis.workoutsmart.screens.social.ranking
 
-import dev.carlosivis.workoutsmart.models.GroupResponse
-import dev.carlosivis.workoutsmart.models.RankingMember
+import dev.carlosivis.workoutsmart.shared.GroupResponse
+import dev.carlosivis.workoutsmart.shared.RankingMember
 
 data class RankingViewState(
     val isLoading: Boolean = false,

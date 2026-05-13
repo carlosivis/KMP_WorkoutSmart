@@ -52,11 +52,11 @@ import dev.carlosivis.workoutsmart.composeResources.create_group_dialog_title
 import dev.carlosivis.workoutsmart.composeResources.join_group_dialog_invite_code_label
 import dev.carlosivis.workoutsmart.composeResources.join_group_dialog_join_button
 import dev.carlosivis.workoutsmart.composeResources.join_group_dialog_title
-import dev.carlosivis.workoutsmart.models.CreateGroupRequest
-import dev.carlosivis.workoutsmart.models.JoinGroupRequest
-import dev.carlosivis.workoutsmart.utils.ThemeMode
+import dev.carlosivis.workoutsmart.shared.CreateGroupRequest
+import dev.carlosivis.workoutsmart.shared.JoinGroupRequest
 import dev.carlosivis.workoutsmart.utils.Dimens
 import dev.carlosivis.workoutsmart.utils.Shapes
+import dev.carlosivis.workoutsmart.utils.ThemeMode
 import dev.carlosivis.workoutsmart.utils.WorkoutsSmartTheme
 import org.jetbrains.compose.resources.stringResource
 

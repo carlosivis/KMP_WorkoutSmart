@@ -3,10 +3,10 @@ package dev.carlosivis.workoutsmart.data.remote.datasource
 import dev.carlosivis.features.workoutlog.WorkoutLogRequest
 import dev.carlosivis.workoutsmart.core.NetworkWrapper
 import dev.carlosivis.workoutsmart.data.remote.service.SocialService
-import dev.carlosivis.workoutsmart.models.CreateGroupRequest
-import dev.carlosivis.workoutsmart.models.GroupResponse
-import dev.carlosivis.workoutsmart.models.JoinGroupRequest
-import dev.carlosivis.workoutsmart.models.RankingMember
+import dev.carlosivis.workoutsmart.shared.CreateGroupRequest
+import dev.carlosivis.workoutsmart.shared.GroupResponse
+import dev.carlosivis.workoutsmart.shared.JoinGroupRequest
+import dev.carlosivis.workoutsmart.shared.RankingMember
 
 class SocialRemoteDataSourceImpl(
     private val service: SocialService

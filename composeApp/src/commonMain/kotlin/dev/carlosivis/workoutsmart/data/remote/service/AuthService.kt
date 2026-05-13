@@ -1,6 +1,6 @@
 package dev.carlosivis.workoutsmart.data.remote.service
 
-import dev.carlosivis.workoutsmart.models.LoginRequest
+import dev.carlosivis.workoutsmart.shared.LoginRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.request.header
 import io.ktor.client.request.post

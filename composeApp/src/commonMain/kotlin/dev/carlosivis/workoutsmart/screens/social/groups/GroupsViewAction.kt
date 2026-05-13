@@ -1,8 +1,8 @@
 package dev.carlosivis.workoutsmart.screens.social.groups
 
-import dev.carlosivis.workoutsmart.models.CreateGroupRequest
-import dev.carlosivis.workoutsmart.models.GroupResponse
-import dev.carlosivis.workoutsmart.models.JoinGroupRequest
+import dev.carlosivis.workoutsmart.shared.CreateGroupRequest
+import dev.carlosivis.workoutsmart.shared.GroupResponse
+import dev.carlosivis.workoutsmart.shared.JoinGroupRequest
 
 sealed class GroupsViewAction {
     object Refresh : GroupsViewAction()

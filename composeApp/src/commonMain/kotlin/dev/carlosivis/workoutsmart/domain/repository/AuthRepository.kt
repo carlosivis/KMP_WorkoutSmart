@@ -1,6 +1,6 @@
 package dev.carlosivis.workoutsmart.domain.repository
 
-import dev.carlosivis.workoutsmart.models.UserResponse
+import dev.carlosivis.workoutsmart.shared.UserResponse
 
 interface AuthRepository {
     suspend fun loginWithGoogle(): Result<UserResponse>

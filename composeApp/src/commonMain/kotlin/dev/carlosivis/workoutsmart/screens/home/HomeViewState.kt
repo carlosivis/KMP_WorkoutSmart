@@ -1,9 +1,9 @@
 package dev.carlosivis.workoutsmart.screens.home
 
-import dev.carlosivis.workoutsmart.models.GroupResponse
 import dev.carlosivis.workoutsmart.models.HistoryModel
-import dev.carlosivis.workoutsmart.models.UserResponse
 import dev.carlosivis.workoutsmart.models.WorkoutSummaryModel
+import dev.carlosivis.workoutsmart.shared.GroupResponse
+import dev.carlosivis.workoutsmart.shared.UserResponse
 
 data class HomeViewState(
     val isLoading: Boolean = false,

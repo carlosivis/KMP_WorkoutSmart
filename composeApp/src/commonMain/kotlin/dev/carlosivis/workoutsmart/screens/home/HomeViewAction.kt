@@ -1,7 +1,7 @@
 package dev.carlosivis.workoutsmart.screens.home
 
 import dev.carlosivis.features.workoutlog.WorkoutLogRequest
-import dev.carlosivis.workoutsmart.models.GroupResponse
+import dev.carlosivis.workoutsmart.shared.GroupResponse
 
 sealed class HomeViewAction {
     object GetUserProfile : HomeViewAction()

@@ -3,8 +3,8 @@ package dev.carlosivis.workoutsmart.screens.social.ranking
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.carlosivis.workoutsmart.domain.usecase.GetRankingMembersUseCase
-import dev.carlosivis.workoutsmart.models.GroupResponse
 import dev.carlosivis.workoutsmart.navigation.navigator.RankingNavigator
+import dev.carlosivis.workoutsmart.shared.GroupResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

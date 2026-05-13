@@ -1,6 +1,6 @@
 package dev.carlosivis.workoutsmart.screens.social.groups
 
-import dev.carlosivis.workoutsmart.models.GroupResponse
+import dev.carlosivis.workoutsmart.shared.GroupResponse
 
 data class GroupsViewState(
     val isLoading: Boolean = false,
