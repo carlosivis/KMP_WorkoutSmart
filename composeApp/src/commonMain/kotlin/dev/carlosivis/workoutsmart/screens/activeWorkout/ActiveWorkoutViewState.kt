@@ -1,7 +1,7 @@
 package dev.carlosivis.workoutsmart.screens.activeWorkout
 
 import dev.carlosivis.workoutsmart.models.SettingsModel
-import dev.carlosivis.workoutsmart.models.WorkoutModel
+import dev.carlosivis.workoutsmart.shared.WorkoutModel
 
 data class ActiveWorkoutViewState(
     val isLoading: Boolean = false,

@@ -4,7 +4,7 @@ import app.cash.turbine.test
 import dev.carlosivis.workoutsmart.data.local.datasource.HistoryLocalDataSource
 import dev.carlosivis.workoutsmart.data.local.datasource.WorkoutLocalDataSource
 import dev.carlosivis.workoutsmart.models.HistoryModel
-import dev.carlosivis.workoutsmart.models.WorkoutModel
+import dev.carlosivis.workoutsmart.shared.WorkoutModel
 import dev.carlosivis.workoutsmart.models.WorkoutSummaryModel
 import dev.mokkery.answering.returns
 import dev.mokkery.every

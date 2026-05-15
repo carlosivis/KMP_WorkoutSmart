@@ -1,7 +1,7 @@
 package dev.carlosivis.workoutsmart.data.local.datasource
 
-import dev.carlosivis.workoutsmart.models.ExerciseModel
-import dev.carlosivis.workoutsmart.models.WorkoutModel
+import dev.carlosivis.workoutsmart.shared.ExerciseModel
+import dev.carlosivis.workoutsmart.shared.WorkoutModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first

@@ -63,11 +63,11 @@ import dev.carlosivis.workoutsmart.composeResources.save_workout_button
 import dev.carlosivis.workoutsmart.composeResources.select_image_source
 import dev.carlosivis.workoutsmart.composeResources.workout_description_label
 import dev.carlosivis.workoutsmart.composeResources.workout_title_label
-import dev.carlosivis.workoutsmart.models.ExerciseModel
 import dev.carlosivis.workoutsmart.screens.components.CameraCaptureScreen
 import dev.carlosivis.workoutsmart.screens.components.CustomDialog
 import dev.carlosivis.workoutsmart.screens.components.CustomTopBar
 import dev.carlosivis.workoutsmart.screens.components.PhotoPreviewDialog
+import dev.carlosivis.workoutsmart.shared.ExerciseModel
 import dev.carlosivis.workoutsmart.utils.AppSnackbarHost
 import dev.carlosivis.workoutsmart.utils.Dimens
 import dev.carlosivis.workoutsmart.utils.Shapes

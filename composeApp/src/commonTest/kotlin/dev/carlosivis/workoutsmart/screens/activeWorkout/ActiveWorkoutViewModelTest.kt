@@ -4,9 +4,9 @@ import dev.carlosivis.workoutsmart.domain.repository.SettingsRepository
 import dev.carlosivis.workoutsmart.domain.repository.SocialRepository
 import dev.carlosivis.workoutsmart.domain.repository.WorkoutRepository
 import dev.carlosivis.workoutsmart.domain.usecase.RegisterWorkoutLogUseCase
-import dev.carlosivis.workoutsmart.models.ExerciseModel
+import dev.carlosivis.workoutsmart.shared.ExerciseModel
 import dev.carlosivis.workoutsmart.models.SettingsModel
-import dev.carlosivis.workoutsmart.models.WorkoutModel
+import dev.carlosivis.workoutsmart.shared.WorkoutModel
 import dev.carlosivis.workoutsmart.screens.components.expect.VibratorHelper
 import dev.mokkery.answering.returns
 import dev.mokkery.every

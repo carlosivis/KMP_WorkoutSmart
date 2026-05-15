@@ -4,7 +4,7 @@ import dev.carlosivis.workoutsmart.data.local.datasource.HistoryLocalDataSource
 import dev.carlosivis.workoutsmart.data.local.datasource.WorkoutLocalDataSource
 import dev.carlosivis.workoutsmart.domain.repository.WorkoutRepository
 import dev.carlosivis.workoutsmart.models.HistoryModel
-import dev.carlosivis.workoutsmart.models.WorkoutModel
+import dev.carlosivis.workoutsmart.shared.WorkoutModel
 import dev.carlosivis.workoutsmart.models.WorkoutSummaryModel
 import kotlinx.coroutines.flow.Flow
 

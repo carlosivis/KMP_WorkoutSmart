@@ -1,8 +1,8 @@
 package dev.carlosivis.workoutsmart.screens.createWorkout
 
 import dev.carlosivis.workoutsmart.domain.repository.WorkoutRepository
-import dev.carlosivis.workoutsmart.models.ExerciseModel
-import dev.carlosivis.workoutsmart.models.WorkoutModel
+import dev.carlosivis.workoutsmart.shared.ExerciseModel
+import dev.carlosivis.workoutsmart.shared.WorkoutModel
 import dev.mokkery.answering.returns
 import dev.mokkery.every
 import dev.mokkery.everySuspend

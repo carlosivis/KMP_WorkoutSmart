@@ -3,8 +3,8 @@ package dev.carlosivis.workoutsmart.screens.createWorkout
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.carlosivis.workoutsmart.domain.repository.WorkoutRepository
-import dev.carlosivis.workoutsmart.models.ExerciseModel
-import dev.carlosivis.workoutsmart.models.WorkoutModel
+import dev.carlosivis.workoutsmart.shared.WorkoutModel
+import dev.carlosivis.workoutsmart.shared.ExerciseModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
