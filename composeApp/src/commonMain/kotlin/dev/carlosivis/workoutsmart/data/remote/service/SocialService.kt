@@ -1,8 +1,8 @@
 package dev.carlosivis.workoutsmart.data.remote.service
 
 import dev.carlosivis.features.workoutlog.WorkoutLogRequest
-import dev.carlosivis.workoutsmart.models.CreateGroupRequest
-import dev.carlosivis.workoutsmart.models.JoinGroupRequest
+import dev.carlosivis.workoutsmart.shared.CreateGroupRequest
+import dev.carlosivis.workoutsmart.shared.JoinGroupRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.post

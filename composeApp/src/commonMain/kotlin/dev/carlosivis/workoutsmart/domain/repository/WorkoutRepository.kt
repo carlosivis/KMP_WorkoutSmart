@@ -1,7 +1,7 @@
 package dev.carlosivis.workoutsmart.domain.repository
 
 import dev.carlosivis.workoutsmart.models.HistoryModel
-import dev.carlosivis.workoutsmart.models.WorkoutModel
+import dev.carlosivis.workoutsmart.shared.WorkoutModel
 import dev.carlosivis.workoutsmart.models.WorkoutSummaryModel
 import kotlinx.coroutines.flow.Flow
 

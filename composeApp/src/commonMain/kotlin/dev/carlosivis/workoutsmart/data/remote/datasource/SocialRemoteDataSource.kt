@@ -1,10 +1,10 @@
 package dev.carlosivis.workoutsmart.data.remote.datasource
 
 import dev.carlosivis.features.workoutlog.WorkoutLogRequest
-import dev.carlosivis.workoutsmart.models.CreateGroupRequest
-import dev.carlosivis.workoutsmart.models.GroupResponse
-import dev.carlosivis.workoutsmart.models.JoinGroupRequest
-import dev.carlosivis.workoutsmart.models.RankingMember
+import dev.carlosivis.workoutsmart.shared.CreateGroupRequest
+import dev.carlosivis.workoutsmart.shared.GroupResponse
+import dev.carlosivis.workoutsmart.shared.JoinGroupRequest
+import dev.carlosivis.workoutsmart.shared.RankingMember
 
 interface SocialRemoteDataSource {
     suspend fun getGroups(): Result<List<GroupResponse>>

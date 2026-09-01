@@ -3,8 +3,6 @@ package dev.carlosivis.workoutsmart.screens.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.carlosivis.features.workoutlog.WorkoutLogRequest
-import dev.carlosivis.workoutsmart.composeResources.Res
-import dev.carlosivis.workoutsmart.composeResources.workout_saved_successfully
 import dev.carlosivis.workoutsmart.domain.repository.WorkoutRepository
 import dev.carlosivis.workoutsmart.domain.usecase.GetGroupsUseCase
 import dev.carlosivis.workoutsmart.domain.usecase.GetUserUseCase
@@ -18,7 +16,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.getString
 
 class HomeViewModel(
     private val repository: WorkoutRepository,
@@ -86,6 +83,8 @@ class HomeViewModel(
                 setLoading(true)
                 try {
                     repository.deleteWorkout(id)
+                } catch (e: Exception) {
+                    _state.update { it.copy(error = e.message) }
                 } finally {
                     setLoading(false)
                     cancelDeleteWorkout()
@@ -132,7 +131,7 @@ class HomeViewModel(
             setLoading(true)
             registerWorkoutLogUseCase(workout)
                 .onSuccess {
-                    _state.update { it.copy(message = getString(Res.string.workout_saved_successfully)) }
+                    _state.update { it.copy(message ="Workout saved successfully") }
                 }
                 .onFailure { error ->
                     _state.update { it.copy(error = error.message) }
@@ -168,7 +167,6 @@ class HomeViewModel(
                 })
             setLoading(false)
             _state.update { it.copy(isRefreshing = false) }
-
         }
     }
 

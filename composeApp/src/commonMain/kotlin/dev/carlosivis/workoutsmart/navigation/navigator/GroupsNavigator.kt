@@ -1,8 +1,8 @@
 package dev.carlosivis.workoutsmart.navigation.navigator
 
-import dev.carlosivis.workoutsmart.models.GroupResponse
+import dev.carlosivis.workoutsmart.shared.GroupResponse
 
-data class GroupsNavigator(
-    val toRanking: (group: GroupResponse) -> Unit,
-    val back: () -> Unit,
-)
+interface GroupsNavigator {
+    fun toRanking(group: GroupResponse)
+    fun back()
+}

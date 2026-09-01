@@ -6,9 +6,9 @@ import app.cash.sqldelight.coroutines.mapToOneOrNull
 import app.cash.sqldelight.db.SqlDriver
 import dev.carlosivis.workoutsmart.core.transactionWithContext
 import dev.carlosivis.workoutsmart.database.WorkoutSmartDatabase
-import dev.carlosivis.workoutsmart.models.ExerciseModel
-import dev.carlosivis.workoutsmart.models.WorkoutModel
+import dev.carlosivis.workoutsmart.shared.WorkoutModel
 import dev.carlosivis.workoutsmart.models.WorkoutSummaryModel
+import dev.carlosivis.workoutsmart.shared.ExerciseModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn

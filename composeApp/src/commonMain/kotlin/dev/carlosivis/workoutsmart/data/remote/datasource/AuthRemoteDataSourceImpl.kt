@@ -2,8 +2,8 @@ package dev.carlosivis.workoutsmart.data.remote.datasource
 
 import dev.carlosivis.workoutsmart.core.NetworkWrapper
 import dev.carlosivis.workoutsmart.data.remote.service.AuthService
-import dev.carlosivis.workoutsmart.models.LoginRequest
-import dev.carlosivis.workoutsmart.models.UserResponse
+import dev.carlosivis.workoutsmart.shared.LoginRequest
+import dev.carlosivis.workoutsmart.shared.UserResponse
 import dev.gitlive.firebase.auth.FirebaseUser
 
 class AuthRemoteDataSourceImpl(

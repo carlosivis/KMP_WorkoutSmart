@@ -1,6 +1,6 @@
 package dev.carlosivis.workoutsmart.screens.profile
 
-import dev.carlosivis.workoutsmart.models.UserResponse
+import dev.carlosivis.workoutsmart.shared.UserResponse
 
 data class ProfileViewState(
     val isLoading: Boolean = false,

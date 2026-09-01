@@ -1,6 +1,6 @@
 package dev.carlosivis.workoutsmart.data.local.datasource
 
-import dev.carlosivis.workoutsmart.models.UserResponse
+import dev.carlosivis.workoutsmart.shared.UserResponse
 
 interface UserLocalDataSource {
     fun saveUserToken(token: String)

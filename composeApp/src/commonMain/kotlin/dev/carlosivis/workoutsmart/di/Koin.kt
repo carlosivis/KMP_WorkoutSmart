@@ -33,7 +33,6 @@ import dev.carlosivis.workoutsmart.domain.usecase.JoinGroupUseCase
 import dev.carlosivis.workoutsmart.domain.usecase.LoginGoogleUseCase
 import dev.carlosivis.workoutsmart.domain.usecase.LogoutUseCase
 import dev.carlosivis.workoutsmart.domain.usecase.RegisterWorkoutLogUseCase
-import dev.carlosivis.workoutsmart.models.GroupResponse
 import dev.carlosivis.workoutsmart.navigation.navigator.GroupsNavigator
 import dev.carlosivis.workoutsmart.navigation.navigator.HomeNavigator
 import dev.carlosivis.workoutsmart.navigation.navigator.ProfileNavigator
@@ -45,6 +44,7 @@ import dev.carlosivis.workoutsmart.screens.profile.ProfileViewModel
 import dev.carlosivis.workoutsmart.screens.settings.SettingsViewModel
 import dev.carlosivis.workoutsmart.screens.social.groups.GroupsViewModel
 import dev.carlosivis.workoutsmart.screens.social.ranking.RankingViewModel
+import dev.carlosivis.workoutsmart.shared.GroupResponse
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
 import kotlinx.coroutines.CoroutineDispatcher
@@ -161,7 +161,7 @@ val viewmodelModule = module {
     }
 
     viewModel { (workoutId: Long, onNavigateBack: () -> Unit) ->
-        ActiveWorkoutViewModel(workoutId, get(), get(), get(), onNavigateBack, get())
+        ActiveWorkoutViewModel(workoutId, get(), get(), get(), onNavigateBack, get(), get())
     }
 
     viewModel { (onNavigateBack: () -> Unit, workoutIdToEdit: Long?) ->
@@ -198,4 +198,6 @@ val coreModule = module {
     single<Clock> {
         Clock.System
     }
+
+    single<() -> Long> { { Clock.System.now().epochSeconds } }
 }

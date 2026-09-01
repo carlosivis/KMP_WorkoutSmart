@@ -1,6 +1,6 @@
 package dev.carlosivis.workoutsmart.screens.createWorkout
 
-import dev.carlosivis.workoutsmart.models.ExerciseModel
+import dev.carlosivis.workoutsmart.shared.ExerciseModel
 
 sealed class CreateWorkoutViewAction {
     object GetExercises : CreateWorkoutViewAction()

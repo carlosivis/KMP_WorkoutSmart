@@ -77,15 +77,15 @@ import dev.carlosivis.workoutsmart.composeResources.finished_workout_tittle
 import dev.carlosivis.workoutsmart.composeResources.mark_as_completed_button
 import dev.carlosivis.workoutsmart.composeResources.skip_button
 import dev.carlosivis.workoutsmart.composeResources.start_rest_button
-import dev.carlosivis.workoutsmart.models.ExerciseModel
-import dev.carlosivis.workoutsmart.utils.ThemeMode
 import dev.carlosivis.workoutsmart.screens.components.CustomDialog
 import dev.carlosivis.workoutsmart.screens.components.CustomTopBar
 import dev.carlosivis.workoutsmart.screens.components.RestTimerSelectorDialog
 import dev.carlosivis.workoutsmart.screens.components.expect.KeepScreenOn
+import dev.carlosivis.workoutsmart.shared.ExerciseModel
 import dev.carlosivis.workoutsmart.utils.AppSnackbarHost
 import dev.carlosivis.workoutsmart.utils.Dimens
 import dev.carlosivis.workoutsmart.utils.FontSizes
+import dev.carlosivis.workoutsmart.utils.ThemeMode
 import dev.carlosivis.workoutsmart.utils.WhitePure
 import dev.carlosivis.workoutsmart.utils.WorkoutsSmartTheme
 import dev.carlosivis.workoutsmart.utils.rememberSnackbarHandler
